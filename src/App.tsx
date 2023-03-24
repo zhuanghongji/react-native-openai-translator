@@ -1,23 +1,28 @@
+import { HomeScreen } from './screens/home'
+import { SettingsScreen } from './screens/settings'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import { useColorScheme, StatusBar, View, Text } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
+const RootStack = createNativeStackNavigator<RootStackParamList>()
+
 export function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark'
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-  }
-
   return (
-    <SafeAreaProvider style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <View style={backgroundStyle}>
-        <Text>App</Text>
-      </View>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider style={{ flex: 1 }}>
+        <NavigationContainer>
+          <RootStack.Navigator
+            initialRouteName="Home"
+            screenOptions={{
+              headerShown: false,
+            }}>
+            <RootStack.Screen name="Home" component={HomeScreen} />
+            <RootStack.Screen name="Settings" component={SettingsScreen} />
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }

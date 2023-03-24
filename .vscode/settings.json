@@ -1,4 +1,26 @@
 {
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.enable": true,
+  "eslint.run": "onType",
+  "eslint.packageManager": "yarn",
+  "eslint.workingDirectories": ["./src"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "workbench.editor.enablePreview": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "gitlens.codeLens.enabled": false,
+  "git.ignoreLimitWarning": true,
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "js/ts.implicitProjectConfig.strictNullChecks": true,
+  "js/ts.implicitProjectConfig.strictFunctionTypes": true
 }
