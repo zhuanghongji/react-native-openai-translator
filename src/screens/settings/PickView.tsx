@@ -1,7 +1,7 @@
-import { dimensions } from '../res/dimensions'
-import { useImageThemeColor, useViewThemeColor } from '../themes/hooks'
-import { SvgIcon } from './SvgIcon'
-import { TText } from './TText'
+import { SvgIcon } from '../../components/SvgIcon'
+import { TText } from '../../components/TText'
+import { dimensions } from '../../res/dimensions'
+import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   StyleProp,
@@ -11,14 +11,14 @@ import {
   ViewStyle,
 } from 'react-native'
 
-export interface PickButtonProps {
+export interface PickViewProps {
   style?: StyleProp<ViewStyle>
   text: string
   picking: boolean
   onPress: () => void
 }
 
-export function PickButton(props: PickButtonProps) {
+export function PickView(props: PickViewProps) {
   const { style, text, onPress } = props
   const backgroundColor = useViewThemeColor('backdropSecondary')
   const iconColor = useImageThemeColor('tint')
@@ -48,8 +48,9 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: 72,
+    width: '100%',
     height: 32,
+    marginTop: 6,
     paddingLeft: 8,
     paddingRight: 4,
     borderRadius: 4,

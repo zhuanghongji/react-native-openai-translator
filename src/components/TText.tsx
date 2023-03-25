@@ -8,6 +8,6 @@ import { Text, TextProps } from 'react-native'
  */
 export function TText(props: TextProps & { type: TextThemeType }) {
   const { style, type, ...restProps } = props
-  const themeStyle = useTextThemeStyle(type)
-  return <Text style={[style, themeStyle]} {...restProps} />
+  const textStyle = useTextThemeStyle(type)
+  return <Text style={[style, textStyle]} {...restProps} />
 }

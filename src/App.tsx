@@ -17,6 +17,8 @@ export function App(): JSX.Element {
             initialRouteName="Home"
             screenOptions={{
               headerShown: false,
+              animationTypeForReplace: 'push',
+              animation: 'slide_from_right',
             }}>
             <RootStack.Screen name="Home" component={HomeScreen} />
             <RootStack.Screen name="Settings" component={SettingsScreen} />

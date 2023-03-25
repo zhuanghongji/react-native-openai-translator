@@ -6036,6 +6036,11 @@ react-native-gradle-plugin@^0.71.16:
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.16.tgz"
   integrity sha512-H2BjG2zk7B7Wii9sXvd9qhCVRQYDAHSWdMw9tscmZBqSP62DkIWEQSk4/B2GhQ4aK9ydVXgtqR6tBeg3yy8TSA==
 
+react-native-linear-gradient@^2.6.2:
+  version "2.6.2"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-linear-gradient/-/react-native-linear-gradient-2.6.2.tgz#56598a76832724b2afa7889747635b5c80948f38"
+  integrity sha512-Z8Xxvupsex+9BBFoSYS87bilNPWcRfRsGC0cpJk72Nxb5p2nEkGSBv73xZbEHnW2mUFvP+huYxrVvjZkr/gRjQ==
+
 react-native-mmkv@^2.7.0:
   version "2.7.0"
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-mmkv/-/react-native-mmkv-2.7.0.tgz"

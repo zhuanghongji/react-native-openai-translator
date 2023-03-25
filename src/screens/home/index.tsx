@@ -1,12 +1,11 @@
 import { ModeButton } from '../../components/ModeButton'
-import { SelectButton } from '../../components/PickButton'
+import { PickButton } from '../../components/PickButton'
 import { SvgIcon } from '../../components/SvgIcon'
 import { ToolButton } from '../../components/ToolButton'
 import { dimensions } from '../../res/dimensions'
 import { texts } from '../../res/texts'
 import {
   useImageThemeColor,
-  useStatusBarStyle,
   useTextThemeColor,
   useViewThemeColor,
 } from '../../themes/hooks'
@@ -17,23 +16,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
 import {
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TextStyle,
   View,
   ViewStyle,
 } from 'react-native'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
 export function HomeScreen({ navigation }: Props): JSX.Element {
-  const { bottom } = useSafeAreaInsets()
-  const bottomInset = Math.max(bottom, dimensions.edge * 2)
-
-  const barStyle = useStatusBarStyle()
-
   const textColor = useTextThemeColor('text')
   const tintSecondary = useImageThemeColor('tintSecondary')
   const backgroundColor = useViewThemeColor('background')
@@ -41,12 +34,10 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [inputValue, setInputValue] = useState('')
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor, paddingBottom: bottomInset }}>
-      <StatusBar barStyle={barStyle} backgroundColor={backgroundColor} />
+    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar onSettingsPress={() => navigation.push('Settings')} />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <SelectButton
+        <PickButton
           style={{ marginLeft: dimensions.edge }}
           text="English"
           picking={false}
@@ -58,7 +49,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           color={tintSecondary}
           name="swap-horiz"
         />
-        <SelectButton
+        <PickButton
           style={{ marginRight: dimensions.edge }}
           text="中文"
           picking={false}
