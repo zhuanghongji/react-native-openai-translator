@@ -1,6 +1,6 @@
-import { dimensions } from '../res/dimensions'
-import { useImageThemeColor, useViewThemeColor } from '../themes/hooks'
-import { SvgIcon, SvgIconName } from './SvgIcon'
+import { SvgIcon, SvgIconName } from '../../components/SvgIcon'
+import { dimensions } from '../../res/dimensions'
+import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   StyleProp,

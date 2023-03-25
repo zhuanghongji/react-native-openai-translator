@@ -1,7 +1,7 @@
-import { dimensions } from '../res/dimensions'
-import { useImageThemeColor, useViewThemeColor } from '../themes/hooks'
-import { SvgIcon } from './SvgIcon'
-import { TText } from './TText'
+import { SvgIcon } from '../../components/SvgIcon'
+import { TText } from '../../components/TText'
+import { dimensions } from '../../res/dimensions'
+import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   StyleProp,

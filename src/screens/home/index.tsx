@@ -1,7 +1,4 @@
-import { ModeButton } from '../../components/ModeButton'
-import { PickButton } from '../../components/PickButton'
 import { SvgIcon } from '../../components/SvgIcon'
-import { ToolButton } from '../../components/ToolButton'
 import { dimensions } from '../../res/dimensions'
 import { texts } from '../../res/texts'
 import {
@@ -10,8 +7,11 @@ import {
   useViewThemeColor,
 } from '../../themes/hooks'
 import { InputView } from './InputView'
+import { ModeButton } from './ModeButton'
+import { PickButton } from './PickButton'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
+import { ToolButton } from './ToolButton'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
 import {
