@@ -1,40 +1,75 @@
+import { PickModalHandle } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
+  Pressable,
+  PressableProps,
   StyleProp,
   StyleSheet,
   TextStyle,
-  TouchableOpacity,
   ViewStyle,
 } from 'react-native'
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated'
+
+const AnimatedPressable =
+  Animated.createAnimatedComponent<PressableProps>(Pressable)
 
 export interface PickViewProps {
   style?: StyleProp<ViewStyle>
   text: string
-  picking: boolean
-  onPress: () => void
+  animatedIndex: Animated.SharedValue<number>
+  pickModalRef: React.RefObject<PickModalHandle>
 }
 
 export function PickView(props: PickViewProps) {
-  const { style, text, onPress } = props
+  const { style, text, animatedIndex, pickModalRef } = props
+
+  const borderColor = useViewThemeColor('border')
   const backgroundColor = useViewThemeColor('backdropSecondary')
   const iconColor = useImageThemeColor('tint')
+
+  const borderStyle = useAnimatedStyle(() => {
+    return {
+      borderColor: interpolateColor(
+        animatedIndex.value,
+        [-1, 0],
+        [colors.transparent, borderColor as string]
+      ),
+    }
+  })
+
+  const transfromStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotate: `${(animatedIndex.value + 1) * 90}deg`,
+        },
+      ],
+    }
+  })
+
   return (
-    <TouchableOpacity
-      style={[styles.container, { backgroundColor }, style]}
-      onPress={onPress}>
+    <AnimatedPressable
+      style={[styles.container, { backgroundColor }, borderStyle, style]}
+      onPress={() => pickModalRef.current?.show()}>
       <TText style={styles.text} type="text">
         {text}
       </TText>
-      <SvgIcon
-        size={dimensions.iconMedium}
-        color={iconColor}
-        name="errow-drop-down"
-      />
-    </TouchableOpacity>
+      <Animated.View style={transfromStyle}>
+        <SvgIcon
+          size={dimensions.iconMedium}
+          color={iconColor}
+          name="errow-drop-down"
+        />
+      </Animated.View>
+    </AnimatedPressable>
   )
 }
 
@@ -54,6 +89,7 @@ const styles = StyleSheet.create<Styles>({
     paddingLeft: 8,
     paddingRight: 4,
     borderRadius: 4,
+    borderWidth: 0.5,
   },
   text: {
     fontSize: 11,

@@ -1,5 +1,7 @@
+import { PickModal, PickModalHandle } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
+import { LANGUAGE_KEYS, LanguageKey, languageNameByKey } from '../../res/langs'
 import { texts } from '../../res/texts'
 import {
   useImageThemeColor,
@@ -13,7 +15,7 @@ import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -22,6 +24,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -31,6 +35,16 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const tintSecondary = useImageThemeColor('tintSecondary')
   const backgroundColor = useViewThemeColor('background')
 
+  const fromLangAnimatedIndex = useSharedValue(-1)
+  const fromLangModalRef = useRef<PickModalHandle>(null)
+  const [fromLangKey, setFromLangKey] = useState<LanguageKey>('en')
+  const fromLangName = languageNameByKey(fromLangKey)
+
+  const toLangAnimatedIndex = useSharedValue(-1)
+  const toLangModalRef = useRef<PickModalHandle>(null)
+  const [toLangKey, setToLangKey] = useState<LanguageKey>('zh-Hans')
+  const toLangName = languageNameByKey(toLangKey)
+
   const [inputValue, setInputValue] = useState('')
 
   return (
@@ -39,21 +53,28 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <PickButton
           style={{ marginLeft: dimensions.edge }}
-          text="English"
-          picking={false}
-          onPress={() => {}}
+          text={fromLangName}
+          animatedIndex={fromLangAnimatedIndex}
+          pickModalRef={fromLangModalRef}
         />
-        <SvgIcon
-          style={{ marginHorizontal: 4 }}
-          size={dimensions.iconSmall}
-          color={tintSecondary}
-          name="swap-horiz"
-        />
+        <TouchableOpacity
+          activeOpacity={1.0}
+          onPress={() => {
+            setFromLangKey(toLangKey)
+            setToLangKey(fromLangKey)
+          }}>
+          <SvgIcon
+            style={{ marginHorizontal: 4 }}
+            size={dimensions.iconSmall}
+            color={tintSecondary}
+            name="swap-horiz"
+          />
+        </TouchableOpacity>
         <PickButton
           style={{ marginRight: dimensions.edge }}
-          text="中文"
-          picking={false}
-          onPress={() => {}}
+          text={toLangName}
+          animatedIndex={toLangAnimatedIndex}
+          pickModalRef={toLangModalRef}
         />
         <View style={{ flex: 1 }} />
         <View style={styles.modes}>
@@ -84,6 +105,23 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           </View>
         </View>
       </ScrollView>
+
+      <PickModal
+        ref={fromLangModalRef}
+        value={fromLangKey}
+        values={LANGUAGE_KEYS}
+        animatedIndex={fromLangAnimatedIndex}
+        valueToString={languageNameByKey}
+        onValueChange={setFromLangKey}
+      />
+      <PickModal
+        ref={toLangModalRef}
+        value={toLangKey}
+        values={LANGUAGE_KEYS}
+        animatedIndex={toLangAnimatedIndex}
+        valueToString={languageNameByKey}
+        onValueChange={setToLangKey}
+      />
     </SafeAreaView>
   )
 }
