@@ -1,31 +1,44 @@
 import { SvgIcon, SvgIconName } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
+import { TranslateMode } from '../../res/settings'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
-import {
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  ViewStyle,
-} from 'react-native'
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
 export interface SelectButtonProps {
   style?: StyleProp<ViewStyle>
-  name: SvgIconName
-  selected: boolean
-  onPress: () => void
+  icon: SvgIconName
+  mode: TranslateMode
+  currentMode: TranslateMode
+  onPress: (mode: TranslateMode) => void
 }
 
 export function ModeButton(props: SelectButtonProps) {
-  const { style, name, selected, onPress } = props
-  const backgroundColor = useViewThemeColor('backdropSecondary')
+  const { style, icon, mode, currentMode, onPress } = props
+  const backdropSecondaryColor = useViewThemeColor('backdropSecondary')
+  const backdropSelectedColor = useViewThemeColor('backdropSelected')
   const tint = useImageThemeColor('tint')
+  const tintSelected = useImageThemeColor('tintSelected')
+
+  const selected = mode === currentMode
   return (
-    <TouchableOpacity
-      style={[styles.container, { backgroundColor }, style]}
-      onPress={onPress}>
-      <SvgIcon size={dimensions.iconSmall} color={tint} name={name} />
-    </TouchableOpacity>
+    <Pressable
+      style={[
+        styles.container,
+        {
+          backgroundColor: selected
+            ? backdropSelectedColor
+            : backdropSecondaryColor,
+        },
+        style,
+      ]}
+      onPress={() => onPress(mode)}>
+      <SvgIcon
+        size={dimensions.iconSmall}
+        color={selected ? tintSelected : tint}
+        name={icon}
+      />
+    </Pressable>
   )
 }
 

@@ -12,6 +12,7 @@ export interface ImageThemeScheme {
   tint: ColorValue
   tintSecondary: ColorValue
   tintTertiary: ColorValue
+  tintSelected: ColorValue
 }
 
 export interface ViewThemeScheme {
@@ -19,6 +20,7 @@ export interface ViewThemeScheme {
   borderSecondary: ColorValue
   backdrop: ColorValue
   backdropSecondary: ColorValue
+  backdropSelected: ColorValue
   background: ColorValue
 }
 

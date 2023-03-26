@@ -21,11 +21,13 @@ const LIGHT_THEME_SCHEME: ThemeScheme = {
   tint: '#000000',
   tintSecondary: '#545454',
   tintTertiary: '#9F9F9F',
+  tintSelected: '#FFFFFF',
 
   border: '#000000',
   borderSecondary: '#EBEBEB',
   backdrop: '#F6F6F6',
   backdropSecondary: '#EEEEEE',
+  backdropSelected: '#000000',
   background: '#FFFFFF',
 }
 
@@ -39,11 +41,13 @@ const DARK_THEME_SCHEME: ThemeScheme = {
   tint: '#FFFFFF',
   tintSecondary: '#545454',
   tintTertiary: '#9F9F9F',
+  tintSelected: '#000000',
 
   border: '#FFFFFF',
   borderSecondary: '#EBEBEB',
   backdrop: '#F6F6F6',
   backdropSecondary: '#EEEEEE',
+  backdropSelected: '#FFFFFF',
   background: '#000000',
 }
 

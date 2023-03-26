@@ -2,6 +2,7 @@ import { PickModal, PickModalHandle } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
 import { LANGUAGE_KEYS, LanguageKey, languageNameByKey } from '../../res/langs'
+import { TranslateMode } from '../../res/settings'
 import { texts } from '../../res/texts'
 import {
   useImageThemeColor,
@@ -45,8 +46,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [toLangKey, setToLangKey] = useState<LanguageKey>('zh-Hans')
   const toLangName = languageNameByKey(toLangKey)
 
-  const [inputValue, setInputValue] = useState('')
+  const [translateMode, setTranslateMode] = useState<TranslateMode>('translate')
 
+  const [inputValue, setInputValue] = useState('')
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar onSettingsPress={() => navigation.push('Settings')} />
@@ -78,11 +80,36 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         />
         <View style={{ flex: 1 }} />
         <View style={styles.modes}>
-          <ModeButton name="language" selected={false} onPress={() => {}} />
-          <ModeButton name="palette" selected={false} onPress={() => {}} />
-          <ModeButton name="summarize" selected={false} onPress={() => {}} />
-          <ModeButton name="analytics" selected={false} onPress={() => {}} />
-          <ModeButton name="code" selected={false} onPress={() => {}} />
+          <ModeButton
+            icon="language"
+            mode="translate"
+            currentMode={translateMode}
+            onPress={setTranslateMode}
+          />
+          <ModeButton
+            icon="palette"
+            mode="polishing"
+            currentMode={translateMode}
+            onPress={setTranslateMode}
+          />
+          <ModeButton
+            icon="summarize"
+            mode="summarize"
+            currentMode={translateMode}
+            onPress={setTranslateMode}
+          />
+          <ModeButton
+            icon="analytics"
+            mode="analyze"
+            currentMode={translateMode}
+            onPress={setTranslateMode}
+          />
+          <ModeButton
+            icon="code"
+            mode="explain-code"
+            currentMode={translateMode}
+            onPress={setTranslateMode}
+          />
         </View>
       </View>
 
