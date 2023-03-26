@@ -8,10 +8,10 @@ import {
 } from '../../themes/hooks'
 import React, { useState } from 'react'
 import {
+  Pressable,
   StyleSheet,
   TextInput,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native'
@@ -55,7 +55,7 @@ export function InputView(props: InputViewProps): JSX.Element {
         }}
       />
       {foucus ? (
-        <TouchableOpacity
+        <Pressable
           style={styles.touchable}
           hitSlop={dimensions.hitSlop}
           onPress={() => {
@@ -66,7 +66,7 @@ export function InputView(props: InputViewProps): JSX.Element {
             color={tintColor}
             name="keyborad-return"
           />
-        </TouchableOpacity>
+        </Pressable>
       ) : (
         <View style={styles.cornerMark}>
           <View

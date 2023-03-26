@@ -6,11 +6,11 @@ import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
+  Pressable,
+  PressableProps,
   StyleProp,
   StyleSheet,
   TextStyle,
-  TouchableOpacity,
-  TouchableOpacityProps,
   ViewStyle,
 } from 'react-native'
 import Animated, {
@@ -18,8 +18,8 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated'
 
-const AnimatedTouchableOpacity =
-  Animated.createAnimatedComponent<TouchableOpacityProps>(TouchableOpacity)
+const AnimatedPressable =
+  Animated.createAnimatedComponent<PressableProps>(Pressable)
 
 export interface PickButtonProps {
   style?: StyleProp<ViewStyle>
@@ -56,9 +56,8 @@ export function PickButton(props: PickButtonProps) {
   })
 
   return (
-    <AnimatedTouchableOpacity
+    <AnimatedPressable
       style={[styles.container, { backgroundColor }, borderStyle, style]}
-      activeOpacity={1.0}
       hitSlop={{ top: 2, right: 2 }}
       onPress={() => pickModalRef.current?.show()}>
       <TText style={styles.text} type="text">
@@ -71,7 +70,7 @@ export function PickButton(props: PickButtonProps) {
           name="errow-drop-down"
         />
       </Animated.View>
-    </AnimatedTouchableOpacity>
+    </AnimatedPressable>
   )
 }
 

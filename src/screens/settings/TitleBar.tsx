@@ -3,8 +3,14 @@ import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useStatusBarStyle } from '../../themes/hooks'
 import React from 'react'
-import { StatusBar, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import {
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -28,9 +34,9 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
         barStyle={barStyle}
         backgroundColor="transparent"
       />
-      <TouchableOpacity style={styles.touchable} onPress={onBackPress}>
+      <Pressable style={styles.touchable} onPress={onBackPress}>
         <SvgIcon size={dimensions.iconMedium} color={iconColor} name="back" />
-      </TouchableOpacity>
+      </Pressable>
       <View style={styles.center}>
         <TText style={styles.title} type="title">
           Settings

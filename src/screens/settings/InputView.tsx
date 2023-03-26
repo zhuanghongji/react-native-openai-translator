@@ -7,10 +7,10 @@ import {
 } from '../../themes/hooks'
 import React, { useState } from 'react'
 import {
+  Pressable,
   StyleProp,
   StyleSheet,
   TextStyle,
-  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native'
@@ -40,9 +40,8 @@ export function InputView(props: InputViewProps) {
         onChangeText={onChangeText}
       />
       {securable ? (
-        <TouchableOpacity
+        <Pressable
           style={styles.touchable}
-          activeOpacity={1.0}
           hitSlop={dimensions.hitSlop}
           onPress={() => setSecureTextEntry(!secureTextEntry)}>
           <SvgIcon
@@ -50,7 +49,7 @@ export function InputView(props: InputViewProps) {
             color={iconColor}
             name={secureTextEntry ? 'visibility' : 'visibility-off'}
           />
-        </TouchableOpacity>
+        </Pressable>
       ) : null}
     </View>
   )

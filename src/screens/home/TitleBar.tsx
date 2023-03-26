@@ -7,13 +7,13 @@ import React from 'react'
 import {
   Image,
   ImageStyle,
+  Pressable,
   StatusBar,
   StyleSheet,
   TextStyle,
   View,
   ViewStyle,
 } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TitleBarProps {
@@ -39,13 +39,13 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
           OpenAI Translator
         </TText>
       </View>
-      <TouchableOpacity style={styles.touchable} onPress={onSettingsPress}>
+      <Pressable style={styles.touchable} onPress={onSettingsPress}>
         <SvgIcon
           size={dimensions.iconMedium}
           color={iconColor}
           name="settings"
         />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   )
 }

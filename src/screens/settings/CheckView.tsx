@@ -3,8 +3,14 @@ import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor } from '../../themes/hooks'
 import React from 'react'
-import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native'
 
 export interface CheckViewProps {
   style?: StyleProp<ViewStyle>
@@ -23,13 +29,13 @@ export function CheckView(props: CheckViewProps) {
       <TText style={styles.text} type="title">
         {title}
       </TText>
-      <TouchableOpacity onPress={() => onValueChange(!value)}>
+      <Pressable onPress={() => onValueChange(!value)}>
         <SvgIcon
           size={dimensions.iconSmall}
           color={iconColor}
           name={value ? 'check-on' : 'check-off'}
         />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   )
 }

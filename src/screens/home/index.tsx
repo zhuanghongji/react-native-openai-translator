@@ -18,6 +18,7 @@ import { ToolButton } from './ToolButton'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useRef, useState } from 'react'
 import {
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -25,7 +26,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -59,8 +59,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           animatedIndex={fromLangAnimatedIndex}
           pickModalRef={fromLangModalRef}
         />
-        <TouchableOpacity
-          activeOpacity={1.0}
+        <Pressable
           onPress={() => {
             setFromLangKey(toLangKey)
             setToLangKey(fromLangKey)
@@ -71,7 +70,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             color={tintSecondary}
             name="swap-horiz"
           />
-        </TouchableOpacity>
+        </Pressable>
         <PickButton
           style={{ marginRight: dimensions.edge }}
           text={toLangName}
