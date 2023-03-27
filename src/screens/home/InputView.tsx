@@ -19,10 +19,11 @@ import {
 export interface InputViewProps {
   value: string
   onChangeText: (value: string) => void
+  onSubmitEditing: (text: string) => void
 }
 
 export function InputView(props: InputViewProps): JSX.Element {
-  const { value, onChangeText } = props
+  const { value, onChangeText, onSubmitEditing } = props
   const [foucus, setFocus] = useState(false)
 
   const textStyle = useTextThemeStyle('text')
@@ -51,7 +52,11 @@ export function InputView(props: InputViewProps): JSX.Element {
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         onSubmitEditing={e => {
-          console.log(e.nativeEvent.text)
+          const { text } = e.nativeEvent
+          if (!text) {
+            return
+          }
+          onSubmitEditing(text)
         }}
       />
       {foucus ? (

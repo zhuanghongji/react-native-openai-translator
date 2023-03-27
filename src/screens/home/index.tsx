@@ -1,9 +1,9 @@
 import { PickModal, PickModalHandle } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
+import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { dimensions } from '../../res/dimensions'
 import { LANGUAGE_KEYS, LanguageKey, languageNameByKey } from '../../res/langs'
 import { TranslateMode } from '../../res/settings'
-import { texts } from '../../res/texts'
 import {
   useImageThemeColor,
   useTextThemeColor,
@@ -11,6 +11,7 @@ import {
 } from '../../themes/hooks'
 import { InputView } from './InputView'
 import { ModeButton } from './ModeButton'
+import { OutputText, OutputTextHandle } from './OutputText'
 import { PickButton } from './PickButton'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
@@ -21,7 +22,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   TextStyle,
   View,
   ViewStyle,
@@ -48,7 +48,42 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
   const [translateMode, setTranslateMode] = useState<TranslateMode>('translate')
 
-  const [inputValue, setInputValue] = useState('')
+  const [userContent, setUserContent] = useState('')
+
+  const outputTextRef = useRef<OutputTextHandle>(null)
+  const [assistantContent, setAssistantContent] = useState('')
+  const assistantContentAnim = useSharedValue('123')
+  if (!userContent && assistantContent) {
+    setAssistantContent('')
+    assistantContentAnim.value = ''
+  }
+
+  const onSubmitEditing = (text: string) => {
+    sseRequestChatCompletions(
+      {
+        url: 'https://api.openai.com/v1/chat/completions',
+        userContent: text,
+        apiKey: '',
+      },
+      {
+        onSubscribe: () => {},
+        onNext: content => {
+          // setAssistantContent(content)
+          // assistantContentAnim.value = content
+          outputTextRef.current?.setValue(content)
+        },
+        onDone: message => {
+          // setAssistantContent(message.content)
+          // assistantContentAnim.value = message.content
+          outputTextRef.current?.setValue(message.content)
+        },
+        onTimeout: () => {},
+        onError: message => {},
+        onComplete: () => {},
+      }
+    )
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar onSettingsPress={() => navigation.push('Settings')} />
@@ -112,7 +147,11 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         </View>
       </View>
 
-      <InputView value={inputValue} onChangeText={setInputValue} />
+      <InputView
+        value={userContent}
+        onChangeText={setUserContent}
+        onSubmitEditing={onSubmitEditing}
+      />
       <View style={styles.toolsRow}>
         <ToolButton name="compaign" onPress={() => {}} />
         <ToolButton name="copy" onPress={() => {}} />
@@ -121,9 +160,14 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <StatusDivider mode="analyze" status="success" />
 
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
-        <Text style={[styles.outputText, { color: textColor }]}>
-          {texts.lorem}
-        </Text>
+        {/* <Text style={[styles.outputText, { color: textColor }]}>
+          {assistantContent}
+        </Text> */}
+        {/* <RText
+          style={[styles.outputText, { color: textColor }]}
+          value={assistantContentAnim}
+        /> */}
+        <OutputText ref={outputTextRef} />
         <View>
           <View style={styles.toolsRow}>
             <ToolButton name="compaign" onPress={() => {}} />
