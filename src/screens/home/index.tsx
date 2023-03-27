@@ -160,13 +160,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <StatusDivider mode="analyze" status="success" />
 
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
-        {/* <Text style={[styles.outputText, { color: textColor }]}>
-          {assistantContent}
-        </Text> */}
-        {/* <RText
-          style={[styles.outputText, { color: textColor }]}
-          value={assistantContentAnim}
-        /> */}
         <OutputText ref={outputTextRef} />
         <View>
           <View style={styles.toolsRow}>

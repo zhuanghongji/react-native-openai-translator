@@ -33,20 +33,20 @@ const LIGHT_THEME_SCHEME: ThemeScheme = {
 
 const DARK_THEME_SCHEME: ThemeScheme = {
   title: '#FFFFFF',
-  subtitle: '#545454',
+  subtitle: '#C7C7C7',
   text: '#FFFFFF',
-  content: '#545454',
+  content: '#C7C7C7',
   error: '#FF0000',
 
   tint: '#FFFFFF',
-  tintSecondary: '#545454',
-  tintTertiary: '#9F9F9F',
+  tintSecondary: '#CBCBCB',
+  tintTertiary: '#CBCBCB',
   tintSelected: '#000000',
 
-  border: '#FFFFFF',
-  borderSecondary: '#EBEBEB',
-  backdrop: '#F6F6F6',
-  backdropSecondary: '#EEEEEE',
+  border: '#E2E2E2',
+  borderSecondary: '#242424',
+  backdrop: '#292929',
+  backdropSecondary: '#333333',
   backdropSelected: '#FFFFFF',
   background: '#000000',
 }

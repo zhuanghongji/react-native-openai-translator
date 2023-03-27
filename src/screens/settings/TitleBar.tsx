@@ -1,5 +1,4 @@
 import { SvgIcon } from '../../components/SvgIcon'
-import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useStatusBarStyle } from '../../themes/hooks'
 import React from 'react'
@@ -7,6 +6,7 @@ import {
   Pressable,
   StatusBar,
   StyleSheet,
+  Text,
   TextStyle,
   View,
   ViewStyle,
@@ -31,16 +31,14 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
       colors={['#F1F0FC', '#EAECFD', '#D2E6FC', '#EEF8FE', '#FBFBFD']}>
       <StatusBar
         translucent
-        barStyle={barStyle}
+        barStyle="dark-content"
         backgroundColor="transparent"
       />
       <Pressable style={styles.touchable} onPress={onBackPress}>
-        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="back" />
+        <SvgIcon size={dimensions.iconMedium} color="#000000" name="back" />
       </Pressable>
       <View style={styles.center}>
-        <TText style={styles.title} type="title">
-          Settings
-        </TText>
+        <Text style={styles.title}>Settings</Text>
       </View>
       <View style={styles.touchable} />
     </LinearGradient>
@@ -76,5 +74,6 @@ const styles = StyleSheet.create<Styles>({
     marginLeft: 8,
     fontWeight: 'bold',
     fontSize: 16,
+    color: '#000000',
   },
 })

@@ -6,7 +6,7 @@ import BottomSheet, {
   BottomSheetFlatList,
 } from '@gorhom/bottom-sheet'
 import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
-import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, ViewStyle, useColorScheme } from 'react-native'
 import Animated from 'react-native-reanimated'
 
 export type PickModalProps<T> = {
@@ -31,6 +31,9 @@ function _PickModal<T>(
 ) {
   const { style, value, values, animatedIndex, valueToString, onValueChange } =
     props
+
+  const isDark = useColorScheme() === 'dark'
+  const backgroundColor = isDark ? '#292929' : '#FFFFFF'
 
   const bottomSheetRef = useRef<BottomSheet>(null)
   useImperativeHandle(
@@ -65,8 +68,14 @@ function _PickModal<T>(
       enablePanDownToClose={true}
       snapPoints={snapPoints}
       animatedIndex={animatedIndex}
+      handleStyle={{
+        backgroundColor,
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+      }}
       backdropComponent={renderBackdrop}>
       <BottomSheetFlatList
+        style={{ backgroundColor }}
         data={values as T[]}
         keyExtractor={(item, index) => `${index}_${item}`}
         renderItem={({ item }) => {

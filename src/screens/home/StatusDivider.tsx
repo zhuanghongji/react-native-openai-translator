@@ -1,11 +1,13 @@
+import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
+import { TranslateMode } from '../../res/settings'
 import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
-import { TranslatorMode, TranslatorStatus } from '../../types'
+import { TranslatorStatus } from '../../types'
 import React from 'react'
 import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
 export interface StatusDividerProps {
-  mode: TranslatorMode
+  mode: TranslateMode
   status: TranslatorStatus
 }
 
@@ -20,9 +22,11 @@ export function StatusDivider(props: StatusDividerProps): JSX.Element {
     <View style={styles.container}>
       <View style={[styles.divider, backdropSecondaryStyle]} />
       <View style={[styles.statusRow, backdropSecondaryStyle]}>
-        <Text style={[styles.statusText, { color: contentColor }]}>
+        <TText
+          style={[styles.statusText, { color: contentColor }]}
+          type="content">
           Analyzed
-        </Text>
+        </TText>
         <Text style={styles.statusEmoji}>👍</Text>
       </View>
     </View>
