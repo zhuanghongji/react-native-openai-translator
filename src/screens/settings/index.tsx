@@ -1,22 +1,28 @@
 import { PickModal } from '../../components/PickModal'
 import { TText } from '../../components/TText'
-import { usePickModalState } from '../../hooks'
-import { dimensions } from '../../res/dimensions'
-import { LANGUAGE_KEYS, LanguageKey } from '../../res/langs'
+import { usePickModal } from '../../hooks'
 import {
-  API_MODALS,
-  ApiModal,
+  API_MODELS,
+  LANGUAGE_KEYS,
   LANGUAGE_MODES,
-  LanguageMode,
   SERVICE_PROVIDERS,
-  ServiceProvider,
   THEME_MODES,
   TRANSLATE_MODES,
-  ThemeMode,
-  TranslateMode,
-} from '../../res/settings'
+  languageLabelByKey,
+} from '../../preferences/options'
+import {
+  useApiKeyPref,
+  useApiModelPref,
+  useApiUrlPathPref,
+  useApiUrlPref,
+  useDefaultTargetLanguagePref,
+  useDefaultTranslateModePref,
+  useLanguageModePref,
+  useServiceProviderPref,
+  useThemeModePref,
+} from '../../preferences/storages'
+import { dimensions } from '../../res/dimensions'
 import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
-import { CheckView } from './CheckView'
 import { InputView } from './InputView'
 import { PickView } from './PickView'
 import { TitleBar } from './TitleBar'
@@ -43,35 +49,34 @@ export function SettingsScreen(
   const contentColor = useTextThemeColor('content')
   const backgroundColor = useViewThemeColor('background')
 
-  const [
-    serviceProvider,
-    setServiceProvider,
-    serviceProviderAnimatedIndex,
-    serviceProviderModalRef,
-  ] = usePickModalState<ServiceProvider>('OpenAI')
+  const [serviceProviderAnimatedIndex, serviceProviderModalRef] = usePickModal()
+  const [serviceProvider, setServiceProvider] = useServiceProviderPref()
 
-  const [apiModal, setApiModal, apiModalAnimatedIndex, apiModalModalRef] =
-    usePickModalState<ApiModal>('gpt-3.5-turbo')
+  const [apiKey, setApiKey] = useApiKeyPref()
 
-  const [
-    translateMode,
-    setTranslateMode,
-    translateModeAnimatedIndex,
-    translateModeModalRef,
-  ] = usePickModalState<TranslateMode>('translate')
+  const [apiModelAnimatedIndex, apiModelModalRef] = usePickModal()
+  const [apiModel, setApiModel] = useApiModelPref()
 
-  const [
-    defaultTargetLang,
-    setDefaultTargetLang,
-    defaultTargetLangAnimatedIndex,
-    defaultTargetLangModalRef,
-  ] = usePickModalState<LanguageKey>('zh-Hans')
+  const [apiUrl, setApiUrl] = useApiUrlPref()
+  const [apiUrlPath, setApiUrlPath] = useApiUrlPathPref()
 
-  const [themeMode, setThemeMode, themeModeAnimatedIndex, themeModeModalRef] =
-    usePickModalState<ThemeMode>('system')
+  const [defaultTranslateModeAnimatedIndex, defaultTranslateModeModalRef] =
+    usePickModal()
+  const [defaultTranslateMode, setDefaultTranslateMode] =
+    useDefaultTranslateModePref()
 
-  const [langMode, setLangMode, langModeAnimatedIndex, langModeModalRef] =
-    usePickModalState<LanguageMode>('en')
+  const [defaultTargetLangAnimatedIndex, defaultTargetLangModalRef] =
+    usePickModal()
+  const [defaultTargetLang, setDefaultTargetLang] =
+    useDefaultTargetLanguagePref()
+  const defaultTargetLangLabel = languageLabelByKey(defaultTargetLang)
+
+  const [themeModeAnimatedIndex, themeModeModalRef] = usePickModal()
+  const [themeMode, setThemeMode] = useThemeModePref()
+
+  const [langModeAnimatedIndex, langModeModalRef] = usePickModal()
+  const [langMode, setLangMode] = useLanguageModePref()
+  const langeModeLabel = languageLabelByKey(langMode)
 
   const modals = (
     <>
@@ -80,31 +85,29 @@ export function SettingsScreen(
         value={serviceProvider}
         values={SERVICE_PROVIDERS}
         animatedIndex={serviceProviderAnimatedIndex}
-        valueToString={v => `${v}`}
+        valueToLabel={v => `${v}`}
         onValueChange={setServiceProvider}
       />
       <PickModal
-        ref={apiModalModalRef}
-        value={apiModal}
-        values={API_MODALS}
-        animatedIndex={apiModalAnimatedIndex}
-        valueToString={v => `${v}`}
-        onValueChange={setApiModal}
+        ref={apiModelModalRef}
+        value={apiModel}
+        values={API_MODELS}
+        animatedIndex={apiModelAnimatedIndex}
+        onValueChange={setApiModel}
       />
       <PickModal
-        ref={translateModeModalRef}
-        value={translateMode}
+        ref={defaultTranslateModeModalRef}
+        value={defaultTranslateMode}
         values={TRANSLATE_MODES}
-        animatedIndex={translateModeAnimatedIndex}
-        valueToString={v => `${v}`}
-        onValueChange={setTranslateMode}
+        animatedIndex={defaultTranslateModeAnimatedIndex}
+        onValueChange={setDefaultTranslateMode}
       />
       <PickModal
         ref={defaultTargetLangModalRef}
         value={defaultTargetLang}
         values={LANGUAGE_KEYS}
         animatedIndex={defaultTargetLangAnimatedIndex}
-        valueToString={v => `${v}`}
+        valueToLabel={languageLabelByKey}
         onValueChange={setDefaultTargetLang}
       />
       <PickModal
@@ -112,7 +115,6 @@ export function SettingsScreen(
         value={themeMode}
         values={THEME_MODES}
         animatedIndex={themeModeAnimatedIndex}
-        valueToString={v => `${v}`}
         onValueChange={setThemeMode}
       />
       <PickModal
@@ -120,7 +122,6 @@ export function SettingsScreen(
         value={langMode}
         values={LANGUAGE_MODES}
         animatedIndex={langModeAnimatedIndex}
-        valueToString={v => `${v}`}
         onValueChange={setLangMode}
       />
     </>
@@ -132,6 +133,8 @@ export function SettingsScreen(
       <TitleBar onBackPress={() => navigation.goBack()} />
       <ScrollView
         style={{ flex: 1 }}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           paddingHorizontal: dimensions.edge,
           paddingTop: DIVIDER_HEIGHT,
@@ -141,7 +144,7 @@ export function SettingsScreen(
           Default Service Provider
         </TText>
         <PickView
-          text={serviceProvider}
+          label={serviceProvider}
           animatedIndex={serviceProviderAnimatedIndex}
           pickModalRef={serviceProviderModalRef}
         />
@@ -150,7 +153,7 @@ export function SettingsScreen(
         <TText style={styles.title} type="text">
           * API Key
         </TText>
-        <InputView securable={true} value={'ABC'} onChangeText={() => {}} />
+        <InputView securable={true} value={apiKey} onChangeText={setApiKey} />
         <Text style={[styles.caption, { color: contentColor }]}>
           <Text>{'Go to the '}</Text>
           <Text
@@ -172,31 +175,31 @@ export function SettingsScreen(
           API Model
         </TText>
         <PickView
-          text={apiModal}
-          animatedIndex={apiModalAnimatedIndex}
-          pickModalRef={apiModalModalRef}
+          label={apiModel}
+          animatedIndex={apiModelAnimatedIndex}
+          pickModalRef={apiModelModalRef}
         />
 
         {divider}
         <TText style={styles.title} type="text">
           API URL
         </TText>
-        <InputView value={'ABC'} onChangeText={() => {}} />
+        <InputView value={apiUrl} onChangeText={setApiUrl} />
 
         {divider}
         <TText style={styles.title} type="text">
           API URL Path
         </TText>
-        <InputView value={'ABC'} onChangeText={() => {}} />
+        <InputView value={apiUrlPath} onChangeText={setApiUrlPath} />
 
         {divider}
         <TText style={styles.title} type="text">
           Default Translate Mode
         </TText>
         <PickView
-          text={translateMode}
-          animatedIndex={translateModeAnimatedIndex}
-          pickModalRef={translateModeModalRef}
+          label={defaultTranslateMode}
+          animatedIndex={defaultTranslateModeAnimatedIndex}
+          pickModalRef={defaultTranslateModeModalRef}
         />
 
         {divider}
@@ -204,7 +207,7 @@ export function SettingsScreen(
           Default Target Language
         </TText>
         <PickView
-          text={defaultTargetLang}
+          label={defaultTargetLangLabel}
           animatedIndex={defaultTargetLangAnimatedIndex}
           pickModalRef={defaultTargetLangModalRef}
         />
@@ -214,7 +217,7 @@ export function SettingsScreen(
           Theme
         </TText>
         <PickView
-          text={themeMode}
+          label={themeMode}
           animatedIndex={themeModeAnimatedIndex}
           pickModalRef={themeModeModalRef}
         />
@@ -224,12 +227,12 @@ export function SettingsScreen(
           Language
         </TText>
         <PickView
-          text={langMode}
+          label={langeModeLabel}
           animatedIndex={langModeAnimatedIndex}
           pickModalRef={langModeModalRef}
         />
 
-        {divider}
+        {/* {divider}
         <CheckView
           title="Always show icons"
           value={false}
@@ -248,7 +251,7 @@ export function SettingsScreen(
           title="Restore Previous Position"
           value={false}
           onValueChange={() => {}}
-        />
+        /> */}
       </ScrollView>
 
       {modals}

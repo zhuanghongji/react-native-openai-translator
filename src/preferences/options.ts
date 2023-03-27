@@ -1,3 +1,7 @@
+type UnionFromTuple<T extends readonly unknown[]> = T[number]
+
+// MARK: support languages
+
 export const SUPPORT_LANGUAGES = {
   en: 'English',
   'zh-Hans': '简体中文',
@@ -60,12 +64,61 @@ export const SUPPORT_LANGUAGES = {
   ug: 'ئۇيغۇر تىلى',
   ur: 'اردو',
   vi: 'Tiếng Việt',
+  th: 'ไทย',
 }
 
 export type LanguageKey = keyof typeof SUPPORT_LANGUAGES
 
 export const LANGUAGE_KEYS = Object.keys(SUPPORT_LANGUAGES) as LanguageKey[]
 
-export function languageNameByKey(key: LanguageKey): string {
+export function languageLabelByKey(key: LanguageKey): string {
   return SUPPORT_LANGUAGES[key]
 }
+
+// MARK: service providers
+
+export const SERVICE_PROVIDERS = ['OpenAI', 'Azure'] as const
+
+export type ServiceProvider = UnionFromTuple<typeof SERVICE_PROVIDERS>
+
+// MARK: api modals
+
+export const API_MODELS = [
+  'gpt-3.5-turbo',
+  'gpt-3.5-turbo-0301',
+  'gpt-4',
+  'gpt-4-0314',
+  'gpt-4-32k',
+  'gpt-4-32k-0314',
+] as const
+
+export type ApiModel = UnionFromTuple<typeof API_MODELS>
+// MARK: translate modes
+
+export const TRANSLATE_MODES = [
+  'translate',
+  'polishing',
+  'summarize',
+  'analyze',
+  'explain-code',
+] as const
+
+export type TranslateMode = UnionFromTuple<typeof TRANSLATE_MODES>
+
+// MARK: theme modes
+
+export const THEME_MODES = ['system', 'dark', 'light'] as const
+
+export type ThemeMode = UnionFromTuple<typeof THEME_MODES>
+
+// MARK: language modes
+
+export const LANGUAGE_MODES = [
+  'en',
+  'zh-Hans',
+  'zh-Hant',
+  'ja',
+  'th',
+] satisfies LanguageKey[]
+
+export type LanguageMode = UnionFromTuple<typeof LANGUAGE_MODES>

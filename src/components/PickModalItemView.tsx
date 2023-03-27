@@ -12,13 +12,13 @@ import {
 
 export type PickModalItemViewProps = {
   style?: StyleProp<ViewStyle>
-  text: string
+  label: string
   isSelected: boolean
   onPress: () => void
 }
 
 export const PickModalItemView = React.memo((props: PickModalItemViewProps) => {
-  const { style, text, isSelected, onPress } = props
+  const { style, label, isSelected, onPress } = props
 
   const textColor = useTextThemeColor('text')
   const contentColor = useTextThemeColor('content')
@@ -41,7 +41,7 @@ export const PickModalItemView = React.memo((props: PickModalItemViewProps) => {
           { color: isSelected ? textColor : contentColor },
           { fontWeight: isSelected ? 'bold' : 'normal' },
         ]}>
-        {text}
+        {label}
       </Text>
     </Pressable>
   )

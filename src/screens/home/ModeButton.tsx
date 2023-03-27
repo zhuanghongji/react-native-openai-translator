@@ -1,6 +1,6 @@
 import { SvgIcon, SvgIconName } from '../../components/SvgIcon'
+import { TranslateMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
-import { TranslateMode } from '../../res/settings'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'

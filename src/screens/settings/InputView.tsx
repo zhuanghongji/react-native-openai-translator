@@ -25,7 +25,7 @@ export interface InputViewProps {
 
 export function InputView(props: InputViewProps) {
   const { style, securable, value, onChangeText } = props
-  const [secureTextEntry, setSecureTextEntry] = useState(false)
+  const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   const textStyle = useTextThemeStyle('text')
   const iconColor = useImageThemeColor('tint')
@@ -34,7 +34,7 @@ export function InputView(props: InputViewProps) {
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
       <TextInput
-        secureTextEntry={secureTextEntry}
+        secureTextEntry={securable && secureTextEntry}
         style={[styles.text, textStyle]}
         value={value}
         onChangeText={onChangeText}
@@ -69,15 +69,17 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
     height: 32,
     marginTop: 6,
-    paddingLeft: 8,
-    paddingRight: 4,
     borderRadius: 4,
   },
   text: {
+    flex: 1,
     fontSize: 11,
-    padding: 0,
+    height: 32,
+    paddingLeft: 8,
+    // backgroundColor: 'red',
   },
   touchable: {
-    marginRight: 3.5,
+    marginLeft: 7.5,
+    marginRight: 7.5,
   },
 })

@@ -1,6 +1,6 @@
 import { TText } from '../../components/TText'
+import { TranslateMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
-import { TranslateMode } from '../../res/settings'
 import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
 import { TranslatorStatus } from '../../types'
 import React from 'react'

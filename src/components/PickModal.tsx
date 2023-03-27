@@ -14,7 +14,7 @@ export type PickModalProps<T> = {
   value: T
   values: T[] | readonly unknown[]
   animatedIndex?: Animated.SharedValue<number>
-  valueToString: (value: T) => string
+  valueToLabel?: (value: T) => string
   onValueChange: (value: T) => void
 }
 
@@ -25,12 +25,22 @@ export type PickModalHandle = {
 const ITEM_HEIGHT = 48
 const ITEM_MAX_VISIBLE_COUNT = 8
 
+function _valueToLabel<T>(value: T) {
+  return `${value}`
+}
+
 function _PickModal<T>(
   props: PickModalProps<T>,
   ref: React.ForwardedRef<PickModalHandle>
 ) {
-  const { style, value, values, animatedIndex, valueToString, onValueChange } =
-    props
+  const {
+    style,
+    value,
+    values,
+    animatedIndex,
+    valueToLabel = _valueToLabel,
+    onValueChange,
+  } = props
 
   const isDark = useColorScheme() === 'dark'
   const backgroundColor = isDark ? '#292929' : '#FFFFFF'
@@ -83,7 +93,7 @@ function _PickModal<T>(
           return (
             <PickModalItemView
               style={styles.item}
-              text={valueToString(item)}
+              label={valueToLabel(item)}
               isSelected={isSelected}
               onPress={() => {
                 onValueChange(item)

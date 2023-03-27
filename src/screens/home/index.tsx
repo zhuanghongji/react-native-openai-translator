@@ -1,14 +1,16 @@
-import { PickModal, PickModalHandle } from '../../components/PickModal'
+import { PickModal } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
+import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
-import { dimensions } from '../../res/dimensions'
-import { LANGUAGE_KEYS, LanguageKey, languageNameByKey } from '../../res/langs'
-import { TranslateMode } from '../../res/settings'
+import { LANGUAGE_KEYS, languageLabelByKey } from '../../preferences/options'
 import {
-  useImageThemeColor,
-  useTextThemeColor,
-  useViewThemeColor,
-} from '../../themes/hooks'
+  getDefaultTargetLanguage,
+  getDefaultTranslateMode,
+  useApiKeyPref,
+  useFromLanguagePref,
+} from '../../preferences/storages'
+import { dimensions } from '../../res/dimensions'
+import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import { InputView } from './InputView'
 import { ModeButton } from './ModeButton'
 import { OutputText, OutputTextHandle } from './OutputText'
@@ -22,7 +24,6 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  TextStyle,
   View,
   ViewStyle,
 } from 'react-native'
@@ -32,23 +33,21 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
 export function HomeScreen({ navigation }: Props): JSX.Element {
-  const textColor = useTextThemeColor('text')
   const tintSecondary = useImageThemeColor('tintSecondary')
   const backgroundColor = useViewThemeColor('background')
 
-  const fromLangAnimatedIndex = useSharedValue(-1)
-  const fromLangModalRef = useRef<PickModalHandle>(null)
-  const [fromLangKey, setFromLangKey] = useState<LanguageKey>('en')
-  const fromLangName = languageNameByKey(fromLangKey)
+  const [fromLangAnimatedIndex, fromLangModalRef] = usePickModal()
+  const [fromLang, setFromLang] = useFromLanguagePref()
+  const fromLangLabel = languageLabelByKey(fromLang)
 
-  const toLangAnimatedIndex = useSharedValue(-1)
-  const toLangModalRef = useRef<PickModalHandle>(null)
-  const [toLangKey, setToLangKey] = useState<LanguageKey>('zh-Hans')
-  const toLangName = languageNameByKey(toLangKey)
+  const [targetLangAnimatedIndex, targetLangModalRef] = usePickModal()
+  const [targetLang, setTargetLang] = useState(getDefaultTargetLanguage)
+  const targetLangLabel = languageLabelByKey(targetLang)
 
-  const [translateMode, setTranslateMode] = useState<TranslateMode>('translate')
+  const [translateMode, setTranslateMode] = useState(getDefaultTranslateMode)
 
   const [userContent, setUserContent] = useState('')
+  const [apiKey] = useApiKeyPref()
 
   const outputTextRef = useRef<OutputTextHandle>(null)
   const [assistantContent, setAssistantContent] = useState('')
@@ -63,18 +62,14 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       {
         url: 'https://api.openai.com/v1/chat/completions',
         userContent: text,
-        apiKey: '',
+        apiKey,
       },
       {
         onSubscribe: () => {},
         onNext: content => {
-          // setAssistantContent(content)
-          // assistantContentAnim.value = content
           outputTextRef.current?.setValue(content)
         },
         onDone: message => {
-          // setAssistantContent(message.content)
-          // assistantContentAnim.value = message.content
           outputTextRef.current?.setValue(message.content)
         },
         onTimeout: () => {},
@@ -90,14 +85,14 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <PickButton
           style={{ marginLeft: dimensions.edge }}
-          text={fromLangName}
+          label={fromLangLabel}
           animatedIndex={fromLangAnimatedIndex}
           pickModalRef={fromLangModalRef}
         />
         <Pressable
           onPress={() => {
-            setFromLangKey(toLangKey)
-            setToLangKey(fromLangKey)
+            setFromLang(targetLang)
+            setTargetLang(fromLang)
           }}>
           <SvgIcon
             style={{ marginHorizontal: 4 }}
@@ -108,9 +103,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         </Pressable>
         <PickButton
           style={{ marginRight: dimensions.edge }}
-          text={toLangName}
-          animatedIndex={toLangAnimatedIndex}
-          pickModalRef={toLangModalRef}
+          label={targetLangLabel}
+          animatedIndex={targetLangAnimatedIndex}
+          pickModalRef={targetLangModalRef}
         />
         <View style={{ flex: 1 }} />
         <View style={styles.modes}>
@@ -171,19 +166,19 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
       <PickModal
         ref={fromLangModalRef}
-        value={fromLangKey}
+        value={fromLang}
         values={LANGUAGE_KEYS}
         animatedIndex={fromLangAnimatedIndex}
-        valueToString={languageNameByKey}
-        onValueChange={setFromLangKey}
+        valueToLabel={languageLabelByKey}
+        onValueChange={setFromLang}
       />
       <PickModal
-        ref={toLangModalRef}
-        value={toLangKey}
+        ref={targetLangModalRef}
+        value={targetLang}
         values={LANGUAGE_KEYS}
-        animatedIndex={toLangAnimatedIndex}
-        valueToString={languageNameByKey}
-        onValueChange={setToLangKey}
+        animatedIndex={targetLangAnimatedIndex}
+        valueToLabel={languageLabelByKey}
+        onValueChange={setTargetLang}
       />
     </SafeAreaView>
   )
@@ -192,7 +187,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 type Styles = {
   modes: ViewStyle
   toolsRow: ViewStyle
-  outputText: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -208,11 +202,5 @@ const styles = StyleSheet.create<Styles>({
     height: 32,
     marginTop: dimensions.edge,
     paddingRight: dimensions.edge,
-  },
-  outputText: {
-    fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'justify',
-    marginHorizontal: dimensions.edge * 2,
   },
 })

@@ -8,3 +8,9 @@ export function usePickModalState<T>(initialValue: T) {
   const pickModalRef = useRef<PickModalHandle>(null)
   return [value, setValue, animatedIndex, pickModalRef] as const
 }
+
+export function usePickModal() {
+  const animatedIndex = useSharedValue(-1)
+  const pickModalRef = useRef<PickModalHandle>(null)
+  return [animatedIndex, pickModalRef] as const
+}

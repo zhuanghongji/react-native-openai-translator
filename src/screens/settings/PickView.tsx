@@ -23,13 +23,13 @@ const AnimatedPressable =
 
 export interface PickViewProps {
   style?: StyleProp<ViewStyle>
-  text: string
+  label: string
   animatedIndex: Animated.SharedValue<number>
   pickModalRef: React.RefObject<PickModalHandle>
 }
 
 export function PickView(props: PickViewProps) {
-  const { style, text, animatedIndex, pickModalRef } = props
+  const { style, label, animatedIndex, pickModalRef } = props
 
   const borderColor = useViewThemeColor('border')
   const backgroundColor = useViewThemeColor('backdropSecondary')
@@ -60,7 +60,7 @@ export function PickView(props: PickViewProps) {
       style={[styles.container, { backgroundColor }, borderStyle, style]}
       onPress={() => pickModalRef.current?.show()}>
       <TText style={styles.text} type="text">
-        {text}
+        {label}
       </TText>
       <Animated.View style={transfromStyle}>
         <SvgIcon
