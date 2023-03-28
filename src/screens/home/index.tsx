@@ -2,18 +2,25 @@ import { PickModal } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
 import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
-import { LANGUAGE_KEYS, languageLabelByKey } from '../../preferences/options'
+import {
+  LANGUAGE_KEYS,
+  TranslateMode,
+  languageLabelByKey,
+} from '../../preferences/options'
 import {
   getDefaultTargetLanguage,
   getDefaultTranslateMode,
   useApiKeyPref,
+  useApiUrlPathPref,
+  useApiUrlPref,
   useFromLanguagePref,
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
-import { InputView } from './InputView'
+import { TranslatorStatus } from '../../types'
+import { InputView, InputViewHandle } from './InputView'
 import { ModeButton } from './ModeButton'
-import { OutputText, OutputTextHandle } from './OutputText'
+import { OutputView, OutputViewHandle } from './OutputView'
 import { PickButton } from './PickButton'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
@@ -27,7 +34,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -35,6 +41,11 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 export function HomeScreen({ navigation }: Props): JSX.Element {
   const tintSecondary = useImageThemeColor('tintSecondary')
   const backgroundColor = useViewThemeColor('background')
+
+  const [apiUrl] = useApiUrlPref()
+  const [apiUrlPath] = useApiUrlPathPref()
+  const [apiKey] = useApiKeyPref()
+  const [status, setStatus] = useState<TranslatorStatus>('none')
 
   const [fromLangAnimatedIndex, fromLangModalRef] = usePickModal()
   const [fromLang, setFromLang] = useFromLanguagePref()
@@ -45,35 +56,47 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const targetLangLabel = languageLabelByKey(targetLang)
 
   const [translateMode, setTranslateMode] = useState(getDefaultTranslateMode)
-
-  const [userContent, setUserContent] = useState('')
-  const [apiKey] = useApiKeyPref()
-
-  const outputTextRef = useRef<OutputTextHandle>(null)
-  const [assistantContent, setAssistantContent] = useState('')
-  const assistantContentAnim = useSharedValue('123')
-  if (!userContent && assistantContent) {
-    setAssistantContent('')
-    assistantContentAnim.value = ''
+  const onTranslateModeChange = (mode: TranslateMode) => {
+    setTranslateMode(mode)
+    setStatus('none')
   }
 
+  const [userContent, setUserContent] = useState('')
+  const [assistantContent, setAssistantContent] = useState('')
+
+  const inputViewRef = useRef<InputViewHandle>(null)
+  const outputViewRef = useRef<OutputViewHandle>(null)
+
   const onSubmitEditing = (text: string) => {
+    outputViewRef.current?.setContent('')
+    setAssistantContent('')
+    setStatus('pending')
     sseRequestChatCompletions(
       {
-        url: 'https://api.openai.com/v1/chat/completions',
-        userContent: text,
+        apiUrl,
+        apiUrlPath,
         apiKey,
+        fromLang,
+        targetLang,
+        translateMode,
+        userContent: text,
       },
       {
         onSubscribe: () => {},
         onNext: content => {
-          outputTextRef.current?.setValue(content)
+          outputViewRef.current?.setContent(content)
+        },
+        onTimeout: () => {
+          setStatus('failure')
+        },
+        onError: message => {
+          setStatus('failure')
         },
         onDone: message => {
-          outputTextRef.current?.setValue(message.content)
+          outputViewRef.current?.setContent(message.content)
+          setAssistantContent(message.content)
+          setStatus('success')
         },
-        onTimeout: () => {},
-        onError: message => {},
         onComplete: () => {},
       }
     )
@@ -113,36 +136,37 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             icon="language"
             mode="translate"
             currentMode={translateMode}
-            onPress={setTranslateMode}
+            onPress={onTranslateModeChange}
           />
           <ModeButton
             icon="palette"
             mode="polishing"
             currentMode={translateMode}
-            onPress={setTranslateMode}
+            onPress={onTranslateModeChange}
           />
           <ModeButton
             icon="summarize"
             mode="summarize"
             currentMode={translateMode}
-            onPress={setTranslateMode}
+            onPress={onTranslateModeChange}
           />
           <ModeButton
             icon="analytics"
             mode="analyze"
             currentMode={translateMode}
-            onPress={setTranslateMode}
+            onPress={onTranslateModeChange}
           />
           <ModeButton
             icon="code"
             mode="explain-code"
             currentMode={translateMode}
-            onPress={setTranslateMode}
+            onPress={onTranslateModeChange}
           />
         </View>
       </View>
 
       <InputView
+        ref={inputViewRef}
         value={userContent}
         onChangeText={setUserContent}
         onSubmitEditing={onSubmitEditing}
@@ -152,16 +176,16 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         <ToolButton name="copy" onPress={() => {}} />
       </View>
 
-      <StatusDivider mode="analyze" status="success" />
+      <StatusDivider mode={translateMode} status={status} />
 
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
-        <OutputText ref={outputTextRef} />
-        <View>
+        <OutputView ref={outputViewRef} />
+        {assistantContent ? (
           <View style={styles.toolsRow}>
             <ToolButton name="compaign" onPress={() => {}} />
             <ToolButton name="copy" onPress={() => {}} />
           </View>
-        </View>
+        ) : null}
       </ScrollView>
 
       <PickModal
@@ -171,6 +195,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         animatedIndex={fromLangAnimatedIndex}
         valueToLabel={languageLabelByKey}
         onValueChange={setFromLang}
+        onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
+          wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
+        }}
       />
       <PickModal
         ref={targetLangModalRef}
@@ -179,6 +206,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         animatedIndex={targetLangAnimatedIndex}
         valueToLabel={languageLabelByKey}
         onValueChange={setTargetLang}
+        onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
+          wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
+        }}
       />
     </SafeAreaView>
   )

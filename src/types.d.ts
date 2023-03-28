@@ -5,6 +5,4 @@ export type Message<T = MessageRole> = {
   content: string
 }
 
-export type Messages<T = MessageRole> = Message<T>[]
-
-export type TranslatorStatus = 'fetching' | 'success' | 'error'
+export type TranslatorStatus = 'none' | 'pending' | 'failure' | 'success'

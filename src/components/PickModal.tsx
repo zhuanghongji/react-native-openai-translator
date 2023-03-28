@@ -5,8 +5,20 @@ import BottomSheet, {
   BottomSheetBackdropProps,
   BottomSheetFlatList,
 } from '@gorhom/bottom-sheet'
-import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
-import { StyleProp, StyleSheet, ViewStyle, useColorScheme } from 'react-native'
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react'
+import {
+  Keyboard,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+  useColorScheme,
+} from 'react-native'
 import Animated from 'react-native-reanimated'
 
 export type PickModalProps<T> = {
@@ -16,6 +28,7 @@ export type PickModalProps<T> = {
   animatedIndex?: Animated.SharedValue<number>
   valueToLabel?: (value: T) => string
   onValueChange: (value: T) => void
+  onDismiss?: (options: { wasKeyboardVisibleWhenShowing: boolean }) => void
 }
 
 export type PickModalHandle = {
@@ -40,16 +53,37 @@ function _PickModal<T>(
     animatedIndex,
     valueToLabel = _valueToLabel,
     onValueChange,
+    onDismiss,
   } = props
 
   const isDark = useColorScheme() === 'dark'
   const backgroundColor = isDark ? '#292929' : '#FFFFFF'
+  const wasKeyboardVisibleWhenShowingRef = useRef(false)
+
+  // Instead of `Keyborad.isVisible()` which found not work on iOS
+  const isKeyboardVisibleRef = useRef(false)
+  useEffect(() => {
+    const subscrition1 = Keyboard.addListener('keyboardDidShow', () => {
+      isKeyboardVisibleRef.current = true
+    })
+    const subscrition2 = Keyboard.addListener('keyboardDidHide', () => {
+      isKeyboardVisibleRef.current = false
+    })
+    return () => {
+      subscrition1.remove()
+      subscrition2.remove()
+    }
+  }, [])
 
   const bottomSheetRef = useRef<BottomSheet>(null)
   useImperativeHandle(
     ref,
     () => ({
-      show: () => bottomSheetRef.current?.snapToIndex(0),
+      show: () => {
+        wasKeyboardVisibleWhenShowingRef.current = isKeyboardVisibleRef.current
+        Keyboard.dismiss()
+        bottomSheetRef.current?.snapToIndex(0)
+      },
     }),
     []
   )
@@ -83,7 +117,15 @@ function _PickModal<T>(
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
       }}
-      backdropComponent={renderBackdrop}>
+      backdropComponent={renderBackdrop}
+      onChange={index => {
+        if (index < 0) {
+          onDismiss?.({
+            wasKeyboardVisibleWhenShowing:
+              wasKeyboardVisibleWhenShowingRef.current,
+          })
+        }
+      }}>
       <BottomSheetFlatList
         style={{ backgroundColor }}
         data={values as T[]}

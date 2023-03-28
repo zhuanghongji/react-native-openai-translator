@@ -3,29 +3,29 @@ import { useTextThemeColor } from '../../themes/hooks'
 import React, { useImperativeHandle, useState } from 'react'
 import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
 
-export interface OutputTextProps {
+export interface OutputViewProps {
   style?: StyleProp<TextStyle>
 }
 
-export interface OutputTextHandle {
-  setValue: (value: string) => void
-  getValue: () => string
+export interface OutputViewHandle {
+  setContent: (value: string) => void
+  getContent: () => string
 }
 
-export const OutputText = React.forwardRef<OutputTextHandle, OutputTextProps>(
+export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>(
   (props, ref) => {
     const { style } = props
     const textColor = useTextThemeColor('text')
-    const [value, setValue] = useState('')
+    const [content, setContent] = useState('')
 
     useImperativeHandle(ref, () => ({
-      setValue,
-      getValue: () => value,
+      setContent,
+      getContent: () => content,
     }))
 
     return (
       <Text selectable style={[styles.text, { color: textColor }, style]}>
-        {value}
+        {content}
       </Text>
     )
   }
