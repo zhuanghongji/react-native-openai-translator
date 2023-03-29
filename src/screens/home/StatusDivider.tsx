@@ -41,6 +41,12 @@ const STATUS_TEXTS: Record<TranslateMode, StatusText> = {
     failure: 'Analyze failed',
     success: 'Analyzed',
   },
+  bubble: {
+    none: 'Bubble Mode',
+    pending: 'Bubbling...',
+    failure: 'Bubble failed',
+    success: 'Bubbled',
+  },
   ['explain-code']: {
     none: 'Explain Code Mode',
     pending: 'Explaining...',

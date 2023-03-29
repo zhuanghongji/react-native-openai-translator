@@ -100,6 +100,7 @@ export const TRANSLATE_MODES = [
   'polishing',
   'summarize',
   'analyze',
+  'bubble',
   'explain-code',
 ] as const
 

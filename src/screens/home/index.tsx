@@ -102,17 +102,26 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     )
   }
 
+  const langsDisabled = translateMode === 'bubble'
+  const langsOpacity = langsDisabled ? 0.3 : 1
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar onSettingsPress={() => navigation.push('Settings')} />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
         <PickButton
-          style={{ marginLeft: dimensions.edge }}
+          style={{ marginLeft: dimensions.edge, opacity: langsOpacity }}
+          disabled={langsDisabled}
           label={fromLangLabel}
           animatedIndex={fromLangAnimatedIndex}
           pickModalRef={fromLangModalRef}
         />
         <Pressable
+          style={{ opacity: langsOpacity }}
+          disabled={langsDisabled}
           onPress={() => {
             setFromLang(targetLang)
             setTargetLang(fromLang)
@@ -125,7 +134,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           />
         </Pressable>
         <PickButton
-          style={{ marginRight: dimensions.edge }}
+          style={{ marginRight: dimensions.edge, opacity: langsOpacity }}
+          disabled={langsDisabled}
           label={targetLangLabel}
           animatedIndex={targetLangAnimatedIndex}
           pickModalRef={targetLangModalRef}
@@ -157,8 +167,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             onPress={onTranslateModeChange}
           />
           <ModeButton
-            icon="code"
-            mode="explain-code"
+            icon="bubble"
+            mode="bubble"
             currentMode={translateMode}
             onPress={onTranslateModeChange}
           />

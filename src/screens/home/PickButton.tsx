@@ -23,13 +23,14 @@ const AnimatedPressable =
 
 export interface PickButtonProps {
   style?: StyleProp<ViewStyle>
+  disabled?: boolean
   label: string
   animatedIndex: Animated.SharedValue<number>
   pickModalRef: React.RefObject<PickModalHandle>
 }
 
 export function PickButton(props: PickButtonProps) {
-  const { style, label, animatedIndex, pickModalRef } = props
+  const { style, disabled, label, animatedIndex, pickModalRef } = props
 
   const borderColor = useViewThemeColor('border')
   const backgroundColor = useViewThemeColor('backdropSecondary')
@@ -58,6 +59,7 @@ export function PickButton(props: PickButtonProps) {
   return (
     <AnimatedPressable
       style={[styles.container, { backgroundColor }, borderStyle, style]}
+      disabled={disabled}
       hitSlop={{ top: 2, right: 2 }}
       onPress={() => pickModalRef.current?.show()}>
       <TText style={styles.text} type="text">
