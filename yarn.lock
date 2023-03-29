@@ -1505,7 +1505,7 @@
 
 "@react-native-clipboard/clipboard@^1.11.2":
   version "1.11.2"
-  resolved "https://mirrors.cloud.tencent.com/npm/@react-native-clipboard/clipboard/-/clipboard-1.11.2.tgz"
+  resolved "https://mirrors.cloud.tencent.com/npm/@react-native-clipboard/clipboard/-/clipboard-1.11.2.tgz#e826d0336b34e67294aaffa6878308900bc7d197"
   integrity sha512-bHyZVW62TuleiZsXNHS1Pv16fWc0fh8O9WvBzl4h2fykqZRW9a+Pv/RGTH56E3X2PqzHP38K5go8zmCZUoIsoQ==
 
 "@react-native-community/cli-clean@^10.1.1":
@@ -6072,10 +6072,10 @@ react-native-mmkv@^2.7.0:
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-mmkv/-/react-native-mmkv-2.7.0.tgz"
   integrity sha512-T+i1bbLuevgX9lWfIinarxXK12B/xmH+uMQLsL0d5yi+bOEIup3i7CIjG2geoxteheE5ARCotMb+bTp/GBBxWw==
 
-react-native-reanimated@^3.0.2:
-  version "3.0.2"
-  resolved "https://mirrors.cloud.tencent.com/npm/react-native-reanimated/-/react-native-reanimated-3.0.2.tgz"
-  integrity sha512-8Et90yTI9yxchGbDP79k391XZqc/64zNbASbGy8X3Vgv4EbZ1M3IkKwcIbZmbVwpA804VJ6V9nJAGUh9fP0LrA==
+react-native-reanimated@^2.14.4:
+  version "2.14.4"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-reanimated/-/react-native-reanimated-2.14.4.tgz#3fa3da4e7b99f5dfb28f86bcf24d9d1024d38836"
+  integrity sha512-DquSbl7P8j4SAmc+kRdd75Ianm8G+IYQ9T4AQ6lrpLVeDkhZmjWI0wkutKWnp6L7c5XNVUrFDUf69dwETLCItQ==
   dependencies:
     "@babel/plugin-transform-object-assign" "^7.16.7"
     "@babel/preset-typescript" "^7.16.7"
@@ -6111,12 +6111,22 @@ react-native-svg@^13.8.0:
     css-select "^5.1.0"
     css-tree "^1.1.3"
 
+react-native-tts@^4.1.0:
+  version "4.1.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-tts/-/react-native-tts-4.1.0.tgz#05fa34492bec234bcd64f6ed2bf122c4667d141a"
+  integrity sha512-tvf3lQ6u9MqztUie37qoPw5YQPqi0ql1lPhDsBBs/RRA6A/H1J9X9H/qb1A0Hx0ZpjavrEdtVSqQQ2JDZvZCTQ==
+
 react-native-url-polyfill@^1.3.0:
   version "1.3.0"
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-url-polyfill/-/react-native-url-polyfill-1.3.0.tgz#c1763de0f2a8c22cc3e959b654c8790622b6ef6a"
   integrity sha512-w9JfSkvpqqlix9UjDvJjm1EjSt652zVQ6iwCIj1cVVkwXf4jQhQgTNXY6EVTwuAmUjg6BC6k9RHCBynoLFo3IQ==
   dependencies:
     whatwg-url-without-unicode "8.0.0-3"
+
+react-native-vision-camera@^2.15.4:
+  version "2.15.4"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-vision-camera/-/react-native-vision-camera-2.15.4.tgz#821f0505fc8c63b87c1ae4697d2bb4f670333576"
+  integrity sha512-SJXSWH1pu4V3Kj4UuX/vSgOxc9d5wb5+nHqBHd+5iUtVyVLEp0F6Jbbaha7tDoU+kUBwonhlwr2o8oV6NZ7Ibg==
 
 react-native@0.71.4:
   version "0.71.4"
@@ -7166,6 +7176,11 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://mirrors.cloud.tencent.com/npm/vary/-/vary-1.1.2.tgz"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+vision-camera-ocr@^1.0.0:
+  version "1.0.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/vision-camera-ocr/-/vision-camera-ocr-1.0.0.tgz#f1ab41b10ed52533bca088139c698de2b6141f8b"
+  integrity sha512-CHk4D39RK6KGwVx76iObUhRk43h94sTeiBAsXp8BE2GbXVzZeY4vZxsR0w75Nw8nYv4/71aOF0XYuYHGv6uV7w==
 
 vlq@^1.0.0:
   version "1.0.1"
