@@ -38,7 +38,7 @@ type Styles = {
 const styles = StyleSheet.create<Styles>({
   text: {
     fontSize: 14,
-    lineHeight: 20,
+    lineHeight: 22,
     textAlign: 'justify',
     marginHorizontal: dimensions.edge * 2,
   },

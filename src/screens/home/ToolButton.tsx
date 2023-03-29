@@ -6,15 +6,23 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
 export interface ToolButtonProps {
   style?: StyleProp<ViewStyle>
+  disabled?: boolean
   name: SvgIconName
   onPress: () => void
 }
 
 export function ToolButton(props: ToolButtonProps) {
-  const { style, name, onPress } = props
+  const { style, disabled, name, onPress } = props
   const tintSecondary = useImageThemeColor('tintSecondary')
   return (
-    <Pressable style={[styles.container, style]} onPress={onPress}>
+    <Pressable
+      style={[
+        styles.container,
+        { opacity: disabled ? dimensions.disabledOpacity : 1 },
+        style,
+      ]}
+      disabled={disabled}
+      onPress={onPress}>
       <SvgIcon size={dimensions.iconSmall} color={tintSecondary} name={name} />
     </Pressable>
   )

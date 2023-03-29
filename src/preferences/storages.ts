@@ -25,9 +25,18 @@ const enum StorageKey {
   alwaysShowIcons = 'always_show_icons',
   autoTranslate = 'auto_translate',
   restorePreviousPosition = 'restore_previous_position',
+  lastDetectedText = 'last_detected_text',
 }
 
 // MARK: getter
+
+export function getLastDetectedText() {
+  return storage.getString(StorageKey.lastDetectedText)
+}
+
+export function setLastDetectedText(text: string) {
+  return storage.set(StorageKey.lastDetectedText, text)
+}
 
 export function getDefaultTargetLanguage() {
   return (storage.getString(StorageKey.defaultTargetLanguage) ??

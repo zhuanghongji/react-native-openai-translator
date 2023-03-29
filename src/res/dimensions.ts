@@ -8,5 +8,6 @@ export const dimensions = {
   iconLarge: 24,
   iconMedium: 20,
   iconSmall: 16,
+  disabledOpacity: 0.3,
   hitSlop: { left: edge, top: edge, right: edge, bottom: edge },
 }

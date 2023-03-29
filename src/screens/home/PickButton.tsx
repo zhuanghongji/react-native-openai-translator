@@ -58,7 +58,12 @@ export function PickButton(props: PickButtonProps) {
 
   return (
     <AnimatedPressable
-      style={[styles.container, { backgroundColor }, borderStyle, style]}
+      style={[
+        styles.container,
+        { backgroundColor, opacity: disabled ? dimensions.disabledOpacity : 1 },
+        borderStyle,
+        style,
+      ]}
       disabled={disabled}
       hitSlop={{ top: 2, right: 2 }}
       onPress={() => pickModalRef.current?.show()}>

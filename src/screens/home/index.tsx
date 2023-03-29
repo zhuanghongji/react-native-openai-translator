@@ -1,5 +1,6 @@
 import { PickModal } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
+import { hapticLight } from '../../haptic'
 import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
@@ -10,6 +11,8 @@ import {
 import {
   getDefaultTargetLanguage,
   getDefaultTranslateMode,
+  getLastDetectedText,
+  setLastDetectedText,
   useApiKeyPref,
   useApiUrlPathPref,
   useApiUrlPref,
@@ -18,6 +21,7 @@ import {
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import { TranslatorStatus } from '../../types'
+import { ClipboardTipModal, ClipboardTipModalHandle } from './ClipboardTipModal'
 import { InputView, InputViewHandle } from './InputView'
 import { ModeButton } from './ModeButton'
 import { OutputView, OutputViewHandle } from './OutputView'
@@ -25,9 +29,12 @@ import { PickButton } from './PickButton'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
+  AppState,
+  Keyboard,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -63,9 +70,40 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
   const [userContent, setUserContent] = useState('')
   const [assistantContent, setAssistantContent] = useState('')
+  const hasUserContent = userContent ? true : false
 
   const inputViewRef = useRef<InputViewHandle>(null)
   const outputViewRef = useRef<OutputViewHandle>(null)
+
+  // Detect text in Clipboard when to be active
+  const clipboardTipModalRef = useRef<ClipboardTipModalHandle>(null)
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async state => {
+      if (state !== 'active') {
+        return
+      }
+      try {
+        const _text = await Clipboard.getString()
+        const text = _text ? _text.trim() : ''
+        const lastText = getLastDetectedText()
+        if (!text || text === lastText) {
+          return
+        }
+        Keyboard.dismiss()
+        setLastDetectedText(text)
+        clipboardTipModalRef.current?.show({
+          text,
+          onUseItPress: () => {
+            setUserContent(text)
+            inputViewRef.current?.focus()
+          },
+        })
+      } catch (e) {
+        // do nothing
+      }
+    })
+    return () => subscription.remove()
+  }, [])
 
   const onSubmitEditing = (text: string) => {
     outputViewRef.current?.setContent('')
@@ -103,7 +141,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   }
 
   const langsDisabled = translateMode === 'bubble'
-  const langsOpacity = langsDisabled ? 0.3 : 1
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar onSettingsPress={() => navigation.push('Settings')} />
@@ -113,14 +150,14 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           alignItems: 'center',
         }}>
         <PickButton
-          style={{ marginLeft: dimensions.edge, opacity: langsOpacity }}
+          style={{ marginLeft: dimensions.edge }}
           disabled={langsDisabled}
           label={fromLangLabel}
           animatedIndex={fromLangAnimatedIndex}
           pickModalRef={fromLangModalRef}
         />
         <Pressable
-          style={{ opacity: langsOpacity }}
+          style={{ opacity: langsDisabled ? dimensions.disabledOpacity : 1 }}
           disabled={langsDisabled}
           onPress={() => {
             setFromLang(targetLang)
@@ -134,7 +171,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           />
         </Pressable>
         <PickButton
-          style={{ marginRight: dimensions.edge, opacity: langsOpacity }}
+          style={{ marginRight: dimensions.edge }}
           disabled={langsDisabled}
           label={targetLangLabel}
           animatedIndex={targetLangAnimatedIndex}
@@ -182,8 +219,31 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         onSubmitEditing={onSubmitEditing}
       />
       <View style={styles.toolsRow}>
-        <ToolButton name="compaign" onPress={() => {}} />
-        <ToolButton name="copy" onPress={() => {}} />
+        <ToolButton
+          name="compaign"
+          disabled={!hasUserContent}
+          onPress={() => {}}
+        />
+        <ToolButton
+          name="copy"
+          disabled={!hasUserContent}
+          onPress={() => {
+            hapticLight()
+            Clipboard.setString(userContent)
+          }}
+        />
+        <ToolButton
+          name="clean"
+          disabled={!hasUserContent}
+          onPress={() => {
+            hapticLight()
+            setUserContent('')
+            setAssistantContent('')
+            outputViewRef.current?.setContent('')
+            inputViewRef.current?.focus()
+            setStatus('none')
+          }}
+        />
       </View>
 
       <StatusDivider mode={translateMode} status={status} />
@@ -193,7 +253,13 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         {assistantContent ? (
           <View style={styles.toolsRow}>
             <ToolButton name="compaign" onPress={() => {}} />
-            <ToolButton name="copy" onPress={() => {}} />
+            <ToolButton
+              name="copy"
+              onPress={() => {
+                hapticLight()
+                Clipboard.setString(assistantContent)
+              }}
+            />
           </View>
         ) : null}
       </ScrollView>
@@ -220,6 +286,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
         }}
       />
+      <ClipboardTipModal ref={clipboardTipModalRef} />
     </SafeAreaView>
   )
 }

@@ -126,7 +126,7 @@ const styles = StyleSheet.create<Styles>({
     textAlign: 'justify',
     textAlignVertical: 'top',
     fontSize: 14,
-    lineHeight: 20,
+    lineHeight: 22,
     padding: 0,
     marginBottom: 20,
   },
