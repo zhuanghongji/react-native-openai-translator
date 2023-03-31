@@ -1,47 +1,39 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
-import {
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { Pressable, StatusBar, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TitleBarProps {
   onBackPress: () => void
 }
 
+const H_EDGE = 8
+
 export function TitleBar(props: TitleBarProps): JSX.Element {
   const { onBackPress } = props
   const { top } = useSafeAreaInsets()
+
   return (
-    <LinearGradient
+    <View
       style={[
         styles.container,
         { height: dimensions.barHeight + top, paddingTop: top },
-      ]}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 1, y: 0 }}
-      colors={['#F1F0FC', '#EAECFD', '#D2E6FC', '#EEF8FE', '#FBFBFD']}>
+      ]}>
       <StatusBar
         translucent
-        barStyle="dark-content"
+        barStyle="light-content"
         backgroundColor="transparent"
       />
-      <Pressable style={styles.touchable} onPress={onBackPress}>
-        <SvgIcon size={dimensions.iconMedium} color="#000000" name="back" />
+      <Pressable
+        style={styles.touchable}
+        hitSlop={{ right: H_EDGE }}
+        onPress={onBackPress}>
+        <SvgIcon size={dimensions.iconMedium} color="white" name="back" />
       </Pressable>
-      <View style={styles.center}>
-        <Text style={styles.title}>Settings</Text>
-      </View>
+      <View style={styles.center} />
       <View style={styles.touchable} />
-    </LinearGradient>
+    </View>
   )
 }
 
@@ -49,17 +41,20 @@ type Styles = {
   container: ViewStyle
   touchable: ViewStyle
   center: ViewStyle
-  title: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
   container: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: H_EDGE,
     width: '100%',
   },
   touchable: {
-    width: 48,
+    width: 36,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
@@ -69,11 +64,5 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  title: {
-    marginLeft: 8,
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: '#000000',
   },
 })

@@ -1,4 +1,5 @@
 import { HomeScreen } from './screens/home'
+import { ScannerScreen } from './screens/scanner'
 import { SettingsScreen } from './screens/settings'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -22,6 +23,7 @@ export function App(): JSX.Element {
             }}>
             <RootStack.Screen name="Home" component={HomeScreen} />
             <RootStack.Screen name="Settings" component={SettingsScreen} />
+            <RootStack.Screen name="Scanner" component={ScannerScreen} />
           </RootStack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>

@@ -1,6 +1,6 @@
 import { PickModal } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
-import { hapticLight } from '../../haptic'
+import { hapticError, hapticLight, hapticSuccess } from '../../haptic'
 import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
@@ -126,14 +126,17 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         },
         onTimeout: () => {
           setStatus('failure')
+          hapticError()
         },
         onError: message => {
           setStatus('failure')
+          hapticError()
         },
         onDone: message => {
           outputViewRef.current?.setContent(message.content)
           setAssistantContent(message.content)
           setStatus('success')
+          hapticSuccess()
         },
         onComplete: () => {},
       }
@@ -143,7 +146,21 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const langsDisabled = translateMode === 'bubble'
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
-      <TitleBar onSettingsPress={() => navigation.push('Settings')} />
+      <TitleBar
+        onScannerPress={() =>
+          navigation.push('Scanner', {
+            onScanSuccess: data => {
+              setUserContent(data.text)
+              const nextFromLang =
+                LANGUAGE_KEYS.find(v => v === data.lang) ?? null
+              if (nextFromLang) {
+                setFromLang(nextFromLang)
+              }
+            },
+          })
+        }
+        onSettingsPress={() => navigation.push('Settings')}
+      />
       <View
         style={{
           flexDirection: 'row',

@@ -17,21 +17,29 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TitleBarProps {
+  onScannerPress: () => void
   onSettingsPress: () => void
 }
 
+const H_EDGE = 8
+
 export function TitleBar(props: TitleBarProps): JSX.Element {
-  const { onSettingsPress } = props
+  const { onScannerPress, onSettingsPress } = props
   const { top } = useSafeAreaInsets()
   const barStyle = useStatusBarStyle()
   const iconColor = useImageThemeColor('tint')
   return (
-    <View style={[styles.container, { height: 48 + top, paddingTop: top }]}>
+    <View
+      style={[
+        styles.container,
+        { height: dimensions.barHeight + top, paddingTop: top },
+      ]}>
       <StatusBar
         translucent
         barStyle={barStyle}
         backgroundColor="transparent"
       />
+      <View style={styles.touchable} />
       <View style={styles.touchable} />
       <View style={styles.center}>
         <Image style={styles.logo} source={images.logo} />
@@ -39,7 +47,17 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
           OpenAI Translator
         </TText>
       </View>
-      <Pressable style={styles.touchable} onPress={onSettingsPress}>
+      <Pressable style={styles.touchable} onPress={onScannerPress}>
+        <SvgIcon
+          size={dimensions.iconMedium}
+          color={iconColor}
+          name="scanner"
+        />
+      </Pressable>
+      <Pressable
+        style={styles.touchable}
+        hitSlop={{ right: H_EDGE }}
+        onPress={onSettingsPress}>
         <SvgIcon
           size={dimensions.iconMedium}
           color={iconColor}
@@ -62,10 +80,11 @@ const styles = StyleSheet.create<Styles>({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: H_EDGE,
     width: '100%',
   },
   touchable: {
-    width: 48,
+    width: 36,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
