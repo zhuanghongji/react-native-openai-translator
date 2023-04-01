@@ -44,6 +44,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Tts from 'react-native-tts'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -180,6 +181,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   }
 
   const langsDisabled = translateMode === 'bubble'
+  const exchangeDisabled = fromLang === null || translateMode !== 'translate'
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
@@ -200,14 +202,22 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           pickModalRef={fromLangModalRef}
         />
         <Pressable
-          style={{ opacity: langsDisabled ? dimensions.disabledOpacity : 1 }}
-          disabled={langsDisabled || fromLang === null}
+          style={{ opacity: exchangeDisabled ? dimensions.disabledOpacity : 1 }}
+          disabled={exchangeDisabled}
           onPress={() => {
             if (fromLang === null) {
               return
             }
             setFromLang(targetLang)
             setTargetLang(fromLang)
+            if (userContent && assistantContent) {
+              setUserContent(assistantContent)
+              setAssistantContent(userContent)
+              outputViewRef.current?.setContent('')
+            } else {
+              setAssistantContent('')
+              outputViewRef.current?.setContent('')
+            }
           }}>
           <SvgIcon
             style={{ marginHorizontal: 4 }}
@@ -268,7 +278,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         <ToolButton
           name="compaign"
           disabled={!hasUserContent}
-          onPress={() => {}}
+          onPress={() => {
+            Tts.speak(userContent)
+          }}
         />
         <ToolButton
           name="copy"
@@ -298,7 +310,12 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         <OutputView ref={outputViewRef} />
         {assistantContent ? (
           <View style={styles.toolsRow}>
-            <ToolButton name="compaign" onPress={() => {}} />
+            <ToolButton
+              name="compaign"
+              onPress={() => {
+                Tts.speak(assistantContent)
+              }}
+            />
             <ToolButton
               name="copy"
               onPress={() => {
