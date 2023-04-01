@@ -65,6 +65,7 @@ export function ScannerScreen({ navigation, route }: Props): JSX.Element {
     console.log(JSON.stringify(data, undefined, '  '))
     runOnJS(setOCRFrame)(data)
   }, [])
+
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: 'black' }}

@@ -1,5 +1,6 @@
 import { dimensions } from '../../res/dimensions'
 import { sheets } from '../../res/sheets'
+import { ScanAreaView } from './ScanAreaView'
 import React, { useMemo } from 'react'
 import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
@@ -68,7 +69,7 @@ export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
     <SafeAreaView
       style={[StyleSheet.absoluteFill, styles.container]}
       pointerEvents="none">
-      <View style={[styles.scanArea, { width: scanWidth, height: 240 }]} />
+      <ScanAreaView style={styles.scanArea} width={scanWidth} height={240} />
       {renderBlocks()}
     </SafeAreaView>
   )
@@ -86,9 +87,6 @@ const styles = StyleSheet.create<Styles>({
   scanArea: {
     marginLeft: dimensions.edge,
     marginTop: SCANE_AREAN_START_Y,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: 'white',
   },
   blocksArea: {
     marginTop: dimensions.edge * 2,
@@ -98,6 +96,5 @@ const styles = StyleSheet.create<Styles>({
   },
   blockText: {
     textAlign: 'justify',
-    padding: 0,
   },
 })
