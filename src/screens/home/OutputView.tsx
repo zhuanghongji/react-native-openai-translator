@@ -1,4 +1,5 @@
 import { dimensions } from '../../res/dimensions'
+import { sheets } from '../../res/sheets'
 import { useTextThemeColor } from '../../themes/hooks'
 import React, { useImperativeHandle, useState } from 'react'
 import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
@@ -24,7 +25,9 @@ export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>(
     }))
 
     return (
-      <Text selectable style={[styles.text, { color: textColor }, style]}>
+      <Text
+        selectable
+        style={[sheets.contentText, styles.text, { color: textColor }, style]}>
         {content}
       </Text>
     )
@@ -37,8 +40,6 @@ type Styles = {
 
 const styles = StyleSheet.create<Styles>({
   text: {
-    fontSize: 14,
-    lineHeight: 22,
     textAlign: 'justify',
     marginHorizontal: dimensions.edge * 2,
   },

@@ -1,6 +1,7 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
+import { sheets } from '../../res/sheets'
 import {
   useImageThemeColor,
   useTextThemeStyle,
@@ -15,8 +16,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
+import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils'
 
-export interface InputViewProps {
+export interface InputViewProps extends Pick<ViewProps, 'onLayout'> {
   value: string
   onChangeText: (value: string) => void
   onSubmitEditing: (text: string) => void
@@ -62,7 +64,7 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>(
           multiline
           blurOnSubmit
           scrollEnabled
-          style={[styles.text, textStyle]}
+          style={[sheets.contentText, styles.text, textStyle]}
           value={value}
           returnKeyType="send"
           onChangeText={onChangeText}
@@ -124,10 +126,6 @@ const styles = StyleSheet.create<Styles>({
   text: {
     flex: 1,
     textAlign: 'justify',
-    textAlignVertical: 'top',
-    fontSize: 14,
-    lineHeight: 22,
-    padding: 0,
     marginBottom: 20,
   },
   touchable: {

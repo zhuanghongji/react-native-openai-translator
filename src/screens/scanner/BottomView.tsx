@@ -1,42 +1,67 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { hapticLight } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
-import React, { useState } from 'react'
-import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import React from 'react'
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native'
 
-const ICON_SIZE = 27
+const ICON_SIZE = 32
 
 export interface BottomViewProps {
   style?: StyleProp<ViewStyle>
-  comfirmDisabled: boolean
+  torchOn: boolean
+  torchable: boolean
+  comfirmable: boolean
+  switchable: boolean
+  switchText: string
+  onTorchOnChange: (toOn: boolean) => void
   onConfirmPress: () => void
+  onSwitchPress: () => void
 }
 
 export function BottomView(props: BottomViewProps): JSX.Element {
-  const { style, comfirmDisabled, onConfirmPress } = props
-  const [flashOn, setFlashOn] = useState(false)
+  const {
+    style,
+    torchOn,
+    torchable,
+    comfirmable,
+    switchable,
+    switchText,
+    onTorchOnChange,
+    onConfirmPress,
+    onSwitchPress,
+  } = props
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.row}>
         <Pressable
+          style={{ opacity: torchable ? 1 : dimensions.disabledOpacity }}
           hitSlop={dimensions.hitSlop}
+          disabled={!torchable}
           onPress={() => {
             hapticLight()
-            setFlashOn(!flashOn)
+            onTorchOnChange(!torchOn)
           }}>
           <SvgIcon
             size={ICON_SIZE}
             color="white"
-            name={flashOn ? 'flash-on' : 'flash-off'}
+            name={torchOn ? 'flash-on' : 'flash-off'}
           />
         </Pressable>
         <Pressable
           style={[
             styles.outCircle,
-            { opacity: comfirmDisabled ? dimensions.disabledOpacity : 1 },
+            { opacity: comfirmable ? 1 : dimensions.disabledOpacity },
           ]}
-          disabled={comfirmDisabled}
+          hitSlop={dimensions.hitSlop}
+          disabled={!comfirmable}
           onPress={() => {
             hapticLight()
             onConfirmPress()
@@ -44,11 +69,21 @@ export function BottomView(props: BottomViewProps): JSX.Element {
           <View style={styles.inCircle} />
         </Pressable>
         <Pressable
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            opacity: switchable ? 1 : dimensions.disabledOpacity,
+          }}
           hitSlop={dimensions.hitSlop}
+          disabled={!switchable}
           onPress={() => {
             hapticLight()
+            onSwitchPress()
           }}>
-          <SvgIcon size={ICON_SIZE} color="white" name="cached" />
+          <SvgIcon size={ICON_SIZE} color="white" name="crop" />
+          <Text style={{ position: 'absolute', color: 'white', fontSize: 10 }}>
+            {switchText}
+          </Text>
         </Pressable>
       </View>
     </View>
@@ -64,6 +99,9 @@ type Styles = {
 
 const styles = StyleSheet.create<Styles>({
   container: {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
     width: '100%',
     height: 220,
     backgroundColor: 'black',

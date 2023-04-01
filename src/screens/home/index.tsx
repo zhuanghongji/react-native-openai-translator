@@ -164,6 +164,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <View
         style={{
           flexDirection: 'row',
+          width: '100%',
           alignItems: 'center',
         }}>
         <PickButton
