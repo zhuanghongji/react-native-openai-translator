@@ -23,6 +23,7 @@ import {
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
+import type { RootStackParamList } from '../screens'
 import { InputView } from './InputView'
 import { PickView } from './PickView'
 import { TitleBar } from './TitleBar'

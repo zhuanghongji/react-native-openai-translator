@@ -5,10 +5,12 @@ import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
   LANGUAGE_KEYS,
+  LanguageKey,
   TranslateMode,
   languageLabelByKey,
 } from '../../preferences/options'
 import {
+  getDefaultFromLanguage,
   getDefaultTargetLanguage,
   getDefaultTranslateMode,
   getLastDetectedText,
@@ -16,11 +18,11 @@ import {
   useApiKeyPref,
   useApiUrlPathPref,
   useApiUrlPref,
-  useFromLanguagePref,
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
-import { TranslatorStatus } from '../../types'
+import { ScanBlock, TranslatorStatus } from '../../types'
+import type { RootStackParamList } from '../screens'
 import { ClipboardTipModal, ClipboardTipModalHandle } from './ClipboardTipModal'
 import { InputView, InputViewHandle } from './InputView'
 import { ModeButton } from './ModeButton'
@@ -45,6 +47,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
+const FROM_LANGUAGE_KEYS = [null, ...LANGUAGE_KEYS]
+
 export function HomeScreen({ navigation }: Props): JSX.Element {
   const tintSecondary = useImageThemeColor('tintSecondary')
   const backgroundColor = useViewThemeColor('background')
@@ -55,7 +59,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [status, setStatus] = useState<TranslatorStatus>('none')
 
   const [fromLangAnimatedIndex, fromLangModalRef] = usePickModal()
-  const [fromLang, setFromLang] = useFromLanguagePref()
+  const [fromLang, setFromLang] = useState<LanguageKey | null>(
+    getDefaultFromLanguage()
+  )
   const fromLangLabel = languageLabelByKey(fromLang)
 
   const [targetLangAnimatedIndex, targetLangModalRef] = usePickModal()
@@ -105,7 +111,37 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     return () => subscription.remove()
   }, [])
 
-  const onSubmitEditing = (text: string) => {
+  const onScanSuccess = (blocks: ScanBlock[]) => {
+    const content = blocks
+      .map(block => block.text)
+      .join('\n')
+      .trim()
+    if (!content) {
+      return
+    }
+    setUserContent(content)
+    Keyboard.dismiss()
+
+    let _fromLang: LanguageKey | null = null
+    const _langKeys: LanguageKey[] = []
+    for (const block of blocks) {
+      for (const lang of block.langs) {
+        const k = LANGUAGE_KEYS.find(v => v === lang)
+        if (k) {
+          _langKeys.push(k)
+        }
+      }
+    }
+    const langKeys = [...new Set(_langKeys)]
+    if (langKeys.length === 1) {
+      _fromLang = langKeys[0]
+      setFromLang(langKeys[0])
+    }
+
+    onSubmitEditing(content, _fromLang)
+  }
+
+  const onSubmitEditing = (text: string, _fromLang: LanguageKey | null) => {
     outputViewRef.current?.setContent('')
     setAssistantContent('')
     setStatus('pending')
@@ -114,7 +150,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         apiUrl,
         apiUrlPath,
         apiKey,
-        fromLang,
+        fromLang: _fromLang,
         targetLang,
         translateMode,
         userContent: text,
@@ -147,18 +183,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
-        onScannerPress={() =>
-          navigation.push('Scanner', {
-            onScanSuccess: data => {
-              setUserContent(data.text)
-              const nextFromLang =
-                LANGUAGE_KEYS.find(v => v === data.lang) ?? null
-              if (nextFromLang) {
-                setFromLang(nextFromLang)
-              }
-            },
-          })
-        }
+        onScannerPress={() => navigation.push('Scanner', { onScanSuccess })}
         onSettingsPress={() => navigation.push('Settings')}
       />
       <View
@@ -176,8 +201,11 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         />
         <Pressable
           style={{ opacity: langsDisabled ? dimensions.disabledOpacity : 1 }}
-          disabled={langsDisabled}
+          disabled={langsDisabled || fromLang === null}
           onPress={() => {
+            if (fromLang === null) {
+              return
+            }
             setFromLang(targetLang)
             setTargetLang(fromLang)
           }}>
@@ -234,7 +262,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         ref={inputViewRef}
         value={userContent}
         onChangeText={setUserContent}
-        onSubmitEditing={onSubmitEditing}
+        onSubmitEditing={text => onSubmitEditing(text, fromLang)}
       />
       <View style={styles.toolsRow}>
         <ToolButton
@@ -285,7 +313,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <PickModal
         ref={fromLangModalRef}
         value={fromLang}
-        values={LANGUAGE_KEYS}
+        values={FROM_LANGUAGE_KEYS}
         animatedIndex={fromLangAnimatedIndex}
         valueToLabel={languageLabelByKey}
         onValueChange={setFromLang}

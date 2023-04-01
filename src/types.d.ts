@@ -5,4 +5,9 @@ export type Message<T = MessageRole> = {
   content: string
 }
 
+export type ScanBlock = {
+  text: string
+  langs: string[]
+}
+
 export type TranslatorStatus = 'none' | 'pending' | 'failure' | 'success'

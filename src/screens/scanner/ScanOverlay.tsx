@@ -1,63 +1,41 @@
 import { dimensions } from '../../res/dimensions'
 import { sheets } from '../../res/sheets'
+import { ScanBlock } from '../../types'
 import { ScanAreaView } from './ScanAreaView'
-import React, { useMemo } from 'react'
-import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
-import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context'
-import { OCRFrame } from 'vision-camera-ocr'
+import React from 'react'
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export interface ScanOverlayProps {
-  pixelRatio: number
-  ocrFrame: OCRFrame | null
+  style?: StyleProp<ViewStyle>
+  scanAreaStyle?: StyleProp<ViewStyle>
+  scanWidth: number
+  scanHeight: number
+  scanBlocks: ScanBlock[]
 }
-
-type Block = {
-  text: string
-  langs: string[]
-}
-
-const SCANE_AREAN_START_Y = dimensions.barHeight + 32 + dimensions.edge
-const SCANE_AREAN_HEIGHT = 240
-const SCANE_AREAN_END_Y = SCANE_AREAN_START_Y + SCANE_AREAN_HEIGHT
-const SCANE_AREAN_Y_OFFSET = 64
 
 export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
-  const { ocrFrame, pixelRatio } = props
-  const { width: frameWidth } = useSafeAreaFrame()
-  const scanWidth = frameWidth - dimensions.edge * 2
-
-  const blocks = useMemo<Block[]>(() => {
-    if (!ocrFrame || !ocrFrame.result.blocks) {
-      return []
-    }
-    return ocrFrame.result.blocks
-      .filter(block => {
-        const y = block.frame.y * pixelRatio
-        return (
-          SCANE_AREAN_START_Y - SCANE_AREAN_Y_OFFSET < y &&
-          y < SCANE_AREAN_END_Y + SCANE_AREAN_Y_OFFSET
-        )
-      })
-      .map(block => {
-        return {
-          text: block.text,
-          langs: block.recognizedLanguages,
-        }
-      })
-  }, [ocrFrame, pixelRatio])
+  const { style, scanAreaStyle, scanWidth, scanHeight, scanBlocks } = props
 
   const renderBlocks = () => {
-    if (blocks.length === 0) {
+    if (scanBlocks.length === 0) {
       return null
     }
     return (
-      <View style={[styles.blocksArea, { width: scanWidth }]}>
-        {blocks.map((block, index) => {
+      <View style={[styles.blocksArea, { width: scanWidth }, style]}>
+        {scanBlocks.map(({ text, langs }, index) => {
           return (
             <Text
-              key={`${index}_${block.text}`}
+              key={`${index}_${text}_${langs}`}
               style={[sheets.contentText, styles.blockText]}>
-              {block.text}
+              {text}
             </Text>
           )
         })}
@@ -69,7 +47,11 @@ export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
     <SafeAreaView
       style={[StyleSheet.absoluteFill, styles.container]}
       pointerEvents="none">
-      <ScanAreaView style={styles.scanArea} width={scanWidth} height={240} />
+      <ScanAreaView
+        style={scanAreaStyle}
+        width={scanWidth}
+        height={scanHeight}
+      />
       {renderBlocks()}
     </SafeAreaView>
   )
@@ -77,20 +59,17 @@ export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
 
 type Styles = {
   container: ViewStyle
-  scanArea: ViewStyle
+
   blocksArea: ViewStyle
   blockText: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
-  container: {},
-  scanArea: {
-    marginLeft: dimensions.edge,
-    marginTop: SCANE_AREAN_START_Y,
+  container: {
+    paddingLeft: dimensions.edge,
   },
   blocksArea: {
     marginTop: dimensions.edge * 2,
-    marginLeft: dimensions.edge,
     padding: dimensions.edge,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },

@@ -29,7 +29,7 @@ export interface ChatCompletionsOptions {
   apiUrl: string
   apiUrlPath: string
   apiKey: string
-  fromLang: LanguageKey
+  fromLang: LanguageKey | null
   targetLang: LanguageKey
   translateMode: TranslateMode
   userContent: string
@@ -50,7 +50,7 @@ interface ChatCompletionsPrompts {
 }
 
 interface ChatCompletionsPromptsOptions {
-  fromLang: LanguageKey
+  fromLang: LanguageKey | null
   targetLang: LanguageKey
   fromLangLabel: string
   targetLangLabel: string
@@ -61,7 +61,10 @@ interface ChatCompletionsPromptsOptions {
 
 const LANGS_OF_CHINESE: LanguageKey[] = ['zh-Hans', 'zh-Hant', 'wyw', 'yue']
 
-function isChinese(lang: LanguageKey) {
+function isChinese(lang: LanguageKey | null) {
+  if (lang === null) {
+    return false
+  }
   return LANGS_OF_CHINESE.includes(lang)
 }
 
@@ -107,6 +110,7 @@ function generatePromptsOfTranslate(
   os: ChatCompletionsPromptsOptions
 ): ChatCompletionsPrompts {
   const {
+    fromLang,
     fromLangLabel,
     targetLang,
     targetLangLabel,
@@ -158,6 +162,12 @@ function generatePromptsOfTranslate(
                 例句：
                 <序号><例句>(例句翻译)`,
       assistantPrompt: '',
+    }
+  }
+  if (!fromLang) {
+    return {
+      systemPrompt,
+      assistantPrompt: `translate to ${targetLangLabel}`,
     }
   }
   return {

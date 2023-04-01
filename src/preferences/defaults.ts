@@ -8,7 +8,7 @@ import {
 } from './options'
 
 export const DEFAULTS: {
-  fromLanguage: LanguageKey
+  defaultFromLanguage: LanguageKey
   defaultTargetLanguage: LanguageKey
   serviceProvider: ServiceProvider
   apiKey: string
@@ -22,7 +22,7 @@ export const DEFAULTS: {
   autoTranslate: boolean
   restorePreviousPosition: boolean
 } = {
-  fromLanguage: 'en',
+  defaultFromLanguage: 'en',
   defaultTargetLanguage: 'zh-Hans',
   serviceProvider: 'OpenAI',
   apiKey: '',

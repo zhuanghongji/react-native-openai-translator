@@ -12,7 +12,7 @@ import { MMKV, useMMKVBoolean, useMMKVString } from 'react-native-mmkv'
 const storage = new MMKV()
 
 const enum StorageKey {
-  fromLanguage = 'from_language',
+  defaultFromLanguage = 'default_from_language',
   defaultTargetLanguage = 'default_target_language',
   serviceProvider = 'service_provider',
   apiKey = 'api_key',
@@ -36,6 +36,11 @@ export function getLastDetectedText() {
 
 export function setLastDetectedText(text: string) {
   return storage.set(StorageKey.lastDetectedText, text)
+}
+
+export function getDefaultFromLanguage() {
+  return (storage.getString(StorageKey.defaultFromLanguage) ??
+    DEFAULTS.defaultFromLanguage) as LanguageKey
 }
 
 export function getDefaultTargetLanguage() {
@@ -72,8 +77,8 @@ function useStorageBoolean<T extends boolean, U = SetValue<T>>(
 
 export function useFromLanguagePref() {
   return useStorageString<LanguageKey>(
-    StorageKey.fromLanguage,
-    DEFAULTS.fromLanguage
+    StorageKey.defaultFromLanguage,
+    DEFAULTS.defaultFromLanguage
   )
 }
 

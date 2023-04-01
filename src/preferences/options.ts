@@ -71,7 +71,10 @@ export type LanguageKey = keyof typeof SUPPORT_LANGUAGES
 
 export const LANGUAGE_KEYS = Object.keys(SUPPORT_LANGUAGES) as LanguageKey[]
 
-export function languageLabelByKey(key: LanguageKey): string {
+export function languageLabelByKey(key: LanguageKey | null): string {
+  if (key === null) {
+    return 'AUTO'
+  }
   return SUPPORT_LANGUAGES[key]
 }
 
