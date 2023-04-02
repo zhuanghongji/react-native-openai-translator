@@ -1,5 +1,6 @@
 import { PickModal } from '../../components/PickModal'
 import { SvgIcon } from '../../components/SvgIcon'
+import { TTSModal, TTSModalHandle } from '../../components/TTSModal'
 import { hapticError, hapticLight, hapticSuccess } from '../../haptic'
 import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
@@ -21,7 +22,7 @@ import {
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
-import { ScanBlock, TranslatorStatus } from '../../types'
+import { Message, ScanBlock, TranslatorStatus } from '../../types'
 import type { RootStackParamList } from '../screens'
 import { ClipboardTipModal, ClipboardTipModalHandle } from './ClipboardTipModal'
 import { InputView, InputViewHandle } from './InputView'
@@ -31,6 +32,7 @@ import { PickButton } from './PickButton'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
+import { generatePrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect, useRef, useState } from 'react'
@@ -44,7 +46,6 @@ import {
   ViewStyle,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Tts from 'react-native-tts'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
@@ -79,6 +80,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [assistantContent, setAssistantContent] = useState('')
   const hasUserContent = userContent ? true : false
 
+  const ttsModalRef = useRef<TTSModalHandle>(null)
   const inputViewRef = useRef<InputViewHandle>(null)
   const outputViewRef = useRef<OutputViewHandle>(null)
 
@@ -145,16 +147,34 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const onSubmitEditing = (text: string, _fromLang: LanguageKey | null) => {
     outputViewRef.current?.setContent('')
     setAssistantContent('')
+
+    const { systemPrompt, systemRequires, userPrompt } = generatePrompts({
+      fromLang,
+      targetLang,
+      translateMode,
+      userContent: text,
+    })
+    const messages: Message[] = []
+    const systemContents: string[] = []
+    if (systemPrompt) {
+      systemContents.push(systemPrompt)
+      systemRequires?.forEach(req => systemContents.push(req))
+      messages.push({ role: 'system', content: systemContents.join('\n') })
+    }
+    const userContents: string[] = []
+    if (userPrompt) {
+      userContents.push(userPrompt)
+    }
+    userContents.push(userContent)
+    messages.push({ role: 'user', content: userContents.join('\n') })
+
     setStatus('pending')
     sseRequestChatCompletions(
       {
         apiUrl,
         apiUrlPath,
         apiKey,
-        fromLang: _fromLang,
-        targetLang,
-        translateMode,
-        userContent: text,
+        messages,
       },
       {
         onSubscribe: () => {},
@@ -279,7 +299,32 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           name="compaign"
           disabled={!hasUserContent}
           onPress={() => {
-            Tts.speak(userContent)
+            ttsModalRef.current?.speak({
+              content: userContent,
+              lang: fromLang,
+            })
+            // Tts.voices()
+            //   .then(voices => {
+            //     console.log('voices', { voices })
+            //     const voice = voices.find(v => v.language === targetLang)
+            //     console.log('voice', { voice })
+            //     if (voice) {
+            //       Tts.speak(userContent, {
+            //         iosVoiceId: voice.id,
+            //         rate: 1.0,
+            //         androidParams: {
+            //           KEY_PARAM_PAN: -1,
+            //           KEY_PARAM_VOLUME: 0.5,
+            //           KEY_PARAM_STREAM: 'STREAM_MUSIC',
+            //         },
+            //       })
+            //     } else {
+            //       Tts.speak(userContent)
+            //     }
+            //   })
+            //   .catch(e => {
+            //     Tts.speak(userContent)
+            //   })
           }}
         />
         <ToolButton
@@ -315,7 +360,10 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
               <ToolButton
                 name="compaign"
                 onPress={() => {
-                  Tts.speak(assistantContent)
+                  ttsModalRef.current?.speak({
+                    content: assistantContent,
+                    lang: targetLang,
+                  })
                 }}
               />
               <ToolButton
@@ -359,6 +407,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         }}
       />
       <ClipboardTipModal ref={clipboardTipModalRef} />
+      <TTSModal ref={ttsModalRef} />
     </SafeAreaView>
   )
 }

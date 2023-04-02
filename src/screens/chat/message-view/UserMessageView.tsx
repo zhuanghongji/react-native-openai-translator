@@ -36,7 +36,7 @@ export function UserMessageView(props: TemplateProps) {
           paddingTop: 12,
           alignItems: 'center',
         }}>
-        <SvgIcon size={23} color={colors.chatBg} name="account" />
+        <SvgIcon size={23} color={colors.primary} name="account" />
       </View>
     </View>
   )
@@ -59,7 +59,7 @@ const styles = StyleSheet.create<Styles>({
     maxWidth: '80%',
     padding: dimensions.edge,
     borderRadius: dimensions.borderRadius,
-    backgroundColor: colors.chatBg,
+    backgroundColor: colors.primary,
   },
   text: {
     textAlign: 'justify',

@@ -19,6 +19,8 @@ module.exports = {
         noSortAlphabetically: true,
       },
     ],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'off',
     'react-native/no-inline-styles': 'off',
     'react-native/no-unused-styles': 'warn',
     'unused-imports/no-unused-imports': 'warn',

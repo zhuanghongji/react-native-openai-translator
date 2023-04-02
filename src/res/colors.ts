@@ -1,5 +1,6 @@
 export const colors = {
   transparent: '#00000000',
-  chatBg: '#809BE8',
-  chatBg2: '#E8798B',
+  primary: '#809BE8',
+  accent: '#E8798B',
+  warning: '#E94543',
 }
