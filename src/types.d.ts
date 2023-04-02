@@ -5,6 +5,12 @@ export type Message<T = MessageRole> = {
   content: string
 }
 
+export type ChatMessage = {
+  role: 'assistant' | 'user'
+  content: string
+  // time: number
+}
+
 export type ScanBlock = {
   text: string
   langs: string[]

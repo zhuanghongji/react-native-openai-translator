@@ -308,23 +308,32 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
         <OutputView ref={outputViewRef} />
-        {assistantContent ? (
-          <View style={styles.toolsRow}>
-            <ToolButton
-              name="compaign"
-              onPress={() => {
-                Tts.speak(assistantContent)
-              }}
-            />
-            <ToolButton
-              name="copy"
-              onPress={() => {
-                hapticLight()
-                Clipboard.setString(assistantContent)
-              }}
-            />
-          </View>
-        ) : null}
+
+        <View style={styles.toolsRow}>
+          {assistantContent ? (
+            <>
+              <ToolButton
+                name="compaign"
+                onPress={() => {
+                  Tts.speak(assistantContent)
+                }}
+              />
+              <ToolButton
+                name="copy"
+                onPress={() => {
+                  hapticLight()
+                  Clipboard.setString(assistantContent)
+                }}
+              />
+            </>
+          ) : null}
+          <ToolButton
+            name="chat"
+            onPress={() => {
+              navigation.push('Chat', { mode: translateMode })
+            }}
+          />
+        </View>
       </ScrollView>
 
       <PickModal

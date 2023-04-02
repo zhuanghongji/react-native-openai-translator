@@ -391,6 +391,8 @@ PODS:
   - React-jsinspector (0.71.4)
   - React-logger (0.71.4):
     - glog
+  - react-native-keyboard-controller (1.4.4):
+    - React-Core
   - react-native-mmkv (2.7.0):
     - MMKV (>= 1.2.13)
     - React-Core
@@ -485,6 +487,8 @@ PODS:
     - React-logger (= 0.71.4)
     - React-perflogger (= 0.71.4)
   - RNCClipboard (1.11.2):
+    - React-Core
+  - RNFlashList (1.4.2):
     - React-Core
   - RNGestureHandler (2.9.0):
     - React-Core
@@ -583,6 +587,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -599,6 +604,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -685,6 +691,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-keyboard-controller:
+    :path: "../node_modules/react-native-keyboard-controller"
   react-native-mmkv:
     :path: "../node_modules/react-native-mmkv"
   react-native-safe-area-context:
@@ -717,6 +725,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  RNFlashList:
+    :path: "../node_modules/@shopify/flash-list"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReactNativeHapticFeedback:
@@ -786,6 +796,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d6b7fa9260aa3cb40afee0507e3bc1d17ecaa6f2
   React-jsinspector: 1f51e775819199d3fe9410e69ee8d4c4161c7b06
   React-logger: 0d58569ec51d30d1792c5e86a8e3b78d24b582c6
+  react-native-keyboard-controller: e14e1a9d2043afcf72c410f87b63f1c5fa976051
   react-native-mmkv: a2a40a0458bdbc9d43c4e7752ecfc5e3a87b66dd
   react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
   React-perflogger: 0bb0522a12e058f6eb69d888bc16f40c16c4b907
@@ -802,6 +813,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 8fa50b38df6b992c76537993a2b0553d3b088004
   ReactCommon: b49a4b00ca6d181ff74b17c12b2d59ac4add0bde
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
+  RNFlashList: 7fbca4fc075484a9426f1610d648dbea2de94eb0
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNReactNativeHapticFeedback: 6d24decfa94e037c2ecc312407d2a057b7933f10
   RNReanimated: cc5e3aa479cb9170bcccf8204291a6950a3be128
