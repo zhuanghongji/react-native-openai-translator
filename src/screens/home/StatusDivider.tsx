@@ -1,5 +1,5 @@
 import { TText } from '../../components/TText'
-import { TranslateMode } from '../../preferences/options'
+import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
 import { TranslatorStatus } from '../../types'
@@ -16,7 +16,7 @@ import Animated, {
 
 type StatusText = Record<TranslatorStatus, string>
 
-const STATUS_TEXTS: Record<TranslateMode, StatusText> = {
+const STATUS_TEXTS: Record<TranslatorMode, StatusText> = {
   translate: {
     none: 'Translate Mode',
     pending: 'Translating...',
@@ -63,7 +63,7 @@ const STATUS_EMOJIS: Record<TranslatorStatus, string> = {
 }
 
 export interface StatusDividerProps {
-  mode: TranslateMode
+  mode: TranslatorMode
   status: TranslatorStatus
 }
 

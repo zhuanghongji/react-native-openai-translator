@@ -1,5 +1,5 @@
 import { SvgIcon, SvgIconName } from '../../components/SvgIcon'
-import { TranslateMode } from '../../preferences/options'
+import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import React from 'react'
@@ -8,9 +8,9 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 export interface SelectButtonProps {
   style?: StyleProp<ViewStyle>
   icon: SvgIconName
-  mode: TranslateMode
-  currentMode: TranslateMode
-  onPress: (mode: TranslateMode) => void
+  mode: TranslatorMode
+  currentMode: TranslatorMode
+  onPress: (mode: TranslatorMode) => void
 }
 
 export function ModeButton(props: SelectButtonProps) {

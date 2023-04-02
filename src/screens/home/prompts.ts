@@ -1,6 +1,6 @@
 import {
   LanguageKey,
-  TranslateMode,
+  TranslatorMode,
   languageLabelByKey,
 } from '../../preferences/options'
 import { isChineseLang, isEnglishWord } from '../../utils'
@@ -15,7 +15,7 @@ export interface ChatCompletionsPrompts {
 export interface ChatCompletionsPromptsOptions {
   fromLang: LanguageKey | null
   targetLang: LanguageKey
-  translateMode: TranslateMode
+  translatorMode: TranslatorMode
   userContent: string
 }
 
@@ -32,7 +32,7 @@ export interface GenerateSpecificPromptsOptions {
 export function generatePrompts(
   options: ChatCompletionsPromptsOptions
 ): ChatCompletionsPrompts {
-  const { fromLang, targetLang, translateMode, userContent } = options
+  const { fromLang, targetLang, translatorMode, userContent } = options
   const os: GenerateSpecificPromptsOptions = {
     fromLang,
     targetLang,
@@ -42,7 +42,7 @@ export function generatePrompts(
     targetChinese: isChineseLang(targetLang),
     userContent,
   }
-  switch (translateMode) {
+  switch (translatorMode) {
     case 'translate':
       return generatePromptsOfTranslate(os)
     case 'polishing':
@@ -288,8 +288,8 @@ function generatePromptsOfExplainCode(
 export function useChatCompletionsPrompts(
   options: ChatCompletionsPromptsOptions
 ): ChatCompletionsPrompts {
-  const { fromLang, targetLang, translateMode, userContent } = options
+  const { fromLang, targetLang, translatorMode, userContent } = options
   return useMemo(() => {
     return generatePrompts(options)
-  }, [fromLang, targetLang, translateMode, userContent])
+  }, [fromLang, targetLang, translatorMode, userContent])
 }

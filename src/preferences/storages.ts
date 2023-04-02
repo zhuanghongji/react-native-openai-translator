@@ -5,7 +5,7 @@ import {
   LanguageMode,
   ServiceProvider,
   ThemeMode,
-  TranslateMode,
+  TranslatorMode,
 } from './options'
 import { MMKV, useMMKVBoolean, useMMKVString } from 'react-native-mmkv'
 
@@ -19,7 +19,7 @@ const enum StorageKey {
   apiModel = 'api_model',
   apiUrl = 'api_url',
   apiUrlPath = 'api_url_path',
-  defaultTranslateMode = 'default_translate_mode',
+  defaultTranslatorMode = 'default_translate_mode',
   languageMode = 'language_mode',
   themeMode = 'theme_mode',
   alwaysShowIcons = 'always_show_icons',
@@ -48,9 +48,9 @@ export function getDefaultTargetLanguage() {
     DEFAULTS.defaultTargetLanguage) as LanguageKey
 }
 
-export function getDefaultTranslateMode() {
-  return (storage.getString(StorageKey.defaultTranslateMode) ??
-    DEFAULTS.defaultTranslateMode) as TranslateMode
+export function getDefaultTranslatorMode() {
+  return (storage.getString(StorageKey.defaultTranslatorMode) ??
+    DEFAULTS.defaultTranslatorMode) as TranslatorMode
 }
 
 // MARK: hooks
@@ -112,10 +112,10 @@ export function useApiUrlPathPref() {
   return useStorageString<string>(StorageKey.apiUrlPath, DEFAULTS.apiUrlPath)
 }
 
-export function useDefaultTranslateModePref() {
-  return useStorageString<TranslateMode>(
-    StorageKey.defaultTranslateMode,
-    DEFAULTS.defaultTranslateMode
+export function useDefaultTranslatorModePref() {
+  return useStorageString<TranslatorMode>(
+    StorageKey.defaultTranslatorMode,
+    DEFAULTS.defaultTranslatorMode
   )
 }
 

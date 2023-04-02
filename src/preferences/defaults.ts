@@ -4,7 +4,7 @@ import {
   LanguageMode,
   ServiceProvider,
   ThemeMode,
-  TranslateMode,
+  TranslatorMode,
 } from './options'
 
 export const DEFAULTS: {
@@ -15,7 +15,7 @@ export const DEFAULTS: {
   apiModel: ApiModel
   apiUrl: string
   apiUrlPath: string
-  defaultTranslateMode: TranslateMode
+  defaultTranslatorMode: TranslatorMode
   languageMode: LanguageMode
   themeMode: ThemeMode
   alwaysShowIcons: boolean
@@ -29,7 +29,7 @@ export const DEFAULTS: {
   apiModel: 'gpt-3.5-turbo',
   apiUrl: 'https://api.openai.com',
   apiUrlPath: '/v1/chat/completions',
-  defaultTranslateMode: 'translate',
+  defaultTranslatorMode: 'translate',
   languageMode: 'en',
   themeMode: 'system',
   alwaysShowIcons: true,

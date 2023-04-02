@@ -16,7 +16,7 @@ import {
   useApiUrlPathPref,
   useApiUrlPref,
   useDefaultTargetLanguagePref,
-  useDefaultTranslateModePref,
+  useDefaultTranslatorModePref,
   useLanguageModePref,
   useServiceProviderPref,
   useThemeModePref,
@@ -61,10 +61,10 @@ export function SettingsScreen(
   const [apiUrl, setApiUrl] = useApiUrlPref()
   const [apiUrlPath, setApiUrlPath] = useApiUrlPathPref()
 
-  const [defaultTranslateModeAnimatedIndex, defaultTranslateModeModalRef] =
+  const [defaultTranslatorModeAnimatedIndex, defaultTranslatorModeModalRef] =
     usePickModal()
-  const [defaultTranslateMode, setDefaultTranslateMode] =
-    useDefaultTranslateModePref()
+  const [defaultTranslatorMode, setDefaultTranslatorMode] =
+    useDefaultTranslatorModePref()
 
   const [defaultTargetLangAnimatedIndex, defaultTargetLangModalRef] =
     usePickModal()
@@ -97,11 +97,11 @@ export function SettingsScreen(
         onValueChange={setApiModel}
       />
       <PickModal
-        ref={defaultTranslateModeModalRef}
-        value={defaultTranslateMode}
+        ref={defaultTranslatorModeModalRef}
+        value={defaultTranslatorMode}
         values={TRANSLATE_MODES}
-        animatedIndex={defaultTranslateModeAnimatedIndex}
-        onValueChange={setDefaultTranslateMode}
+        animatedIndex={defaultTranslatorModeAnimatedIndex}
+        onValueChange={setDefaultTranslatorMode}
       />
       <PickModal
         ref={defaultTargetLangModalRef}
@@ -198,9 +198,9 @@ export function SettingsScreen(
           Default Translate Mode
         </TText>
         <PickView
-          label={defaultTranslateMode}
-          animatedIndex={defaultTranslateModeAnimatedIndex}
-          pickModalRef={defaultTranslateModeModalRef}
+          label={defaultTranslatorMode}
+          animatedIndex={defaultTranslatorModeAnimatedIndex}
+          pickModalRef={defaultTranslatorModeModalRef}
         />
 
         {divider}

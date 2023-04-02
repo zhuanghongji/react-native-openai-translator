@@ -1,4 +1,4 @@
-import { TranslateMode } from '../preferences/options'
+import { TranslatorMode } from '../preferences/options'
 import type { ScanBlock } from '../types'
 
 type RootStackParamList = {
@@ -8,6 +8,6 @@ type RootStackParamList = {
     onScanSuccess: (blocks: ScanBlock[]) => void
   }
   Chat: {
-    mode: TranslateMode
+    mode: TranslatorMode
   }
 }

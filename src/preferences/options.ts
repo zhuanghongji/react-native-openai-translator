@@ -107,7 +107,7 @@ export const TRANSLATE_MODES = [
   'explain-code',
 ] as const
 
-export type TranslateMode = UnionFromTuple<typeof TRANSLATE_MODES>
+export type TranslatorMode = UnionFromTuple<typeof TRANSLATE_MODES>
 
 // MARK: theme modes
 

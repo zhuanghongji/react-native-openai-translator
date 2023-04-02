@@ -7,13 +7,13 @@ import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
   LANGUAGE_KEYS,
   LanguageKey,
-  TranslateMode,
+  TranslatorMode,
   languageLabelByKey,
 } from '../../preferences/options'
 import {
   getDefaultFromLanguage,
   getDefaultTargetLanguage,
-  getDefaultTranslateMode,
+  getDefaultTranslatorMode,
   getLastDetectedText,
   setLastDetectedText,
   useApiKeyPref,
@@ -70,9 +70,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [targetLang, setTargetLang] = useState(getDefaultTargetLanguage)
   const targetLangLabel = languageLabelByKey(targetLang)
 
-  const [translateMode, setTranslateMode] = useState(getDefaultTranslateMode)
-  const onTranslateModeChange = (mode: TranslateMode) => {
-    setTranslateMode(mode)
+  const [translatorMode, setTranslatorMode] = useState(getDefaultTranslatorMode)
+  const onTranslatorModeChange = (mode: TranslatorMode) => {
+    setTranslatorMode(mode)
     setStatus('none')
   }
 
@@ -151,7 +151,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     const { systemPrompt, systemRequires, userPrompt } = generatePrompts({
       fromLang,
       targetLang,
-      translateMode,
+      translatorMode,
       userContent: text,
     })
     const messages: Message[] = []
@@ -200,8 +200,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     )
   }
 
-  const langsDisabled = translateMode === 'bubble'
-  const exchangeDisabled = fromLang === null || translateMode !== 'translate'
+  const langsDisabled = translatorMode === 'bubble'
+  const exchangeDisabled = fromLang === null || translatorMode !== 'translate'
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
@@ -258,32 +258,32 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           <ModeButton
             icon="language"
             mode="translate"
-            currentMode={translateMode}
-            onPress={onTranslateModeChange}
+            currentMode={translatorMode}
+            onPress={onTranslatorModeChange}
           />
           <ModeButton
             icon="palette"
             mode="polishing"
-            currentMode={translateMode}
-            onPress={onTranslateModeChange}
+            currentMode={translatorMode}
+            onPress={onTranslatorModeChange}
           />
           <ModeButton
             icon="summarize"
             mode="summarize"
-            currentMode={translateMode}
-            onPress={onTranslateModeChange}
+            currentMode={translatorMode}
+            onPress={onTranslatorModeChange}
           />
           <ModeButton
             icon="analytics"
             mode="analyze"
-            currentMode={translateMode}
-            onPress={onTranslateModeChange}
+            currentMode={translatorMode}
+            onPress={onTranslatorModeChange}
           />
           <ModeButton
             icon="bubble"
             mode="bubble"
-            currentMode={translateMode}
-            onPress={onTranslateModeChange}
+            currentMode={translatorMode}
+            onPress={onTranslatorModeChange}
           />
         </View>
       </View>
@@ -349,7 +349,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         />
       </View>
 
-      <StatusDivider mode={translateMode} status={status} />
+      <StatusDivider mode={translatorMode} status={status} />
 
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
         <OutputView ref={outputViewRef} />
@@ -378,7 +378,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           <ToolButton
             name="chat"
             onPress={() => {
-              navigation.push('Chat', { mode: translateMode })
+              navigation.push('Chat', { mode: translatorMode })
             }}
           />
         </View>
