@@ -17,9 +17,6 @@ import {
 import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-// const AnimatedFlashList =
-//   Animated.createAnimatedComponent<FlashList<ChatMessage>>(FlashList)
-
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>
 
 export function ChatScreen({ navigation, route }: Props): JSX.Element {

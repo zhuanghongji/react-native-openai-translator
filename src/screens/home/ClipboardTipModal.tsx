@@ -85,7 +85,9 @@ export const ClipboardTipModal = React.forwardRef<
         </TText>
         <View
           style={[styles.buttonRow, { borderTopColor: borderSecondaryColor }]}>
-          {renderButton('Ignore')}
+          {renderButton('Ignore', () => {
+            setText('')
+          })}
           <View
             style={[
               styles.buttonDivider,
