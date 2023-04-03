@@ -14,12 +14,12 @@ import {
   ViewStyle,
 } from 'react-native'
 
-export type TemplateProps = {
+export type UserMessageProps = {
   style?: StyleProp<ViewStyle>
   message: ChatMessage
 }
 
-export function UserMessageView(props: TemplateProps) {
+export function UserMessageView(props: UserMessageProps) {
   const { style, message } = props
   const { content } = message
 

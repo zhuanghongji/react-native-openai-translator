@@ -1,8 +1,9 @@
+import { AnimRotateContainer } from '../../../components/AnimRotateContainer'
 import { dimensions } from '../../../res/dimensions'
 import { images } from '../../../res/images'
 import { sheets } from '../../../res/sheets'
-import { ChatMessage } from '../../../types'
 import { trimContent } from '../../../utils'
+import { useSSEMessageStore } from '../../../zustand/stores/sse-message-store'
 import React from 'react'
 import {
   Image,
@@ -14,33 +15,27 @@ import {
   ViewStyle,
 } from 'react-native'
 
-export type AssistantMessageProps = {
+export type SSEMessageProps = {
   style?: StyleProp<ViewStyle>
-  message: ChatMessage
 }
 
-export function AssistantMessageView(props: AssistantMessageProps) {
-  const { style, message } = props
-  const { content } = message
+export function SSEMessageView(props: SSEMessageProps) {
+  const { style } = props
 
+  const status = useSSEMessageStore(state => state.status)
+  const content = useSSEMessageStore(state => state.content)
+  if (status !== 'sending') {
+    return null
+  }
   return (
     <View style={[style, styles.container]}>
-      <View
-        style={{
-          width: 32,
-          height: 32,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Image
-          style={{ width: 18, height: 18, marginTop: 12 }}
-          source={images.logo}
-        />
-      </View>
+      <AnimRotateContainer style={styles.imageWrapper} rotating={true}>
+        <Image style={{ width: 18, height: 18 }} source={images.logo} />
+      </AnimRotateContainer>
 
       <View style={styles.content}>
         <Text style={[styles.text, sheets.contentText]}>
-          {trimContent(content)}
+          {content ? trimContent(content) : '...'}
         </Text>
       </View>
     </View>
@@ -50,6 +45,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
 type Styles = {
   container: ViewStyle
   content: ViewStyle
+  imageWrapper: ViewStyle
   text: TextStyle
 }
 
@@ -59,6 +55,12 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
     alignItems: 'flex-start',
     paddingLeft: dimensions.edge,
+  },
+  imageWrapper: {
+    width: 32,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     maxWidth: '80%',

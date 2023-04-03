@@ -3,6 +3,7 @@ import {
   TranslatorMode,
   languageLabelByKey,
 } from '../../preferences/options'
+import { Message } from '../../types'
 import { isChineseLang, isEnglishWord } from '../../utils'
 import { useMemo } from 'react'
 
@@ -16,7 +17,7 @@ export interface ChatCompletionsPromptsOptions {
   fromLang: LanguageKey | null
   targetLang: LanguageKey
   translatorMode: TranslatorMode
-  userContent: string
+  inputText: string
 }
 
 export interface GenerateSpecificPromptsOptions {
@@ -26,13 +27,13 @@ export interface GenerateSpecificPromptsOptions {
   targetLangLabel: string
   fromChinese: boolean
   targetChinese: boolean
-  userContent: string
+  inputText: string
 }
 
 export function generatePrompts(
   options: ChatCompletionsPromptsOptions
 ): ChatCompletionsPrompts {
-  const { fromLang, targetLang, translatorMode, userContent } = options
+  const { fromLang, targetLang, translatorMode, inputText } = options
   const os: GenerateSpecificPromptsOptions = {
     fromLang,
     targetLang,
@@ -40,7 +41,7 @@ export function generatePrompts(
     targetLangLabel: languageLabelByKey(targetLang),
     fromChinese: isChineseLang(fromLang),
     targetChinese: isChineseLang(targetLang),
-    userContent,
+    inputText,
   }
   switch (translatorMode) {
     case 'translate':
@@ -51,8 +52,6 @@ export function generatePrompts(
       return generatePromptsOfSummarize(os)
     case 'analyze':
       return generatePromptsOfAnalyze(os)
-    case 'explain-code':
-      return generatePromptsOfExplainCode(os)
     default:
       return { systemPrompt: '', userPrompt: '' }
   }
@@ -67,7 +66,7 @@ function generatePromptsOfTranslate(
     targetLangLabel,
     fromChinese,
     targetChinese,
-    userContent,
+    inputText,
   } = os
   let systemPrompt =
     'You are a translation engine that can only translate text and cannot interpret it.'
@@ -133,20 +132,6 @@ function generatePromptsOfTranslate(
 
   if (fromChinese) {
     systemPrompt = '你是一个翻译引擎。'
-    if (targetChinese && userContent.length < 5) {
-      return {
-        systemPrompt,
-        systemRequires: [
-          `请将给到的文本翻译成${targetLangLabel}`,
-          '请列出3种（如果有）最常用翻译结果：单词或短语，并列出对应的适用语境（用中文阐述）、音标、词性、双语示例。',
-          `按照下面格式用中文阐述：
-<序号><单词或短语> · /<音标>
-[<词性缩写>] <适用语境（用中文阐述）>
-例句：<例句>(例句翻译)`,
-        ],
-        userPrompt: '',
-      }
-    }
     if (targetLang === 'zh-Hans') {
       return {
         systemPrompt,
@@ -177,7 +162,7 @@ function generatePromptsOfTranslate(
     }
   }
 
-  if (fromLang === 'en' && targetChinese && isEnglishWord(userContent)) {
+  if (fromLang === 'en' && targetChinese && isEnglishWord(inputText)) {
     return {
       systemPrompt: '你是一个翻译引擎。',
       systemRequires: [
@@ -266,30 +251,48 @@ function generatePromptsOfAnalyze(
   return { systemPrompt, userPrompt }
 }
 
-function generatePromptsOfExplainCode(
-  os: GenerateSpecificPromptsOptions
-): ChatCompletionsPrompts {
-  const { targetLangLabel, targetChinese } = os
-  const systemPrompt =
-    'You are a code explanation engine, you can only explain the code, do not interpret or translate it. Also, please report any bugs you find in the code to the author of the code.'
-  if (targetChinese) {
-    return {
-      systemPrompt,
-      userPrompt:
-        '用最简洁的语言使用中文解释此段代码、正则表达式或脚本。如果内容不是代码，请返回错误提示。如果代码有明显的错误，请指出。',
-    }
+export function generateMessagesWithPrompts(
+  options: ChatCompletionsPromptsOptions
+): {
+  messages: Message[]
+  prompts: ChatCompletionsPrompts
+  systemContent: string
+  userContent: string
+} {
+  const prompts = generatePrompts(options)
+  const { inputText } = options
+  const { systemPrompt, systemRequires, userPrompt } = prompts
+
+  const messages: Message[] = []
+  const systemContents: string[] = []
+  if (systemPrompt) {
+    systemContents.push(systemPrompt)
+    systemRequires?.forEach(req => systemContents.push(req))
   }
-  return {
-    systemPrompt,
-    userPrompt: `explain the provided code, regex or script in the most concise language and must use ${targetLangLabel} language! If the content is not code, return an error message. If the code has obvious errors, point them out.`,
+  const systemContent = systemContents.join('\n')
+  if (systemContent) {
+    messages.push({ role: 'system', content: systemContent })
   }
+
+  const userContents: string[] = []
+  if (userPrompt) {
+    userContents.push(userPrompt)
+  }
+  userContents.push(inputText)
+  const userContent = userContents.join('\n')
+  messages.push({ role: 'user', content: userContent })
+
+  return { messages, prompts, systemContent, userContent }
 }
 
-export function useChatCompletionsPrompts(
-  options: ChatCompletionsPromptsOptions
-): ChatCompletionsPrompts {
-  const { fromLang, targetLang, translatorMode, userContent } = options
+export function useMessagesWithPrompts(options: ChatCompletionsPromptsOptions) {
+  const { fromLang, targetLang, translatorMode, inputText } = options
   return useMemo(() => {
-    return generatePrompts(options)
-  }, [fromLang, targetLang, translatorMode, userContent])
+    return generateMessagesWithPrompts({
+      fromLang,
+      targetLang,
+      translatorMode,
+      inputText,
+    })
+  }, [fromLang, targetLang, translatorMode, inputText])
 }

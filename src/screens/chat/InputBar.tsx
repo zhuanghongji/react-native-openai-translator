@@ -40,6 +40,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
             },
           ]}
           value={value}
+          placeholder="Send a message..."
           onChangeText={onChangeText}
         />
         <Pressable

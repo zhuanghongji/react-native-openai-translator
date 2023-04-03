@@ -104,7 +104,6 @@ export const TRANSLATE_MODES = [
   'summarize',
   'analyze',
   'bubble',
-  'explain-code',
 ] as const
 
 export type TranslatorMode = UnionFromTuple<typeof TRANSLATE_MODES>

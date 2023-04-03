@@ -23,6 +23,7 @@ import {
 import { dimensions } from '../../res/dimensions'
 import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
 import { Message, ScanBlock, TranslatorStatus } from '../../types'
+import { trimContent } from '../../utils'
 import type { RootStackParamList } from '../screens'
 import { ClipboardTipModal, ClipboardTipModalHandle } from './ClipboardTipModal'
 import { InputView, InputViewHandle } from './InputView'
@@ -32,7 +33,7 @@ import { PickButton } from './PickButton'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
-import { generatePrompts } from './prompts'
+import { generateMessagesWithPrompts, useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect, useRef, useState } from 'react'
@@ -76,13 +77,23 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     setStatus('none')
   }
 
-  const [userContent, setUserContent] = useState('')
-  const [assistantContent, setAssistantContent] = useState('')
-  const hasUserContent = userContent ? true : false
-
-  const ttsModalRef = useRef<TTSModalHandle>(null)
   const inputViewRef = useRef<InputViewHandle>(null)
+  const [inputText, setInputText] = useState('')
+  const {
+    messages: messagesToSend,
+    prompts,
+    userContent,
+  } = useMessagesWithPrompts({
+    fromLang,
+    targetLang,
+    translatorMode,
+    inputText,
+  })
+  const hasUserContent = inputText ? true : false
+
   const outputViewRef = useRef<OutputViewHandle>(null)
+  const [outputText, setOutputText] = useState('')
+  const ttsModalRef = useRef<TTSModalHandle>(null)
 
   // Detect text in Clipboard when to be active
   const clipboardTipModalRef = useRef<ClipboardTipModalHandle>(null)
@@ -93,9 +104,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       }
       try {
         const _text = await Clipboard.getString()
-        const text = _text ? _text.trim() : ''
+        const text = trimContent(_text)
         const lastText = getLastDetectedText()
-        if (!text || text === lastText) {
+        if (!text || text === lastText || text === outputText) {
           return
         }
         Keyboard.dismiss()
@@ -103,7 +114,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         clipboardTipModalRef.current?.show({
           text,
           onUseItPress: () => {
-            setUserContent(text)
+            setInputText(text)
             inputViewRef.current?.focus()
           },
         })
@@ -112,7 +123,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       }
     })
     return () => subscription.remove()
-  }, [])
+  }, [outputText])
 
   const onScanSuccess = (blocks: ScanBlock[]) => {
     const content = blocks
@@ -122,10 +133,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     if (!content) {
       return
     }
-    setUserContent(content)
-    Keyboard.dismiss()
+    setInputText(content)
 
-    let _fromLang: LanguageKey | null = null
     const _langKeys: LanguageKey[] = []
     for (const block of blocks) {
       for (const lang of block.langs) {
@@ -136,38 +145,20 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       }
     }
     const langKeys = [...new Set(_langKeys)]
-    if (langKeys.length === 1) {
-      _fromLang = langKeys[0]
-      setFromLang(langKeys[0])
-    }
+    const nextFromLang = langKeys.length === 1 ? langKeys[0] : null
+    setFromLang(nextFromLang)
 
-    onSubmitEditing(content, _fromLang)
-  }
-
-  const onSubmitEditing = (text: string, _fromLang: LanguageKey | null) => {
-    outputViewRef.current?.setContent('')
-    setAssistantContent('')
-
-    const { systemPrompt, systemRequires, userPrompt } = generatePrompts({
-      fromLang,
+    const { messages } = generateMessagesWithPrompts({
+      fromLang: nextFromLang,
       targetLang,
       translatorMode,
-      userContent: text,
+      inputText: content,
     })
-    const messages: Message[] = []
-    const systemContents: string[] = []
-    if (systemPrompt) {
-      systemContents.push(systemPrompt)
-      systemRequires?.forEach(req => systemContents.push(req))
-      messages.push({ role: 'system', content: systemContents.join('\n') })
-    }
-    const userContents: string[] = []
-    if (userPrompt) {
-      userContents.push(userPrompt)
-    }
-    userContents.push(userContent)
-    messages.push({ role: 'user', content: userContents.join('\n') })
+    perfromChatCompletions(messages)
+  }
 
+  const perfromChatCompletions = (messages: Message[]) => {
+    setOutputText('')
     setStatus('pending')
     sseRequestChatCompletions(
       {
@@ -179,7 +170,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       {
         onSubscribe: () => {},
         onNext: content => {
-          outputViewRef.current?.setContent(content)
+          outputViewRef.current?.updateText(content)
         },
         onTimeout: () => {
           setStatus('failure')
@@ -190,8 +181,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           hapticError()
         },
         onDone: message => {
-          outputViewRef.current?.setContent(message.content)
-          setAssistantContent(message.content)
+          setOutputText(message.content)
           setStatus('success')
           hapticSuccess()
         },
@@ -205,7 +195,10 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
-        onScannerPress={() => navigation.push('Scanner', { onScanSuccess })}
+        onScannerPress={() => {
+          Keyboard.dismiss()
+          navigation.push('Scanner', { onScanSuccess })
+        }}
         onSettingsPress={() => navigation.push('Settings')}
       />
       <View
@@ -230,13 +223,11 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             }
             setFromLang(targetLang)
             setTargetLang(fromLang)
-            if (userContent && assistantContent) {
-              setUserContent(assistantContent)
-              setAssistantContent(userContent)
-              outputViewRef.current?.setContent('')
+            if (inputText && outputText) {
+              setInputText(outputText)
+              setOutputText(inputText)
             } else {
-              setAssistantContent('')
-              outputViewRef.current?.setContent('')
+              setOutputText('')
             }
           }}>
           <SvgIcon
@@ -290,9 +281,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
       <InputView
         ref={inputViewRef}
-        value={userContent}
-        onChangeText={setUserContent}
-        onSubmitEditing={text => onSubmitEditing(text, fromLang)}
+        value={inputText}
+        onChangeText={setInputText}
+        onSubmitEditing={() => perfromChatCompletions(messagesToSend)}
       />
       <View style={styles.toolsRow}>
         <ToolButton
@@ -300,31 +291,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           disabled={!hasUserContent}
           onPress={() => {
             ttsModalRef.current?.speak({
-              content: userContent,
+              content: inputText,
               lang: fromLang,
             })
-            // Tts.voices()
-            //   .then(voices => {
-            //     console.log('voices', { voices })
-            //     const voice = voices.find(v => v.language === targetLang)
-            //     console.log('voice', { voice })
-            //     if (voice) {
-            //       Tts.speak(userContent, {
-            //         iosVoiceId: voice.id,
-            //         rate: 1.0,
-            //         androidParams: {
-            //           KEY_PARAM_PAN: -1,
-            //           KEY_PARAM_VOLUME: 0.5,
-            //           KEY_PARAM_STREAM: 'STREAM_MUSIC',
-            //         },
-            //       })
-            //     } else {
-            //       Tts.speak(userContent)
-            //     }
-            //   })
-            //   .catch(e => {
-            //     Tts.speak(userContent)
-            //   })
           }}
         />
         <ToolButton
@@ -332,7 +301,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           disabled={!hasUserContent}
           onPress={() => {
             hapticLight()
-            Clipboard.setString(userContent)
+            Clipboard.setString(inputText)
           }}
         />
         <ToolButton
@@ -340,11 +309,10 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           disabled={!hasUserContent}
           onPress={() => {
             hapticLight()
-            setUserContent('')
-            setAssistantContent('')
-            outputViewRef.current?.setContent('')
-            inputViewRef.current?.focus()
             setStatus('none')
+            setInputText('')
+            setOutputText('')
+            inputViewRef.current?.focus()
           }}
         />
       </View>
@@ -352,16 +320,16 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       <StatusDivider mode={translatorMode} status={status} />
 
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
-        <OutputView ref={outputViewRef} />
+        <OutputView ref={outputViewRef} text={outputText} />
 
         <View style={styles.toolsRow}>
-          {assistantContent ? (
+          {outputText ? (
             <>
               <ToolButton
                 name="compaign"
                 onPress={() => {
                   ttsModalRef.current?.speak({
-                    content: assistantContent,
+                    content: outputText,
                     lang: targetLang,
                   })
                 }}
@@ -370,7 +338,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
                 name="copy"
                 onPress={() => {
                   hapticLight()
-                  Clipboard.setString(assistantContent)
+                  Clipboard.setString(outputText)
                 }}
               />
             </>
@@ -378,7 +346,13 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           <ToolButton
             name="chat"
             onPress={() => {
-              navigation.push('Chat', { mode: translatorMode })
+              const { systemPrompt } = prompts
+              navigation.push('Chat', {
+                translatorMode,
+                systemPrompt,
+                userContent,
+                assistantContent: outputText,
+              })
             }}
           />
         </View>

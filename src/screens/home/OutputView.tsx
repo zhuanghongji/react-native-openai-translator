@@ -6,29 +6,34 @@ import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
 
 export interface OutputViewProps {
   style?: StyleProp<TextStyle>
+  text: string
 }
 
 export interface OutputViewHandle {
-  setContent: (value: string) => void
-  getContent: () => string
+  updateText: (text: string) => void
 }
 
 export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>(
   (props, ref) => {
-    const { style } = props
+    const { style, text } = props
     const textColor = useTextThemeColor('text')
-    const [content, setContent] = useState('')
+
+    const [displayText, setDisplayText] = useState('')
+    const [preText, setPreText] = useState(text)
+    if (text !== preText) {
+      setPreText(text)
+      setDisplayText(text)
+    }
 
     useImperativeHandle(ref, () => ({
-      setContent,
-      getContent: () => content,
+      updateText: setDisplayText,
     }))
 
     return (
       <Text
         selectable
         style={[sheets.contentText, styles.text, { color: textColor }, style]}>
-        {content}
+        {displayText}
       </Text>
     )
   }

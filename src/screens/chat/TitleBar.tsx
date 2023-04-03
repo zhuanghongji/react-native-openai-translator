@@ -1,5 +1,6 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
+import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
 import {
@@ -13,15 +14,55 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TitleBarProps {
+  mode: TranslatorMode
+  systemPrompt: string
   onBackPress: () => void
   onMorePress: () => void
 }
 
 const H_EDGE = 8
 
+function getTitle(mode: TranslatorMode) {
+  if (mode === 'translate') {
+    return 'Translate Chat'
+  }
+  if (mode === 'polishing') {
+    return 'Polishing Chat'
+  }
+  if (mode === 'summarize') {
+    return 'Summarize Chat'
+  }
+  if (mode === 'analyze') {
+    return 'Analyze Chat'
+  }
+  return 'Bubble Chat'
+}
+
+function getSubtitle(mode: TranslatorMode, systemPrompt: string) {
+  if (systemPrompt) {
+    return systemPrompt
+  }
+  if (mode === 'translate') {
+    return 'system is a language translation engine'
+  }
+  if (mode === 'polishing') {
+    return 'system is a text polishing engine'
+  }
+  if (mode === 'summarize') {
+    return 'system is a text summarization engine'
+  }
+  if (mode === 'analyze') {
+    return 'system is a text analysis engine.'
+  }
+  return 'system without preset'
+}
+
 export function TitleBar(props: TitleBarProps): JSX.Element {
-  const { onBackPress, onMorePress } = props
+  const { mode, systemPrompt, onBackPress, onMorePress } = props
   const { top } = useSafeAreaInsets()
+
+  const title = getTitle(mode)
+  const subtitle = getSubtitle(mode, systemPrompt)
 
   return (
     <View
@@ -42,7 +83,15 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
       </Pressable>
       <View style={styles.center}>
         <TText style={styles.title} type="title">
-          Chat
+          {title}
+        </TText>
+        <TText
+          style={[
+            styles.subtitle,
+            { textDecorationLine: mode === 'bubble' ? 'line-through' : 'none' },
+          ]}
+          type="subtitle">
+          {subtitle}
         </TText>
       </View>
       <Pressable style={styles.touchable} onPress={onMorePress}>
@@ -57,6 +106,7 @@ type Styles = {
   touchable: ViewStyle
   center: ViewStyle
   title: TextStyle
+  subtitle: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -75,13 +125,14 @@ const styles = StyleSheet.create<Styles>({
   },
   center: {
     flex: 1,
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
-    marginLeft: 8,
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 15,
+  },
+  subtitle: {
+    fontSize: 12,
   },
 })

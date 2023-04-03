@@ -1,10 +1,18 @@
+import { hapticError, hapticSuccess } from '../../haptic'
+import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
+import {
+  useApiKeyPref,
+  useApiUrlPathPref,
+  useApiUrlPref,
+} from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
-import { ChatMessage } from '../../types'
+import { ChatMessage, Message } from '../../types'
+import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
 import { InputBar } from './InputBar'
 import { TitleBar } from './TitleBar'
-import { TEST_CHAT_MESSAGES } from './data'
 import { AssistantMessageView } from './message-view/AssistantMessageView'
+import { SSEMessageView } from './message-view/SSEMessageView'
 import { UserMessageView } from './message-view/UserMessageView'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
@@ -20,7 +28,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>
 
 export function ChatScreen({ navigation, route }: Props): JSX.Element {
-  const [inputText, setInputText] = useState('')
+  const { translatorMode, systemPrompt, userContent, assistantContent } =
+    route.params
 
   const flashListRef = useRef<FlashList<ChatMessage>>(null)
   useEffect(() => {
@@ -40,6 +49,83 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
     []
   )
 
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    if (!userContent || !assistantContent) {
+      return []
+    }
+    return [
+      {
+        role: 'assistant',
+        content: assistantContent,
+      },
+      {
+        role: 'user',
+        content: userContent,
+      },
+    ]
+  })
+  const [inputText, setInputText] = useState('')
+
+  const status = useSSEMessageStore(state => state.status)
+  const setStatus = useSSEMessageStore(state => state.setStatus)
+  const setContent = useSSEMessageStore(state => state.setContent)
+
+  const [apiUrl] = useApiUrlPref()
+  const [apiUrlPath] = useApiUrlPathPref()
+  const [apiKey] = useApiKeyPref()
+
+  const onSendPress = () => {
+    setInputText('')
+    const nextMessages: ChatMessage[] = [
+      { role: 'user', content: inputText },
+      ...messages,
+    ]
+    setMessages(nextMessages)
+
+    const messagesToSend: Message[] = nextMessages
+      .map(({ role, content }) => ({
+        role,
+        content,
+      }))
+      .reverse()
+    if (systemPrompt) {
+      messagesToSend.unshift({ role: 'system', content: systemPrompt })
+    }
+    setStatus('sending')
+    sseRequestChatCompletions(
+      {
+        apiUrl,
+        apiUrlPath,
+        apiKey,
+        messages: messagesToSend,
+      },
+      {
+        onSubscribe: () => {},
+        onNext: content => {
+          setContent(content)
+        },
+        onTimeout: () => {
+          setStatus('done')
+          hapticError()
+        },
+        onError: message => {
+          setStatus('done')
+          hapticError()
+        },
+        onDone: message => {
+          setMessages(prev => [
+            { role: 'assistant', content: message.content },
+            ...prev,
+          ])
+          setStatus('done')
+          setContent('')
+          hapticSuccess()
+        },
+        onComplete: () => {},
+      }
+    )
+  }
+
   const renderItemSeparator = () => {
     return <View style={{ height: dimensions.edge * 2 }} />
   }
@@ -49,6 +135,8 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
       style={{ flex: 1, backgroundColor: 'black' }}
       edges={['left', 'right']}>
       <TitleBar
+        mode={translatorMode}
+        systemPrompt={systemPrompt}
         onBackPress={() => {
           navigation.goBack()
         }}
@@ -60,7 +148,8 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
             ref={flashListRef}
             contentContainerStyle={{ paddingVertical: dimensions.edge }}
             inverted={true}
-            data={TEST_CHAT_MESSAGES}
+            // data={TEST_CHAT_MESSAGES}
+            data={messages}
             getItemType={item => item.role}
             keyExtractor={(item, index) =>
               `${index}_${item.role}_${item.content}`
@@ -75,6 +164,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
               return null
             }}
             ItemSeparatorComponent={renderItemSeparator}
+            ListHeaderComponent={<SSEMessageView />}
             estimatedItemSize={200}
             onScrollBeginDrag={() => {
               Keyboard.dismiss()
@@ -85,7 +175,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
       <InputBar
         value={inputText}
         onChangeText={setInputText}
-        onSendPress={() => {}}
+        onSendPress={onSendPress}
       />
     </SafeAreaView>
   )

@@ -8,6 +8,9 @@ type RootStackParamList = {
     onScanSuccess: (blocks: ScanBlock[]) => void
   }
   Chat: {
-    mode: TranslatorMode
+    translatorMode: TranslatorMode
+    systemPrompt: string
+    userContent: string
+    assistantContent: string
   }
 }
