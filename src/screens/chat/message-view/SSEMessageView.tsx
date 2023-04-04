@@ -30,7 +30,7 @@ export function SSEMessageView(props: SSEMessageProps) {
   return (
     <View style={[style, styles.container]}>
       <AnimRotateContainer style={styles.imageWrapper} rotating={true}>
-        <Image style={{ width: 18, height: 18 }} source={images.logo} />
+        <Image style={{ width: 18, height: 18 }} source={images.logoMini} />
       </AnimRotateContainer>
 
       <View style={styles.content}>

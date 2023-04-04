@@ -34,7 +34,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
         }}>
         <Image
           style={{ width: 18, height: 18, marginTop: 12 }}
-          source={images.logo}
+          source={images.logoMini}
         />
       </View>
 
