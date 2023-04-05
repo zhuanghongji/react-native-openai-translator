@@ -15,7 +15,6 @@
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   
   [RNSplashScreen show];
-//  [RNSplashScreen showSplash:@"LaunchScreen" inRootView:self.window.rootViewController.view];
   return YES;
 }
 
