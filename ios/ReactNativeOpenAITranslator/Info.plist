@@ -42,7 +42,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Microphone.</string>
 	<key>UILaunchStoryboardName</key>
-	<string>BootSplash.storyboard</string>
+	<string>LaunchScreen.storyboard</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

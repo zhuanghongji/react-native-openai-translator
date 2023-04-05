@@ -12,9 +12,8 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		292F3D1729DC48180043F4E2 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 292F3D1629DC48170043F4E2 /* BootSplash.storyboard */; };
+		292F3D1729DC48180043F4E2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 292F3D1629DC48170043F4E2 /* LaunchScreen.storyboard */; };
 		7699B88040F8A987B510C191 /* libPods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,12 +37,11 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ReactNativeOpenAITranslator/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ReactNativeOpenAITranslator/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		292F3D1629DC48170043F4E2 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = ReactNativeOpenAITranslator/BootSplash.storyboard; sourceTree = "<group>"; };
+		292F3D1629DC48170043F4E2 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ReactNativeOpenAITranslator/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-ReactNativeOpenAITranslator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNativeOpenAITranslator.debug.xcconfig"; path = "Target Support Files/Pods-ReactNativeOpenAITranslator/Pods-ReactNativeOpenAITranslator.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-ReactNativeOpenAITranslator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNativeOpenAITranslator.release.xcconfig"; path = "Target Support Files/Pods-ReactNativeOpenAITranslator/Pods-ReactNativeOpenAITranslator.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.debug.xcconfig"; path = "Target Support Files/Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests/Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ReactNativeOpenAITranslator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactNativeOpenAITranslator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ReactNativeOpenAITranslator/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.release.xcconfig"; path = "Target Support Files/Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests/Pods-ReactNativeOpenAITranslator-ReactNativeOpenAITranslatorTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -88,12 +86,11 @@
 		13B07FAE1A68108700A75B9A /* ReactNativeOpenAITranslator */ = {
 			isa = PBXGroup;
 			children = (
-				292F3D1629DC48170043F4E2 /* BootSplash.storyboard */,
+				292F3D1629DC48170043F4E2 /* LaunchScreen.storyboard */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = ReactNativeOpenAITranslator;
@@ -245,8 +242,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				292F3D1729DC48180043F4E2 /* BootSplash.storyboard in Resources */,
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				292F3D1729DC48180043F4E2 /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

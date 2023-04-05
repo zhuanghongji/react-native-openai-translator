@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-#import "RNBootSplash.h"
+#import "RNSplashScreen.h"
 
 #import <React/RCTBundleURLProvider.h>
 
@@ -14,7 +14,8 @@
   
   [super application:application didFinishLaunchingWithOptions:launchOptions];
   
-  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:self.window.rootViewController.view];
+  [RNSplashScreen show];
+//  [RNSplashScreen showSplash:@"LaunchScreen" inRootView:self.window.rootViewController.view];
   return YES;
 }
 
