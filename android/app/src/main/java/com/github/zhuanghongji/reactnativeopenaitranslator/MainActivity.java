@@ -12,11 +12,14 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import com.zoontek.rnbootsplash.RNBootSplash;
 import com.zoontek.rnbootsplash.RNBootSplashModule;
 
+import org.devio.rn.splashscreen.SplashScreen;
+
 public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     // super.onCreate(savedInstanceState);
+    SplashScreen.show(this, R.style.SplashScreenTheme, true);
     super.onCreate(null);
   }
 

@@ -41,12 +41,12 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>(
 
     const [initError, setInitError] = useState(false)
     useEffect(() => {
-      Tts.getInitStatus().catch(err => {
-        if (err.code === 'no_engine') {
-          Tts.requestInstallEngine()
-        }
-        setInitError(true)
-      })
+      // Tts.getInitStatus().catch(err => {
+      //   if (err.code === 'no_engine') {
+      //     // Tts.requestInstallEngine()
+      //   }
+      //   setInitError(true)
+      // })
     }, [])
 
     const [options, setOptions] = useState<SpeakOptions | null>(null)

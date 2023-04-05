@@ -6271,6 +6271,11 @@ react-native-screens@^3.20.0:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
+react-native-splash-screen@^3.3.0:
+  version "3.3.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-splash-screen/-/react-native-splash-screen-3.3.0.tgz#3af71ed17afe50fee69590a45aec399d071ead02"
+  integrity sha512-rGjt6HkoSXxMqH4SQUJ1gnPQlPJV8+J47+4yhgTIan4bVvAwJhEeJH7wWt9hXSdH4+VfwTS0GTaflj1Tw83IhA==
+
 react-native-sse@^1.1.0:
   version "1.1.0"
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-sse/-/react-native-sse-1.1.0.tgz#28c419f58a49d32f7f625f5862c467b3d7ac3598"

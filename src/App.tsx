@@ -10,6 +10,7 @@ import RNBootSplash from 'react-native-bootsplash'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import SplashScreen from 'react-native-splash-screen'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -19,7 +20,10 @@ export function App(): JSX.Element {
       <SafeAreaProvider style={{ flex: 1 }}>
         <KeyboardProvider>
           <NavigationContainer
-            onReady={() => RNBootSplash.hide({ fade: true })}>
+            onReady={() => {
+              SplashScreen.hide()
+              RNBootSplash.hide({ fade: true })
+            }}>
             <RootStack.Navigator
               initialRouteName="Home"
               screenOptions={{
