@@ -1,4 +1,4 @@
-package com.reactnativeopenaitranslator;
+package com.github.zhuanghongji.reactnativeopenaitranslator;
 
 import android.os.Bundle;
 
@@ -6,12 +6,14 @@ import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 public class MainActivity extends ReactActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     // super.onCreate(savedInstanceState);
+    RNBootSplash.init(this);
     super.onCreate(null);
   }
 
