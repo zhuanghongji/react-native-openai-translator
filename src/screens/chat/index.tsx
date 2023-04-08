@@ -6,6 +6,7 @@ import {
   useApiUrlPref,
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
+import { useThemeColor } from '../../themes/hooks'
 import { ChatMessage, Message } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
@@ -30,6 +31,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>
 export function ChatScreen({ navigation, route }: Props): JSX.Element {
   const { translatorMode, systemPrompt, userContent, assistantContent } =
     route.params
+
+  const backgroundColor = useThemeColor('backgroundChat')
 
   const flashListRef = useRef<FlashList<ChatMessage>>(null)
   useEffect(() => {
@@ -67,6 +70,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
   const [inputText, setInputText] = useState('')
 
   const status = useSSEMessageStore(state => state.status)
+  const sendDisabled = inputText.trim() && status !== 'sending' ? false : true
   const setStatus = useSSEMessageStore(state => state.setStatus)
   const setContent = useSSEMessageStore(state => state.setContent)
 
@@ -132,7 +136,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: 'black' }}
+      style={{ flex: 1, backgroundColor }}
       edges={['left', 'right']}>
       <TitleBar
         mode={translatorMode}
@@ -174,6 +178,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
       </Animated.View>
       <InputBar
         value={inputText}
+        sendDisabled={sendDisabled}
         onChangeText={setInputText}
         onSendPress={onSendPress}
       />

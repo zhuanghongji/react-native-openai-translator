@@ -3,7 +3,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   Pressable,
@@ -32,9 +32,9 @@ export interface PickButtonProps {
 export function PickButton(props: PickButtonProps) {
   const { style, disabled, label, animatedIndex, pickModalRef } = props
 
-  const borderColor = useViewThemeColor('border')
-  const backgroundColor = useViewThemeColor('backdropSecondary')
-  const iconColor = useImageThemeColor('tint')
+  const iconColor = useThemeColor('tint')
+  const borderColor = useThemeColor('border')
+  const backgroundColor = useThemeColor('backdrop2')
 
   const borderStyle = useAnimatedStyle(() => {
     return {
@@ -67,7 +67,7 @@ export function PickButton(props: PickButtonProps) {
       disabled={disabled}
       hitSlop={{ top: 2, right: 2 }}
       onPress={() => pickModalRef.current?.show()}>
-      <TText style={styles.text} type="text">
+      <TText style={styles.text} typo="text">
         {label}
       </TText>
       <Animated.View style={transfromStyle}>

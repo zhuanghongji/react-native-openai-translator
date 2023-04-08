@@ -1,7 +1,7 @@
 import { SvgIcon, SvgIconName } from '../../components/SvgIcon'
 import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
-import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
@@ -15,10 +15,11 @@ export interface SelectButtonProps {
 
 export function ModeButton(props: SelectButtonProps) {
   const { style, icon, mode, currentMode, onPress } = props
-  const backdropSecondaryColor = useViewThemeColor('backdropSecondary')
-  const backdropSelectedColor = useViewThemeColor('backdropSelected')
-  const tint = useImageThemeColor('tint')
-  const tintSelected = useImageThemeColor('tintSelected')
+
+  const tint = useThemeColor('tint')
+  const tintSelected = useThemeColor('tintSelected')
+  const backdropColor = useThemeColor('backdrop2')
+  const backdropSelectedColor = useThemeColor('backdropSelected')
 
   const selected = mode === currentMode
   return (
@@ -26,9 +27,7 @@ export function ModeButton(props: SelectButtonProps) {
       style={[
         styles.container,
         {
-          backgroundColor: selected
-            ? backdropSelectedColor
-            : backdropSecondaryColor,
+          backgroundColor: selected ? backdropSelectedColor : backdropColor,
         },
         style,
       ]}

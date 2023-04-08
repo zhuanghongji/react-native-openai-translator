@@ -1,7 +1,7 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
-import { useImageThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   Pressable,
@@ -22,11 +22,11 @@ export interface CheckViewProps {
 export function CheckView(props: CheckViewProps) {
   const { style, title, value, onValueChange } = props
 
-  const iconColor = useImageThemeColor('tint')
+  const iconColor = useThemeColor('tint')
 
   return (
     <View style={[styles.container, style]}>
-      <TText style={styles.text} type="title">
+      <TText style={styles.text} typo="text">
         {title}
       </TText>
       <Pressable onPress={() => onValueChange(!value)}>

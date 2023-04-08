@@ -1,7 +1,7 @@
 import { TText } from '../../components/TText'
 import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
-import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import { TranslatorStatus } from '../../types'
 import React, { useEffect } from 'react'
 import { StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
@@ -47,12 +47,6 @@ const STATUS_TEXTS: Record<TranslatorMode, StatusText> = {
     failure: 'Bubble failed',
     success: 'Bubbled',
   },
-  ['explain-code']: {
-    none: 'Explain Code Mode',
-    pending: 'Explaining...',
-    failure: 'Explain failed',
-    success: 'Explained',
-  },
 }
 
 const STATUS_EMOJIS: Record<TranslatorStatus, string> = {
@@ -72,10 +66,10 @@ export function StatusDivider(props: StatusDividerProps): JSX.Element {
   const text = STATUS_TEXTS[mode][status]
   const emoji = STATUS_EMOJIS[status]
 
-  const contentColor = useTextThemeColor('content')
-  const backdropSecondaryColor = useViewThemeColor('backdropSecondary')
-  const backdropSecondaryStyle: ViewStyle = {
-    backgroundColor: backdropSecondaryColor,
+  const contentColor = useThemeColor('text2')
+  const backgroundColor = useThemeColor('backdrop2')
+  const backgroundStyle: ViewStyle = {
+    backgroundColor,
   }
 
   const anim = useSharedValue(0.5)
@@ -103,16 +97,16 @@ export function StatusDivider(props: StatusDividerProps): JSX.Element {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.divider, backdropSecondaryStyle]} />
+      <View style={[styles.divider, backgroundStyle]} />
       <View
         style={[
           styles.statusRow,
           { justifyContent: status === 'none' ? 'center' : 'space-between' },
-          backdropSecondaryStyle,
+          backgroundStyle,
         ]}>
         <TText
           style={[styles.statusText, { color: contentColor }]}
-          type="content">
+          typo="text2">
           {text}
         </TText>
         <Animated.Text style={[styles.statusEmoji, animStyle]}>

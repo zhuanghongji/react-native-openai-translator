@@ -1,9 +1,5 @@
-import type {
-  ImageThemeType,
-  TextThemeType,
-  ThemeScheme,
-  ViewThemeType,
-} from './themes'
+import { colors } from '../res/colors'
+import type { ThemeScheme, ThemeSchemeTypo } from './themes'
 import {
   ColorValue,
   StatusBarStyle,
@@ -12,43 +8,49 @@ import {
 } from 'react-native'
 
 const LIGHT_THEME_SCHEME: ThemeScheme = {
-  title: '#000000',
-  subtitle: '#545454',
-  text: '#000000',
-  content: '#545454',
-  error: '#FF0000',
+  text: colors.black,
+  text2: colors.c54,
 
-  tint: '#000000',
-  tintSecondary: '#545454',
-  tintTertiary: '#9F9F9F',
-  tintSelected: '#FFFFFF',
+  tint: colors.black,
+  tint2: colors.c54,
+  tint3: colors.c9F,
+  tintSelected: colors.white,
 
-  border: '#000000',
-  borderSecondary: '#EBEBEB',
-  backdrop: '#F6F6F6',
-  backdropSecondary: '#EEEEEE',
-  backdropSelected: '#000000',
-  background: '#FFFFFF',
+  border: colors.black,
+  border2: colors.cEB,
+  backdrop: colors.cF6,
+  backdrop2: colors.cEE,
+  backdropSelected: colors.black,
+  background: colors.white,
+  background2: colors.cED,
+  backgroundChat: colors.cED,
+  backgroundMessage: colors.white,
+
+  error: colors.warning,
+  placeholder: colors.placeholderLight,
 }
 
 const DARK_THEME_SCHEME: ThemeScheme = {
-  title: '#FFFFFF',
-  subtitle: '#C7C7C7',
-  text: '#FFFFFF',
-  content: '#C7C7C7',
-  error: '#FF0000',
+  text: colors.white,
+  text2: colors.cC7,
 
-  tint: '#FFFFFF',
-  tintSecondary: '#CBCBCB',
-  tintTertiary: '#CBCBCB',
-  tintSelected: '#000000',
+  tint: colors.white,
+  tint2: colors.cCB,
+  tint3: colors.cED,
+  tintSelected: colors.black,
 
-  border: '#E2E2E2',
-  borderSecondary: '#242424',
-  backdrop: '#292929',
-  backdropSecondary: '#333333',
-  backdropSelected: '#FFFFFF',
-  background: '#000000',
+  border: colors.cE2,
+  border2: colors.c24,
+  backdrop: colors.c29,
+  backdrop2: colors.c33,
+  backdropSelected: colors.white,
+  background: colors.black,
+  background2: colors.c1D,
+  backgroundChat: colors.black,
+  backgroundMessage: colors.c2C,
+
+  error: colors.warning,
+  placeholder: colors.placeholderDark,
 }
 
 export function useThemeScheme(): ThemeScheme {
@@ -56,21 +58,18 @@ export function useThemeScheme(): ThemeScheme {
   return isDark ? DARK_THEME_SCHEME : LIGHT_THEME_SCHEME
 }
 
-export function useTextThemeStyle(type: TextThemeType): TextStyle {
-  const scheme = useThemeScheme()
-  return { color: scheme[type] }
+export function useThemeColor(typo: ThemeSchemeTypo): ColorValue {
+  return useThemeScheme()[typo]
 }
 
-export function useTextThemeColor(type: TextThemeType): ColorValue {
-  return useThemeScheme()[type]
+export function useThemeColors(typos: ThemeSchemeTypo[]): ColorValue[] {
+  const theme = useThemeScheme()
+  return typos.map(typo => theme[typo])
 }
 
-export function useImageThemeColor(type: ImageThemeType): ColorValue {
-  return useThemeScheme()[type]
-}
-
-export function useViewThemeColor(type: ViewThemeType): ColorValue {
-  return useThemeScheme()[type]
+export function useTextThemeStyle(typo: ThemeSchemeTypo): TextStyle {
+  const theme = useThemeScheme()
+  return { color: theme[typo] }
 }
 
 export function useStatusBarStyle(): StatusBarStyle {

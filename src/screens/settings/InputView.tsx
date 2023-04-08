@@ -1,10 +1,6 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
-import {
-  useImageThemeColor,
-  useTextThemeStyle,
-  useViewThemeColor,
-} from '../../themes/hooks'
+import { useTextThemeStyle, useThemeColor } from '../../themes/hooks'
 import React, { useState } from 'react'
 import {
   Pressable,
@@ -28,14 +24,14 @@ export function InputView(props: InputViewProps) {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
 
   const textStyle = useTextThemeStyle('text')
-  const iconColor = useImageThemeColor('tint')
-  const backgroundColor = useViewThemeColor('backdropSecondary')
+  const iconColor = useThemeColor('tint')
+  const backgroundColor = useThemeColor('backdrop2')
 
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
       <TextInput
-        secureTextEntry={securable && secureTextEntry}
         style={[styles.text, textStyle]}
+        secureTextEntry={securable && secureTextEntry}
         value={value}
         onChangeText={onChangeText}
       />
@@ -76,7 +72,7 @@ const styles = StyleSheet.create<Styles>({
     fontSize: 11,
     height: 32,
     paddingLeft: 8,
-    // backgroundColor: 'red',
+    padding: 0,
   },
   touchable: {
     marginLeft: 7.5,

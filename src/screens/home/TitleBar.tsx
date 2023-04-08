@@ -2,7 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
-import { useImageThemeColor, useStatusBarStyle } from '../../themes/hooks'
+import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   Image,
@@ -27,7 +27,9 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const { onScannerPress, onSettingsPress } = props
   const { top } = useSafeAreaInsets()
   const barStyle = useStatusBarStyle()
-  const iconColor = useImageThemeColor('tint')
+  const iconColor = useThemeColor('tint')
+  const backgroundColor = useThemeColor('background')
+
   return (
     <View
       style={[
@@ -37,13 +39,13 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
       <StatusBar
         translucent
         barStyle={barStyle}
-        backgroundColor="transparent"
+        backgroundColor={backgroundColor}
       />
       <View style={styles.touchable} />
       <View style={styles.touchable} />
       <View style={styles.center}>
         <Image style={styles.logo} source={images.logo} />
-        <TText style={styles.title} type="title">
+        <TText style={styles.title} typo="text">
           OpenAI Translator
         </TText>
       </View>

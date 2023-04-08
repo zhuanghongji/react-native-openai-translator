@@ -22,7 +22,7 @@ import {
   useThemeModePref,
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
-import { useTextThemeColor, useViewThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { InputView } from './InputView'
 import { PickView } from './PickView'
@@ -47,8 +47,8 @@ export function SettingsScreen(
   const { navigation } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
-  const contentColor = useTextThemeColor('content')
-  const backgroundColor = useViewThemeColor('background')
+  const contentColor = useThemeColor('text2')
+  const backgroundColor = useThemeColor('background')
 
   const [serviceProviderAnimatedIndex, serviceProviderModalRef] = usePickModal()
   const [serviceProvider, setServiceProvider] = useServiceProviderPref()
@@ -141,7 +141,7 @@ export function SettingsScreen(
           paddingTop: DIVIDER_HEIGHT,
           paddingBottom: DIVIDER_HEIGHT * 3 + bottomInset,
         }}>
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           Default Service Provider
         </TText>
         <PickView
@@ -151,7 +151,7 @@ export function SettingsScreen(
         />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           * API Key
         </TText>
         <InputView securable={true} value={apiKey} onChangeText={setApiKey} />
@@ -172,7 +172,7 @@ export function SettingsScreen(
         </Text>
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           API Model
         </TText>
         <PickView
@@ -182,19 +182,19 @@ export function SettingsScreen(
         />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           API URL
         </TText>
         <InputView value={apiUrl} onChangeText={setApiUrl} />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           API URL Path
         </TText>
         <InputView value={apiUrlPath} onChangeText={setApiUrlPath} />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           Default Translate Mode
         </TText>
         <PickView
@@ -204,7 +204,7 @@ export function SettingsScreen(
         />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           Default Target Language
         </TText>
         <PickView
@@ -214,7 +214,7 @@ export function SettingsScreen(
         />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           Theme
         </TText>
         <PickView
@@ -224,7 +224,7 @@ export function SettingsScreen(
         />
 
         {divider}
-        <TText style={styles.title} type="text">
+        <TText style={styles.title} typo="text">
           Language
         </TText>
         <PickView

@@ -21,7 +21,7 @@ import {
   useApiUrlPref,
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
-import { useImageThemeColor, useViewThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import { Message, ScanBlock, TranslatorStatus } from '../../types'
 import { trimContent } from '../../utils'
 import type { RootStackParamList } from '../screens'
@@ -53,8 +53,8 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 const FROM_LANGUAGE_KEYS = [null, ...LANGUAGE_KEYS]
 
 export function HomeScreen({ navigation }: Props): JSX.Element {
-  const tintSecondary = useImageThemeColor('tintSecondary')
-  const backgroundColor = useViewThemeColor('background')
+  const tint2 = useThemeColor('tint2')
+  const backgroundColor = useThemeColor('background')
 
   const [apiUrl] = useApiUrlPref()
   const [apiUrlPath] = useApiUrlPathPref()
@@ -233,7 +233,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           <SvgIcon
             style={{ marginHorizontal: 4 }}
             size={dimensions.iconSmall}
-            color={tintSecondary}
+            color={tint2}
             name="swap-horiz"
           />
         </Pressable>

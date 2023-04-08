@@ -2,6 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
 import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
+import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
 import React from 'react'
 import {
   Pressable,
@@ -64,6 +65,10 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const title = getTitle(mode)
   const subtitle = getSubtitle(mode, systemPrompt)
 
+  const barStyle = useStatusBarStyle()
+  const tintColor = useThemeColor('tint')
+  const backgroundColor = useThemeColor('backgroundChat')
+
   return (
     <View
       style={[
@@ -72,17 +77,17 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
       ]}>
       <StatusBar
         translucent
-        barStyle="light-content"
-        backgroundColor="transparent"
+        barStyle={barStyle}
+        backgroundColor={backgroundColor}
       />
       <Pressable
         style={styles.touchable}
         hitSlop={{ right: H_EDGE }}
         onPress={onBackPress}>
-        <SvgIcon size={dimensions.iconMedium} color="white" name="back" />
+        <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
       </Pressable>
       <View style={styles.center}>
-        <TText style={styles.title} type="title">
+        <TText style={styles.title} typo="text">
           {title}
         </TText>
         <TText
@@ -90,12 +95,12 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
             styles.subtitle,
             { textDecorationLine: mode === 'bubble' ? 'line-through' : 'none' },
           ]}
-          type="subtitle">
+          typo="text2">
           {subtitle}
         </TText>
       </View>
       <Pressable style={styles.touchable} onPress={onMorePress}>
-        <SvgIcon size={dimensions.iconLarge} color="white" name="more" />
+        <SvgIcon size={dimensions.iconLarge} color={tintColor} name="more" />
       </Pressable>
     </View>
   )
@@ -115,7 +120,6 @@ const styles = StyleSheet.create<Styles>({
     alignItems: 'center',
     paddingHorizontal: H_EDGE,
     width: '100%',
-    backgroundColor: 'black',
   },
   touchable: {
     width: 36,

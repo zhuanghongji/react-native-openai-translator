@@ -1,5 +1,5 @@
 import { colors } from '../res/colors'
-import { useTextThemeColor, useViewThemeColor } from '../themes/hooks'
+import { useThemeColor } from '../themes/hooks'
 import React from 'react'
 import {
   Pressable,
@@ -20,18 +20,16 @@ export type PickModalItemViewProps = {
 export const PickModalItemView = React.memo((props: PickModalItemViewProps) => {
   const { style, label, isSelected, onPress } = props
 
-  const textColor = useTextThemeColor('text')
-  const contentColor = useTextThemeColor('content')
-  const backdropSecondaryColor = useViewThemeColor('backdropSecondary')
+  const textColor = useThemeColor('text')
+  const contentColor = useThemeColor('text2')
+  const backdropColor = useThemeColor('backdrop2')
 
   return (
     <Pressable
       style={[
         style,
         {
-          backgroundColor: isSelected
-            ? backdropSecondaryColor
-            : colors.transparent,
+          backgroundColor: isSelected ? backdropColor : colors.transparent,
         },
       ]}
       onPress={onPress}>

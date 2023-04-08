@@ -2,11 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { sheets } from '../../res/sheets'
-import {
-  useImageThemeColor,
-  useTextThemeStyle,
-  useViewThemeColor,
-} from '../../themes/hooks'
+import { useTextThemeStyle, useThemeColor } from '../../themes/hooks'
 import React, { useImperativeHandle, useRef, useState } from 'react'
 import {
   Pressable,
@@ -35,10 +31,9 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>(
     const [foucus, setFocus] = useState(false)
 
     const textStyle = useTextThemeStyle('text')
-    const tintColor = useImageThemeColor('tint')
-
-    const borderColor = useViewThemeColor('border')
-    const backdropColor = useViewThemeColor('backdrop')
+    const tintColor = useThemeColor('tint')
+    const borderColor = useThemeColor('border')
+    const backdropColor = useThemeColor('backdrop')
 
     const textInputRef = useRef<TextInput>(null)
     useImperativeHandle(
@@ -125,6 +120,7 @@ const styles = StyleSheet.create<Styles>({
   },
   text: {
     flex: 1,
+    textAlignVertical: 'top',
     textAlign: 'justify',
     marginBottom: 20,
   },

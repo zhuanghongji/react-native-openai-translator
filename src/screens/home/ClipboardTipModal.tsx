@@ -1,6 +1,6 @@
 import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
-import { useViewThemeColor } from '../../themes/hooks'
+import { useThemeColor } from '../../themes/hooks'
 import React, { useImperativeHandle, useRef, useState } from 'react'
 import {
   Pressable,
@@ -28,10 +28,10 @@ export const ClipboardTipModal = React.forwardRef<
 >((props, ref) => {
   const { style } = props
 
-  const borderSecondaryColor = useViewThemeColor('borderSecondary')
-  const backdropColor = useViewThemeColor('backdrop')
+  const borderColor = useThemeColor('border2')
+  const backdropColor = useThemeColor('backdrop')
 
-  const { width: frameWidth } = useSafeAreaFrame()
+  const { width: frameWidth, height: frameHeight } = useSafeAreaFrame()
   const [text, setText] = useState('')
   const isVisible = text ? true : false
 
@@ -50,7 +50,7 @@ export const ClipboardTipModal = React.forwardRef<
   const renderButton = (txt: string, onPress?: () => void) => {
     return (
       <Pressable style={styles.buttonContainer} onPress={onPress}>
-        <TText style={styles.buttonText} type="text">
+        <TText style={styles.buttonText} typo="text">
           {txt}
         </TText>
       </Pressable>
@@ -61,10 +61,12 @@ export const ClipboardTipModal = React.forwardRef<
     <Modal
       style={[styles.container, style]}
       isVisible={isVisible}
+      deviceHeight={frameHeight}
       animationIn="fadeInUp"
       animationInTiming={500}
       animationOut="fadeOutUp"
-      animationOutTiming={500}>
+      animationOutTiming={500}
+      statusBarTranslucent={true}>
       <View
         style={[
           styles.content,
@@ -77,22 +79,18 @@ export const ClipboardTipModal = React.forwardRef<
           <Text style={styles.badgeText}>Clipboard</Text>
         </View>
 
-        <TText style={styles.title} type="title">
+        <TText style={styles.title} typo="text">
           New Text Detected
         </TText>
-        <TText style={styles.text} type="text" numberOfLines={7}>
+        <TText style={styles.text} typo="text" numberOfLines={7}>
           {text}
         </TText>
-        <View
-          style={[styles.buttonRow, { borderTopColor: borderSecondaryColor }]}>
+        <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
           {renderButton('Ignore', () => {
             setText('')
           })}
           <View
-            style={[
-              styles.buttonDivider,
-              { backgroundColor: borderSecondaryColor },
-            ]}
+            style={[styles.buttonDivider, { backgroundColor: borderColor }]}
           />
           {renderButton('Use It', () => {
             setText('')

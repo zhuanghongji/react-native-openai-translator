@@ -1,7 +1,9 @@
 import { AnimRotateContainer } from '../../../components/AnimRotateContainer'
+import { TText } from '../../../components/TText'
 import { dimensions } from '../../../res/dimensions'
 import { images } from '../../../res/images'
 import { sheets } from '../../../res/sheets'
+import { useThemeColor } from '../../../themes/hooks'
 import { trimContent } from '../../../utils'
 import { useSSEMessageStore } from '../../../zustand/stores/sse-message-store'
 import React from 'react'
@@ -9,7 +11,6 @@ import {
   Image,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   View,
   ViewStyle,
@@ -22,6 +23,8 @@ export type SSEMessageProps = {
 export function SSEMessageView(props: SSEMessageProps) {
   const { style } = props
 
+  const backgroundColor = useThemeColor('backgroundMessage')
+
   const status = useSSEMessageStore(state => state.status)
   const content = useSSEMessageStore(state => state.content)
   if (status !== 'sending') {
@@ -33,10 +36,10 @@ export function SSEMessageView(props: SSEMessageProps) {
         <Image style={{ width: 18, height: 18 }} source={images.logoMini} />
       </AnimRotateContainer>
 
-      <View style={styles.content}>
-        <Text style={[styles.text, sheets.contentText]}>
+      <View style={[styles.content, { backgroundColor }]}>
+        <TText style={[styles.text, sheets.contentText]} typo="text">
           {content ? trimContent(content) : '...'}
-        </Text>
+        </TText>
       </View>
     </View>
   )
@@ -66,10 +69,9 @@ const styles = StyleSheet.create<Styles>({
     maxWidth: '80%',
     padding: dimensions.edge,
     borderRadius: dimensions.borderRadius,
-    backgroundColor: '#2C2C2C',
   },
   text: {
     textAlign: 'justify',
-    color: 'white',
+    textAlignVertical: 'top',
   },
 })

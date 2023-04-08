@@ -1,6 +1,8 @@
+import { TText } from '../../../components/TText'
 import { dimensions } from '../../../res/dimensions'
 import { images } from '../../../res/images'
 import { sheets } from '../../../res/sheets'
+import { useThemeColor } from '../../../themes/hooks'
 import { ChatMessage } from '../../../types'
 import { trimContent } from '../../../utils'
 import React from 'react'
@@ -8,7 +10,6 @@ import {
   Image,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   View,
   ViewStyle,
@@ -22,6 +23,8 @@ export type AssistantMessageProps = {
 export function AssistantMessageView(props: AssistantMessageProps) {
   const { style, message } = props
   const { content } = message
+
+  const backgroundColor = useThemeColor('backgroundMessage')
 
   return (
     <View style={[style, styles.container]}>
@@ -38,10 +41,10 @@ export function AssistantMessageView(props: AssistantMessageProps) {
         />
       </View>
 
-      <View style={styles.content}>
-        <Text style={[styles.text, sheets.contentText]}>
+      <View style={[styles.content, { backgroundColor }]}>
+        <TText style={[styles.text, sheets.contentText]} typo="text">
           {trimContent(content)}
-        </Text>
+        </TText>
       </View>
     </View>
   )
@@ -64,7 +67,6 @@ const styles = StyleSheet.create<Styles>({
     maxWidth: '80%',
     padding: dimensions.edge,
     borderRadius: dimensions.borderRadius,
-    backgroundColor: '#2C2C2C',
   },
   text: {
     textAlign: 'justify',

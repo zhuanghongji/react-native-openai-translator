@@ -1,33 +1,30 @@
 import type { ColorValue } from 'react-native'
 
-export interface TextThemeScheme {
-  title: ColorValue
-  subtitle: ColorValue
+export interface ThemeScheme {
+  // text
   text: ColorValue
-  content: ColorValue
-  error: ColorValue
-}
+  text2: ColorValue
 
-export interface ImageThemeScheme {
+  // image
   tint: ColorValue
-  tintSecondary: ColorValue
-  tintTertiary: ColorValue
+  tint2: ColorValue
+  tint3: ColorValue
   tintSelected: ColorValue
-}
 
-export interface ViewThemeScheme {
+  // view
   border: ColorValue
-  borderSecondary: ColorValue
+  border2: ColorValue
   backdrop: ColorValue
-  backdropSecondary: ColorValue
+  backdrop2: ColorValue
   backdropSelected: ColorValue
   background: ColorValue
+  background2: ColorValue
+  backgroundChat: ColorValue
+  backgroundMessage: ColorValue
+
+  // others
+  error: ColorValue
+  placeholder: ColorValue
 }
 
-export type TextThemeType = keyof TextThemeScheme
-
-export type ImageThemeType = keyof ImageThemeScheme
-
-export type ViewThemeType = keyof ViewThemeScheme
-
-export type ThemeScheme = TextThemeScheme & ImageThemeScheme & ViewThemeScheme
+export type ThemeSchemeTypo = keyof ThemeScheme

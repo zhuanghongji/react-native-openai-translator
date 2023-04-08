@@ -2,6 +2,8 @@ import { LanguageKey } from '../preferences/options'
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { texts } from '../res/texts'
+import { useThemeColor } from '../themes/hooks'
+import { TText } from './TText'
 import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react'
 import {
   Platform,
@@ -38,6 +40,8 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>(
     const { style } = props
     const { height: frameHeight } = useSafeAreaFrame()
     const { top, bottom } = useSafeAreaInsets()
+
+    const backgroundColor = useThemeColor('background2')
 
     const [initError, setInitError] = useState(false)
     useEffect(() => {
@@ -151,11 +155,13 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>(
 
     return (
       <Modal
-        style={[style, styles.container]}
+        style={[styles.container, style, { backgroundColor }]}
         isVisible={isVisible}
         deviceHeight={frameHeight}
         animationIn="fadeInUp"
-        animationOut="fadeOutDown">
+        animationOut="fadeOutDown"
+        hasBackdrop={false}
+        statusBarTranslucent={true}>
         <Pressable
           style={[styles.content, { marginTop: top, marginBottom: bottom }]}
           onPress={() => setOptions(null)}>
@@ -165,12 +171,12 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>(
                 {texts.noEngine}
               </Text>
             ) : (
-              <Text style={styles.text}>
+              <TText style={styles.text} typo="text">
                 <Text style={{ color: colors.primary }}>
                   {highlightContent}
                 </Text>
                 <Text>{normalContent}</Text>
-              </Text>
+              </TText>
             )}
           </View>
         </Pressable>
@@ -191,7 +197,6 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     margin: 0,
     padding: 0,
-    backgroundColor: '#1D1D1D',
   },
   content: {
     flex: 1,
