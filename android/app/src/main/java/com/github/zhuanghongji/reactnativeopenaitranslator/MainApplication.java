@@ -8,8 +8,6 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
-import com.github.zhuanghongji.reactnativeopenaitranslator.BuildConfig;
-import com.github.zhuanghongji.reactnativeopenaitranslator.ReactNativeFlipper;
 
 import java.util.List;
 
