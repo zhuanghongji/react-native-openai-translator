@@ -1,6 +1,10 @@
 package com.github.zhuanghongji.reactnativeopenaitranslator;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -16,6 +20,10 @@ public class MainActivity extends ReactActivity {
     // super.onCreate(savedInstanceState);
     SplashScreen.show(this, R.style.SplashScreenTheme, true);
     super.onCreate(null);
+
+    // Comment it because of something unknown make view in react-native doesn't response
+    // Maybe it relate to react-native-keyboard-controller
+    // transparentStatusBar();
   }
 
   /**
@@ -42,5 +50,15 @@ public class MainActivity extends ReactActivity {
         // If you opted-in for the New Architecture, we enable Concurrent React (i.e. React 18).
         DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled() // concurrentRootEnabled
         );
+  }
+
+  private void transparentStatusBar() {
+      Window window = getWindow();
+      window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+      int option = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+      int vis = window.getDecorView().getSystemUiVisibility();
+      window.getDecorView().setSystemUiVisibility(option | vis);
+      window.setStatusBarColor(Color.TRANSPARENT);
   }
 }

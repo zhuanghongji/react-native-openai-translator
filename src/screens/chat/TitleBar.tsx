@@ -95,6 +95,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
             styles.subtitle,
             { textDecorationLine: mode === 'bubble' ? 'line-through' : 'none' },
           ]}
+          numberOfLines={1}
           typo="text2">
           {subtitle}
         </TText>

@@ -1,5 +1,6 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
 import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
@@ -28,7 +29,6 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const { top } = useSafeAreaInsets()
   const barStyle = useStatusBarStyle()
   const iconColor = useThemeColor('tint')
-  const backgroundColor = useThemeColor('background')
 
   return (
     <View
@@ -39,7 +39,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
       <StatusBar
         translucent
         barStyle={barStyle}
-        backgroundColor={backgroundColor}
+        backgroundColor={colors.transparent}
       />
       <View style={styles.touchable} />
       <View style={styles.touchable} />

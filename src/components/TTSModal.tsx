@@ -97,6 +97,9 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>(
     }, [options])
 
     useEffect(() => {
+      if (Platform.OS === 'android') {
+        return
+      }
       if (!options) {
         Tts.stop()
         return
