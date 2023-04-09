@@ -45,7 +45,7 @@ export function PickView(props: PickViewProps) {
         {label}
       </TText>
       <Animated.View style={transfromStyle}>
-        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="errow-drop-down" />
+        <SvgIcon size={dimensions.iconLarge} color={iconColor} name="errow-drop-down" />
       </Animated.View>
     </Animated.View>
   )
@@ -62,13 +62,13 @@ const styles = StyleSheet.create<Styles>({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    height: 32,
-    paddingLeft: 8,
-    paddingRight: 4,
+    height: 42,
+    paddingLeft: dimensions.edge,
+    paddingRight: dimensions.edge - 6,
     borderRadius: 4,
     borderWidth: 0.5,
   },
   text: {
-    fontSize: 11,
+    fontSize: 14,
   },
 })

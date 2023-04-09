@@ -179,6 +179,7 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
         animationInTiming={1}
         animationOut="fadeOut"
         animationOutTiming={1}
+        deviceHeight={frameHeight}
         statusBarTranslucent={true}
         coverScreen={true}
         backdropOpacity={0}

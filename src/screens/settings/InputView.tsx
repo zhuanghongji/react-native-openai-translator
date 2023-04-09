@@ -20,18 +20,39 @@ export function InputView(props: InputViewProps) {
   const iconColor = useThemeColor('tint')
   const backgroundColor = useThemeColor('backdrop2')
 
+  const [foucsd, setFocused] = useState(false)
+
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
       <TextInput
         style={[styles.text, textStyle]}
         secureTextEntry={securable && secureTextEntry}
         value={value}
-        onChangeText={onChangeText}
+        onChangeText={text => onChangeText(text.trim())}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
+      <Pressable
+        style={[styles.clear, { opacity: foucsd ? 1 : 0 }]}
+        disabled={!foucsd}
+        hitSlop={{
+          left: dimensions.edge,
+          top: dimensions.edge,
+          right: 9,
+          bottom: dimensions.edge,
+        }}
+        onPress={() => setSecureTextEntry(!secureTextEntry)}>
+        <SvgIcon size={dimensions.iconSmall} color={iconColor} name="close" />
+      </Pressable>
       {securable ? (
         <Pressable
-          style={styles.touchable}
-          hitSlop={dimensions.hitSlop}
+          style={styles.secure}
+          hitSlop={{
+            left: 4,
+            top: dimensions.edge,
+            right: dimensions.edge,
+            bottom: dimensions.edge,
+          }}
           onPress={() => setSecureTextEntry(!secureTextEntry)}>
           <SvgIcon
             size={dimensions.iconSmall}
@@ -47,7 +68,8 @@ export function InputView(props: InputViewProps) {
 type Styles = {
   container: ViewStyle
   text: TextStyle
-  touchable: TextStyle
+  clear: ViewStyle
+  secure: ViewStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -56,19 +78,22 @@ const styles = StyleSheet.create<Styles>({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    height: 32,
+    height: 42,
+    paddingLeft: dimensions.edge,
     marginTop: 6,
     borderRadius: 4,
   },
   text: {
     flex: 1,
-    fontSize: 11,
-    height: 32,
-    paddingLeft: 8,
+    fontSize: 14,
     padding: 0,
   },
-  touchable: {
-    marginLeft: 7.5,
-    marginRight: 7.5,
+  clear: {
+    marginLeft: 11,
+    marginRight: 9,
+  },
+  secure: {
+    marginLeft: 4,
+    marginRight: 11,
   },
 })

@@ -20,3 +20,14 @@ export function isEnglishWord(str: string) {
   const pattern = /^[A-Za-z][a-z]+$/
   return pattern.test(str.trim())
 }
+
+const HEXS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
+export function invertColor(color: string): string {
+  return color
+    .split('')
+    .map(hex => {
+      const hexIndex = HEXS.findIndex(v => v === hex.toUpperCase())
+      return hexIndex < 0 ? hex : HEXS[15 - hexIndex]
+    })
+    .join('')
+}

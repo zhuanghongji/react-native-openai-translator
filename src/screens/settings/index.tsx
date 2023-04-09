@@ -1,5 +1,7 @@
+import { ConfirmModal } from '../../components/ConfirmModal'
 import { PickSelector } from '../../components/PickSelector'
 import { TText } from '../../components/TText'
+import { DEFAULTS } from '../../preferences/defaults'
 import {
   API_MODELS,
   LANGUAGE_KEYS,
@@ -20,6 +22,7 @@ import {
   useServiceProviderPref,
   useThemeModePref,
 } from '../../preferences/storages'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
@@ -27,7 +30,7 @@ import { InputView } from './InputView'
 import { PickView } from './PickView'
 import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React from 'react'
+import React, { useState } from 'react'
 import { Linking, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -52,10 +55,15 @@ export function SettingsScreen(
   const [themeMode, setThemeMode] = useThemeModePref()
   const [langMode, setLangMode] = useLanguageModePref()
 
+  const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
+
   const divider = <View style={{ height: DIVIDER_HEIGHT }} />
   return (
     <SafeAreaView style={[{ flex: 1, backgroundColor }]} edges={['bottom']}>
-      <TitleBar onBackPress={() => navigation.goBack()} />
+      <TitleBar
+        onBackPress={() => navigation.goBack()}
+        onResetPress={() => setResetConfirmModalVisible(true)}
+      />
       <ScrollView
         style={{ flex: 1 }}
         keyboardDismissMode="on-drag"
@@ -85,7 +93,7 @@ export function SettingsScreen(
         <Text style={[styles.caption, { color: contentColor }]}>
           <Text>{'Go to the '}</Text>
           <Text
-            style={{ color: '#1E90FF', textDecorationLine: 'underline' }}
+            style={{ color: colors.link, textDecorationLine: 'underline' }}
             onPress={() => {
               Linking.openURL('https://platform.openai.com/account/api-keys')
             }}>
@@ -195,6 +203,23 @@ export function SettingsScreen(
           onValueChange={() => {}}
         /> */}
       </ScrollView>
+
+      <ConfirmModal
+        visible={resetConfirmModalVisible}
+        message="Are you sure to reset all settings except for the API Key ?"
+        leftText="Cancle"
+        rightText="Reset"
+        onRightPress={() => {
+          setServiceProvider(DEFAULTS.serviceProvider)
+          setApiModel(DEFAULTS.apiModel)
+          setApiUrl(DEFAULTS.apiUrl)
+          setApiUrlPath(DEFAULTS.apiUrlPath)
+          setDefaultTargetLang(DEFAULTS.defaultTargetLanguage)
+          setThemeMode(DEFAULTS.themeMode)
+          setLangMode(DEFAULTS.languageMode)
+        }}
+        onDismissRequest={setResetConfirmModalVisible}
+      />
     </SafeAreaView>
   )
 }

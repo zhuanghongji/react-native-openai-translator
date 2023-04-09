@@ -6,6 +6,7 @@ export const colors = {
   primary: '#809BE8',
   accent: '#E8798B',
   warning: '#E94543',
+  link: '#1E90FF',
 
   placeholderDark: '#FFFFFF80',
   placeholderLight: '#B0B0B0FF',

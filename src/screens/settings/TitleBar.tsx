@@ -2,46 +2,37 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
-import {
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-  useColorScheme,
-} from 'react-native'
+import { Pressable, StatusBar, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+const LIGHT_COLORS = ['#F1F0FC', '#EAECFD', '#D2E6FC', '#EEF8FE', '#FBFBFD']
+
 export interface TitleBarProps {
   onBackPress: () => void
+  onResetPress: () => void
 }
 
-const LIGHT_COLORS = ['#F1F0FC', '#EAECFD', '#D2E6FC', '#EEF8FE', '#FBFBFD']
-const DARK_COLORS = ['#F1F0FC', '#EAECFD', '#D2E6FC', '#EEF8FE', '#FBFBFD']
-
 export function TitleBar(props: TitleBarProps): JSX.Element {
-  const { onBackPress } = props
+  const { onBackPress, onResetPress } = props
   const { top } = useSafeAreaInsets()
-
-  const isDark = useColorScheme() === 'dark'
 
   return (
     <LinearGradient
       style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}
       start={{ x: 0, y: 1 }}
       end={{ x: 1, y: 0 }}
-      colors={isDark ? DARK_COLORS : LIGHT_COLORS}>
+      colors={LIGHT_COLORS}>
       <StatusBar translucent barStyle="dark-content" backgroundColor={colors.transparent} />
       <Pressable style={styles.touchable} onPress={onBackPress}>
-        <SvgIcon size={dimensions.iconMedium} color="#000000" name="back" />
+        <SvgIcon size={dimensions.iconMedium} color={colors.black} name="back" />
       </Pressable>
       <View style={styles.center}>
         <Text style={styles.title}>Settings</Text>
       </View>
-      <View style={styles.touchable} />
+      <Pressable style={styles.touchable} onPress={onResetPress}>
+        <SvgIcon size={dimensions.iconMedium} color={colors.black} name="reset" />
+      </Pressable>
     </LinearGradient>
   )
 }
