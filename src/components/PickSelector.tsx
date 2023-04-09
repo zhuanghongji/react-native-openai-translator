@@ -1,4 +1,5 @@
 import { colors } from '../res/colors'
+import { useThemeDark } from '../themes/hooks'
 import { PickSelectorItemView } from './PickSelectorItemView'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -10,7 +11,6 @@ import {
   TextStyle,
   View,
   ViewStyle,
-  useColorScheme,
 } from 'react-native'
 import Modal from 'react-native-modal'
 import Animated, {
@@ -78,8 +78,8 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
     onDismiss,
   } = props
 
-  const isDark = useColorScheme() === 'dark'
-  const selectorBackgroundColor = isDark ? colors.c29 : colors.white
+  const isDark = useThemeDark()
+  const selectorBackgroundColor = isDark ? colors.c29 : colors.cF7
 
   const wasKeyboardVisibleWhenShowingRef = useRef(false)
   const isKeyboardVisibleRef = useRef(false)

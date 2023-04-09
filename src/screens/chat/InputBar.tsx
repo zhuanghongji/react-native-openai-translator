@@ -1,8 +1,9 @@
 import { SvgIcon } from '../../components/SvgIcon'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { useThemeColor } from '../../themes/hooks'
+import { useThemeColor, useThemeDark } from '../../themes/hooks'
 import React from 'react'
-import { Pressable, StyleSheet, TextInput, View, ViewStyle, useColorScheme } from 'react-native'
+import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -19,11 +20,11 @@ const H_EDGE = 8
 export function InputBar(props: InputBarProps): JSX.Element {
   const { value, sendDisabled, onChangeText, onSendPress } = props
 
-  const isDark = useColorScheme() === 'dark'
-  const tintColor = isDark ? '#FFFFFF' : '#000000'
-  const textColor = isDark ? '#FFFFFF' : '#000000'
-  const backgroundColor = isDark ? '#1C1C1C' : '#F7F7F7'
-  const backgroundColor2 = isDark ? '#282828' : '#FFFFFF'
+  const isDark = useThemeDark()
+  const tintColor = isDark ? colors.white : colors.black
+  const textColor = isDark ? colors.white : colors.black
+  const backgroundColor = isDark ? colors.c1C : colors.cF7
+  const backgroundColor2 = isDark ? colors.c28 : colors.white
   const placeholderColor = useThemeColor('placeholder')
 
   const { bottom } = useSafeAreaInsets()

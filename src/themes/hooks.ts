@@ -1,3 +1,4 @@
+import { useThemeModePref } from '../preferences/storages'
 import { colors } from '../res/colors'
 import type { ThemeScheme, ThemeSchemeTypo } from './themes'
 import { ColorValue, StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
@@ -48,9 +49,21 @@ const DARK_THEME_SCHEME: ThemeScheme = {
   placeholder: colors.placeholderDark,
 }
 
-export function useThemeScheme(): ThemeScheme {
+export function useThemeDark() {
   const isDark = useColorScheme() === 'dark'
-  return isDark ? DARK_THEME_SCHEME : LIGHT_THEME_SCHEME
+  const [themeMode] = useThemeModePref()
+  if (themeMode === 'system') {
+    return isDark
+  }
+  return themeMode === 'dark'
+}
+
+export function useStatusBarStyle(): StatusBarStyle {
+  return useThemeDark() ? 'light-content' : 'dark-content'
+}
+
+export function useThemeScheme(): ThemeScheme {
+  return useThemeDark() ? DARK_THEME_SCHEME : LIGHT_THEME_SCHEME
 }
 
 export function useThemeColor(typo: ThemeSchemeTypo): ColorValue {
@@ -65,8 +78,4 @@ export function useThemeColors(typos: ThemeSchemeTypo[]): ColorValue[] {
 export function useTextThemeStyle(typo: ThemeSchemeTypo): TextStyle {
   const theme = useThemeScheme()
   return { color: theme[typo] }
-}
-
-export function useStatusBarStyle(): StatusBarStyle {
-  return useColorScheme() === 'dark' ? 'light-content' : 'dark-content'
 }

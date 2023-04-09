@@ -1,5 +1,6 @@
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
+import { useThemeDark } from '../themes/hooks'
 import { PickModalItemView } from './PickModalItemView'
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -7,9 +8,8 @@ import BottomSheet, {
   BottomSheetFlatList,
 } from '@gorhom/bottom-sheet'
 import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
-import { Keyboard, StyleProp, StyleSheet, ViewStyle, useColorScheme } from 'react-native'
+import { Keyboard, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import Animated from 'react-native-reanimated'
-import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 export type PickModalProps<T> = {
   style?: StyleProp<ViewStyle>
@@ -43,9 +43,7 @@ function _PickModal<T>(props: PickModalProps<T>, ref: React.ForwardedRef<PickMod
     onDismiss,
   } = props
 
-  const { height: frameHeight } = useSafeAreaFrame()
-
-  const isDark = useColorScheme() === 'dark'
+  const isDark = useThemeDark()
   const backgroundColor = isDark ? colors.c29 : colors.white
   const wasKeyboardVisibleWhenShowingRef = useRef(false)
 

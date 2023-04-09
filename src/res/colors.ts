@@ -11,8 +11,10 @@ export const colors = {
   placeholderDark: '#FFFFFF80',
   placeholderLight: '#B0B0B0FF',
 
+  c1C: '#1C1C1C',
   c1D: '#1D1D1D',
   c24: '#242424',
+  c28: '#282828',
   c29: '#292929',
   c2C: '#2C2C2C',
   c33: '#333333',
@@ -26,4 +28,5 @@ export const colors = {
   cED: '#EDEDED',
   cEE: '#EEEEEE',
   cF6: '#F6F6F6',
+  cF7: '#F7F7F7',
 }
