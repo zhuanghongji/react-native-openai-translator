@@ -18,39 +18,55 @@ import { UserMessageView } from './message-view/UserMessageView'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
 import React, { useEffect, useRef, useState } from 'react'
-import { Keyboard, StyleSheet, View, ViewStyle } from 'react-native'
+import { Keyboard, View } from 'react-native'
 import {
   KeyboardEvents,
   useReanimatedKeyboardAnimation,
 } from 'react-native-keyboard-controller'
-import Animated, { useAnimatedStyle } from 'react-native-reanimated'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>
+
+function clamp(value: number, min: number, max: number) {
+  'worklet'
+  if (value < min) {
+    return min
+  }
+  if (value > max) {
+    return max
+  }
+  return value
+}
 
 export function ChatScreen({ navigation, route }: Props): JSX.Element {
   const { translatorMode, systemPrompt, userContent, assistantContent } =
     route.params
 
+  const [apiUrl] = useApiUrlPref()
+  const [apiUrlPath] = useApiUrlPathPref()
+  const [apiKey] = useApiKeyPref()
   const backgroundColor = useThemeColor('backgroundChat')
 
-  const flashListRef = useRef<FlashList<ChatMessage>>(null)
-  useEffect(() => {
-    const show = KeyboardEvents.addListener('keyboardWillShow', e => {
-      flashListRef.current?.scrollToIndex({ index: 0 })
-    })
-    return () => {
-      show.remove()
+  const listContainerHeight = useSharedValue(0)
+  const listContentHeight = useSharedValue(0)
+  const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
+  const transformStyle = useAnimatedStyle(() => {
+    const kbHeight = Math.abs(keyboardHeight.value)
+    const contentHeight = listContentHeight.value
+    const containerHeight = listContainerHeight.value
+    const offset = clamp(
+      contentHeight - (containerHeight - kbHeight),
+      0,
+      kbHeight
+    )
+    return {
+      transform: [{ translateY: -offset }],
     }
   }, [])
-
-  const { height } = useReanimatedKeyboardAnimation()
-  const transformStyle = useAnimatedStyle(
-    () => ({
-      transform: [{ translateY: height.value }],
-    }),
-    []
-  )
 
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     if (!userContent || !assistantContent) {
@@ -58,15 +74,26 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
     }
     return [
       {
-        role: 'assistant',
-        content: assistantContent,
-      },
-      {
         role: 'user',
         content: userContent,
       },
+      {
+        role: 'assistant',
+        content: assistantContent,
+      },
     ]
   })
+
+  const flashListRef = useRef<FlashList<ChatMessage>>(null)
+  useEffect(() => {
+    const show = KeyboardEvents.addListener('keyboardWillShow', () => {
+      if (messages.length > 0) {
+        flashListRef.current?.scrollToEnd()
+      }
+    })
+    return () => show.remove()
+  }, [messages.length])
+
   const [inputText, setInputText] = useState('')
 
   const status = useSSEMessageStore(state => state.status)
@@ -74,27 +101,22 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
   const setStatus = useSSEMessageStore(state => state.setStatus)
   const setContent = useSSEMessageStore(state => state.setContent)
 
-  const [apiUrl] = useApiUrlPref()
-  const [apiUrlPath] = useApiUrlPathPref()
-  const [apiKey] = useApiKeyPref()
-
   const onSendPress = () => {
     setInputText('')
     const nextMessages: ChatMessage[] = [
-      { role: 'user', content: inputText },
       ...messages,
+      { role: 'user', content: inputText },
     ]
     setMessages(nextMessages)
 
-    const messagesToSend: Message[] = nextMessages
-      .map(({ role, content }) => ({
-        role,
-        content,
-      }))
-      .reverse()
+    const messagesToSend: Message[] = nextMessages.map(({ role, content }) => ({
+      role,
+      content,
+    }))
     if (systemPrompt) {
-      messagesToSend.unshift({ role: 'system', content: systemPrompt })
+      messagesToSend.push({ role: 'system', content: systemPrompt })
     }
+    setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
     setStatus('sending')
     sseRequestChatCompletions(
       {
@@ -118,12 +140,13 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
         },
         onDone: message => {
           setMessages(prev => [
-            { role: 'assistant', content: message.content },
             ...prev,
+            { role: 'assistant', content: message.content },
           ])
           setStatus('done')
           setContent('')
           hapticSuccess()
+          setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
         },
         onComplete: () => {},
       }
@@ -131,7 +154,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
   }
 
   const renderItemSeparator = () => {
-    return <View style={{ height: dimensions.edge * 2 }} />
+    return <View style={{ height: dimensions.messageSeparator }} />
   }
 
   return (
@@ -147,12 +170,16 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
         onMorePress={() => {}}
       />
       <Animated.View style={[{ flex: 1, overflow: 'hidden' }]}>
-        <Animated.View style={[{ flex: 1 }, transformStyle]}>
+        <Animated.View
+          style={[{ flex: 1 }, transformStyle]}
+          onLayout={e => {
+            listContainerHeight.value = e.nativeEvent.layout.height
+          }}>
           <FlashList
             ref={flashListRef}
-            contentContainerStyle={{ paddingVertical: dimensions.edge }}
-            inverted={true}
-            // data={TEST_CHAT_MESSAGES}
+            contentContainerStyle={{
+              paddingVertical: dimensions.messageSeparator,
+            }}
             data={messages}
             getItemType={item => item.role}
             keyExtractor={(item, index) =>
@@ -168,11 +195,10 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
               return null
             }}
             ItemSeparatorComponent={renderItemSeparator}
-            ListHeaderComponent={<SSEMessageView />}
+            ListFooterComponent={<SSEMessageView />}
             estimatedItemSize={200}
-            onScrollBeginDrag={() => {
-              Keyboard.dismiss()
-            }}
+            onScrollBeginDrag={() => Keyboard.dismiss()}
+            onContentSizeChange={(_, h) => (listContentHeight.value = h)}
           />
         </Animated.View>
       </Animated.View>
@@ -185,11 +211,3 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
     </SafeAreaView>
   )
 }
-
-type Styles = {
-  scanArea: ViewStyle
-}
-
-const styles = StyleSheet.create<Styles>({
-  scanArea: {},
-})

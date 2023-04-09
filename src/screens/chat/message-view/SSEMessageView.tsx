@@ -58,6 +58,7 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
     alignItems: 'flex-start',
     paddingLeft: dimensions.edge,
+    marginTop: dimensions.messageSeparator,
   },
   imageWrapper: {
     width: 32,

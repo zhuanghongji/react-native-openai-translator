@@ -10,5 +10,6 @@ export const dimensions = {
   iconMedium: 20,
   iconSmall: 16,
   disabledOpacity: 0.3,
+  messageSeparator: edge * 2,
   hitSlop: { left: edge, top: edge, right: edge, bottom: edge },
 }
