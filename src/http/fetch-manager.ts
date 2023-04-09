@@ -4,8 +4,7 @@ export async function requestGetBySteam(content: string) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization:
-          'Bearer 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',
+        Authorization: 'Bearer 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',
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',

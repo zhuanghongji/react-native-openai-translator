@@ -55,9 +55,7 @@ export function getDefaultTranslatorMode() {
 
 // MARK: hooks
 
-type SetValue<T> = (
-  value: string | ((current: T | undefined) => T | undefined) | undefined
-) => void
+type SetValue<T> = (value: string | ((current: T | undefined) => T | undefined) | undefined) => void
 
 function useStorageString<T extends string, U = SetValue<T>>(
   key: StorageKey,
@@ -76,10 +74,7 @@ function useStorageBoolean<T extends boolean, U = SetValue<T>>(
 }
 
 export function useFromLanguagePref() {
-  return useStorageString<LanguageKey>(
-    StorageKey.defaultFromLanguage,
-    DEFAULTS.defaultFromLanguage
-  )
+  return useStorageString<LanguageKey>(StorageKey.defaultFromLanguage, DEFAULTS.defaultFromLanguage)
 }
 
 export function useDefaultTargetLanguagePref() {
@@ -90,10 +85,7 @@ export function useDefaultTargetLanguagePref() {
 }
 
 export function useServiceProviderPref() {
-  return useStorageString<ServiceProvider>(
-    StorageKey.serviceProvider,
-    DEFAULTS.serviceProvider
-  )
+  return useStorageString<ServiceProvider>(StorageKey.serviceProvider, DEFAULTS.serviceProvider)
 }
 
 export function useApiKeyPref() {
@@ -120,10 +112,7 @@ export function useDefaultTranslatorModePref() {
 }
 
 export function useLanguageModePref() {
-  return useStorageString<LanguageMode>(
-    StorageKey.languageMode,
-    DEFAULTS.languageMode
-  )
+  return useStorageString<LanguageMode>(StorageKey.languageMode, DEFAULTS.languageMode)
 }
 
 export function useThemeModePref() {
@@ -139,8 +128,5 @@ export function useAutoTranslatePref() {
 }
 
 export function useRestorePreviousPositionPref() {
-  return useStorageBoolean(
-    StorageKey.restorePreviousPosition,
-    DEFAULTS.restorePreviousPosition
-  )
+  return useStorageBoolean(StorageKey.restorePreviousPosition, DEFAULTS.restorePreviousPosition)
 }

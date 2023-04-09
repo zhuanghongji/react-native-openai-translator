@@ -3,14 +3,7 @@ import { sheets } from '../../res/sheets'
 import { ScanBlock } from '../../types'
 import { ScanAreaView } from './ScanAreaView'
 import React from 'react'
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 export interface ScanOverlayProps {
@@ -32,9 +25,7 @@ export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
       <View style={[styles.blocksArea, { width: scanWidth }, style]}>
         {scanBlocks.map(({ text, langs }, index) => {
           return (
-            <Text
-              key={`${index}_${text}_${langs}`}
-              style={[sheets.contentText, styles.blockText]}>
+            <Text key={`${index}_${text}_${langs}`} style={[sheets.contentText, styles.blockText]}>
               {text}
             </Text>
           )
@@ -44,14 +35,8 @@ export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
   }
 
   return (
-    <SafeAreaView
-      style={[StyleSheet.absoluteFill, styles.container]}
-      pointerEvents="none">
-      <ScanAreaView
-        style={scanAreaStyle}
-        width={scanWidth}
-        height={scanHeight}
-      />
+    <SafeAreaView style={[StyleSheet.absoluteFill, styles.container]} pointerEvents="none">
+      <ScanAreaView style={scanAreaStyle} width={scanWidth} height={scanHeight} />
       {renderBlocks()}
     </SafeAreaView>
   )

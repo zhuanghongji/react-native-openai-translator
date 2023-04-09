@@ -98,7 +98,7 @@ export const API_MODELS = [
 export type ApiModel = UnionFromTuple<typeof API_MODELS>
 // MARK: translate modes
 
-export const TRANSLATE_MODES = [
+export const TRANSLATOR_MODES = [
   'translate',
   'polishing',
   'summarize',
@@ -106,7 +106,7 @@ export const TRANSLATE_MODES = [
   'bubble',
 ] as const
 
-export type TranslatorMode = UnionFromTuple<typeof TRANSLATE_MODES>
+export type TranslatorMode = UnionFromTuple<typeof TRANSLATOR_MODES>
 
 // MARK: theme modes
 
@@ -116,12 +116,6 @@ export type ThemeMode = UnionFromTuple<typeof THEME_MODES>
 
 // MARK: language modes
 
-export const LANGUAGE_MODES = [
-  'en',
-  'zh-Hans',
-  'zh-Hant',
-  'ja',
-  'th',
-] satisfies LanguageKey[]
+export const LANGUAGE_MODES = ['en', 'zh-Hans', 'zh-Hant', 'ja', 'th'] satisfies LanguageKey[]
 
 export type LanguageMode = UnionFromTuple<typeof LANGUAGE_MODES>

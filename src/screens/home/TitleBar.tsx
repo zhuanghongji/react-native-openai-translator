@@ -31,16 +31,8 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const iconColor = useThemeColor('tint')
 
   return (
-    <View
-      style={[
-        styles.container,
-        { height: dimensions.barHeight + top, paddingTop: top },
-      ]}>
-      <StatusBar
-        translucent
-        barStyle={barStyle}
-        backgroundColor={colors.transparent}
-      />
+    <View style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}>
+      <StatusBar translucent barStyle={barStyle} backgroundColor={colors.transparent} />
       <View style={styles.touchable} />
       <View style={styles.touchable} />
       <View style={styles.center}>
@@ -50,21 +42,10 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
         </TText>
       </View>
       <Pressable style={styles.touchable} onPress={onScannerPress}>
-        <SvgIcon
-          size={dimensions.iconMedium}
-          color={iconColor}
-          name="scanner"
-        />
+        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="scanner" />
       </Pressable>
-      <Pressable
-        style={styles.touchable}
-        hitSlop={{ right: H_EDGE }}
-        onPress={onSettingsPress}>
-        <SvgIcon
-          size={dimensions.iconMedium}
-          color={iconColor}
-          name="settings"
-        />
+      <Pressable style={styles.touchable} hitSlop={{ right: H_EDGE }} onPress={onSettingsPress}>
+        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="settings" />
       </Pressable>
     </View>
   )

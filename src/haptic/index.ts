@@ -1,6 +1,4 @@
-import ReactNativeHapticFeedback, {
-  HapticOptions,
-} from 'react-native-haptic-feedback'
+import ReactNativeHapticFeedback, { HapticOptions } from 'react-native-haptic-feedback'
 
 const DEFAULT_OPTIONS: HapticOptions = {
   enableVibrateFallback: true,

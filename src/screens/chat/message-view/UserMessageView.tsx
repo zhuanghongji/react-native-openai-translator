@@ -5,14 +5,7 @@ import { sheets } from '../../../res/sheets'
 import { ChatMessage } from '../../../types'
 import { trimContent } from '../../../utils'
 import React from 'react'
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
 export type UserMessageProps = {
   style?: StyleProp<ViewStyle>
@@ -26,9 +19,7 @@ export function UserMessageView(props: UserMessageProps) {
   return (
     <View style={[style, styles.container]}>
       <View style={styles.content}>
-        <Text style={[styles.text, sheets.contentText]}>
-          {trimContent(content)}
-        </Text>
+        <Text style={[styles.text, sheets.contentText]}>{trimContent(content)}</Text>
       </View>
       <View
         style={{

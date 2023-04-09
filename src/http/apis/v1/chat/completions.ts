@@ -44,8 +44,7 @@ export function sseRequestChatCompletions(
   callbacks: ChatCompletionsCallbacks
 ) {
   const { apiUrl, apiUrlPath, apiKey, messages } = options
-  const { onSubscribe, onNext, onDone, onTimeout, onError, onComplete } =
-    callbacks
+  const { onSubscribe, onNext, onDone, onTimeout, onError, onComplete } = callbacks
 
   const result: Message<string> = { role: '', content: '' }
   const es = sseRequest(

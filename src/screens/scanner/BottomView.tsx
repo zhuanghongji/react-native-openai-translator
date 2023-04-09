@@ -2,14 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { hapticLight } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 
 const ICON_SIZE = 32
 
@@ -49,17 +42,10 @@ export function BottomView(props: BottomViewProps): JSX.Element {
             hapticLight()
             onTorchOnChange(!torchOn)
           }}>
-          <SvgIcon
-            size={ICON_SIZE}
-            color="white"
-            name={torchOn ? 'flash-on' : 'flash-off'}
-          />
+          <SvgIcon size={ICON_SIZE} color="white" name={torchOn ? 'flash-on' : 'flash-off'} />
         </Pressable>
         <Pressable
-          style={[
-            styles.outCircle,
-            { opacity: comfirmable ? 1 : dimensions.disabledOpacity },
-          ]}
+          style={[styles.outCircle, { opacity: comfirmable ? 1 : dimensions.disabledOpacity }]}
           hitSlop={dimensions.hitSlop}
           disabled={!comfirmable}
           onPress={() => {
@@ -81,9 +67,7 @@ export function BottomView(props: BottomViewProps): JSX.Element {
             onSwitchPress()
           }}>
           <SvgIcon size={ICON_SIZE} color="white" name="crop" />
-          <Text style={{ position: 'absolute', color: 'white', fontSize: 10 }}>
-            {switchText}
-          </Text>
+          <Text style={{ position: 'absolute', color: 'white', fontSize: 10 }}>{switchText}</Text>
         </Pressable>
       </View>
     </View>

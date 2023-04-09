@@ -13,13 +13,9 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native'
-import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
-} from 'react-native-reanimated'
+import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reanimated'
 
-const AnimatedPressable =
-  Animated.createAnimatedComponent<PressableProps>(Pressable)
+const AnimatedPressable = Animated.createAnimatedComponent<PressableProps>(Pressable)
 
 export interface PickButtonProps {
   style?: StyleProp<ViewStyle>
@@ -71,11 +67,7 @@ export function PickButton(props: PickButtonProps) {
         {label}
       </TText>
       <Animated.View style={transfromStyle}>
-        <SvgIcon
-          size={dimensions.iconMedium}
-          color={iconColor}
-          name="errow-drop-down"
-        />
+        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="errow-drop-down" />
       </Animated.View>
     </AnimatedPressable>
   )

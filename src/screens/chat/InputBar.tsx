@@ -2,14 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import React from 'react'
-import {
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-  ViewStyle,
-  useColorScheme,
-} from 'react-native'
+import { Pressable, StyleSheet, TextInput, View, ViewStyle, useColorScheme } from 'react-native'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'

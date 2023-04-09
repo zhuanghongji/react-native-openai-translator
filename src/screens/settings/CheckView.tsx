@@ -3,14 +3,7 @@ import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import React from 'react'
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
 export interface CheckViewProps {
   style?: StyleProp<ViewStyle>

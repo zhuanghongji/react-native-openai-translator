@@ -7,14 +7,7 @@ import { useThemeColor } from '../../../themes/hooks'
 import { trimContent } from '../../../utils'
 import { useSSEMessageStore } from '../../../zustand/stores/sse-message-store'
 import React from 'react'
-import {
-  Image,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
 export type SSEMessageProps = {
   style?: StyleProp<ViewStyle>

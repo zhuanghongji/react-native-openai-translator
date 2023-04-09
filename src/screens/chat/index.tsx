@@ -1,10 +1,6 @@
 import { hapticError, hapticSuccess } from '../../haptic'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
-import {
-  useApiKeyPref,
-  useApiUrlPathPref,
-  useApiUrlPref,
-} from '../../preferences/storages'
+import { useApiKeyPref, useApiUrlPathPref, useApiUrlPref } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import { ChatMessage, Message } from '../../types'
@@ -19,14 +15,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
 import React, { useEffect, useRef, useState } from 'react'
 import { Keyboard, View } from 'react-native'
-import {
-  KeyboardEvents,
-  useReanimatedKeyboardAnimation,
-} from 'react-native-keyboard-controller'
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated'
+import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>
@@ -43,8 +33,7 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export function ChatScreen({ navigation, route }: Props): JSX.Element {
-  const { translatorMode, systemPrompt, userContent, assistantContent } =
-    route.params
+  const { translatorMode, systemPrompt, userContent, assistantContent } = route.params
 
   const [apiUrl] = useApiUrlPref()
   const [apiUrlPath] = useApiUrlPathPref()
@@ -58,11 +47,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
     const kbHeight = Math.abs(keyboardHeight.value)
     const contentHeight = listContentHeight.value
     const containerHeight = listContainerHeight.value
-    const offset = clamp(
-      contentHeight - (containerHeight - kbHeight),
-      0,
-      kbHeight
-    )
+    const offset = clamp(contentHeight - (containerHeight - kbHeight), 0, kbHeight)
     return {
       transform: [{ translateY: -offset }],
     }
@@ -103,10 +88,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
 
   const onSendPress = () => {
     setInputText('')
-    const nextMessages: ChatMessage[] = [
-      ...messages,
-      { role: 'user', content: inputText },
-    ]
+    const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
 
     const messagesToSend: Message[] = nextMessages.map(({ role, content }) => ({
@@ -139,10 +121,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
           hapticError()
         },
         onDone: message => {
-          setMessages(prev => [
-            ...prev,
-            { role: 'assistant', content: message.content },
-          ])
+          setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
           setStatus('done')
           setContent('')
           hapticSuccess()
@@ -158,9 +137,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
   }
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor }}
-      edges={['left', 'right']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
       <TitleBar
         mode={translatorMode}
         systemPrompt={systemPrompt}
@@ -182,9 +159,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
             }}
             data={messages}
             getItemType={item => item.role}
-            keyExtractor={(item, index) =>
-              `${index}_${item.role}_${item.content}`
-            }
+            keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
             renderItem={({ item }) => {
               if (item.role === 'user') {
                 return <UserMessageView message={item} />

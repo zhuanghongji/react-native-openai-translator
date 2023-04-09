@@ -16,10 +16,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import Modal from 'react-native-modal'
-import {
-  useSafeAreaFrame,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context'
+import { useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Tts from 'react-native-tts'
 
 type SpeakOptions = {
@@ -35,158 +32,152 @@ export type TTSModalHandle = {
   speak: (options: SpeakOptions) => void
 }
 
-export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>(
-  (props, ref) => {
-    const { style } = props
-    const { height: frameHeight } = useSafeAreaFrame()
-    const { top, bottom } = useSafeAreaInsets()
+export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, ref) => {
+  const { style } = props
+  const { height: frameHeight } = useSafeAreaFrame()
+  const { top, bottom } = useSafeAreaInsets()
 
-    const backgroundColor = useThemeColor('background2')
+  const backgroundColor = useThemeColor('background2')
 
-    const [initError, setInitError] = useState(false)
-    useEffect(() => {
-      // Tts.getInitStatus().catch(err => {
-      //   if (err.code === 'no_engine') {
-      //     // Tts.requestInstallEngine()
-      //   }
-      //   setInitError(true)
-      // })
-    }, [])
+  const [initError, setInitError] = useState(false)
+  useEffect(() => {
+    // Tts.getInitStatus().catch(err => {
+    //   if (err.code === 'no_engine') {
+    //     // Tts.requestInstallEngine()
+    //   }
+    //   setInitError(true)
+    // })
+  }, [])
 
-    const [options, setOptions] = useState<SpeakOptions | null>(null)
-    const isVisible = options !== null
+  const [options, setOptions] = useState<SpeakOptions | null>(null)
+  const isVisible = options !== null
 
-    const [progress, setProgress] = useState(0)
-    const { highlightContent, normalContent } = useMemo<{
-      highlightContent: string
-      normalContent: string
-    }>(() => {
-      const content = options?.content ?? ''
-      if (!content) {
-        return {
-          highlightContent: '',
-          normalContent: '',
-        }
-      }
-      if (progress >= content.length - 1) {
-        return {
-          highlightContent: content,
-          normalContent: '',
-        }
-      }
+  const [progress, setProgress] = useState(0)
+  const { highlightContent, normalContent } = useMemo<{
+    highlightContent: string
+    normalContent: string
+  }>(() => {
+    const content = options?.content ?? ''
+    if (!content) {
       return {
-        highlightContent: content.slice(0, progress),
-        normalContent: content.slice(progress),
-      }
-    }, [progress, options])
-
-    useEffect(() => {
-      if (!options) {
-        return
-      }
-      Tts.addEventListener('tts-progress', event => {
-        setProgress(event.location + event.length)
-      })
-      Tts.addEventListener('tts-finish', () => {
-        setOptions(null)
-      })
-      return () => {
-        Tts.removeAllListeners('tts-progress')
-        Tts.removeAllListeners('tts-finish')
-      }
-    }, [options])
-
-    useEffect(() => {
-      if (Platform.OS === 'android') {
-        return
-      }
-      if (!options) {
-        Tts.stop()
-        return
-      }
-      const { content, lang } = options
-      speak(content, lang)
-    }, [options])
-
-    const speak = async (content: string, lang: string | null) => {
-      if (lang === null) {
-        Tts.stop()
-        Tts.speak(content)
-        return
-      }
-      try {
-        const voices = await Tts.voices()
-        // console.log('voices', { voices })
-        const voice = voices.find(v => {
-          if (lang === 'en') {
-            return v.language === 'en' || v.language === 'en-US'
-          }
-          return v.language === lang
-        })
-        if (voice) {
-          // console.log('voice', { voice })
-          Tts.stop()
-          if (Platform.OS === 'ios') {
-            Tts.speak(content, {
-              iosVoiceId: voice.id,
-            } as any)
-          } else {
-            Tts.speak(content, {
-              androidParams: {
-                KEY_PARAM_PAN: -1,
-                KEY_PARAM_VOLUME: 0.5,
-                KEY_PARAM_STREAM: 'STREAM_MUSIC',
-              },
-            } as any)
-          }
-          return
-        }
-        Tts.stop()
-        Tts.speak(content)
-      } catch (e) {
-        Tts.stop()
-        Tts.speak(content)
+        highlightContent: '',
+        normalContent: '',
       }
     }
+    if (progress >= content.length - 1) {
+      return {
+        highlightContent: content,
+        normalContent: '',
+      }
+    }
+    return {
+      highlightContent: content.slice(0, progress),
+      normalContent: content.slice(progress),
+    }
+  }, [progress, options])
 
-    useImperativeHandle(ref, () => ({
-      speak: (os: SpeakOptions) => {
-        setProgress(0)
-        setOptions(os)
-      },
-    }))
+  useEffect(() => {
+    if (!options) {
+      return
+    }
+    Tts.addEventListener('tts-progress', event => {
+      setProgress(event.location + event.length)
+    })
+    Tts.addEventListener('tts-finish', () => {
+      setOptions(null)
+    })
+    return () => {
+      Tts.removeAllListeners('tts-progress')
+      Tts.removeAllListeners('tts-finish')
+    }
+  }, [options])
 
-    return (
-      <Modal
-        style={[styles.container, style, { backgroundColor }]}
-        isVisible={isVisible}
-        deviceHeight={frameHeight}
-        animationIn="fadeInUp"
-        animationOut="fadeOutDown"
-        hasBackdrop={false}
-        statusBarTranslucent={true}>
-        <Pressable
-          style={[styles.content, { marginTop: top, marginBottom: bottom }]}
-          onPress={() => setOptions(null)}>
-          <View style={styles.textContainer}>
-            {initError ? (
-              <Text style={[styles.text, { color: colors.warning }]}>
-                {texts.noEngine}
-              </Text>
-            ) : (
-              <TText style={styles.text} typo="text">
-                <Text style={{ color: colors.primary }}>
-                  {highlightContent}
-                </Text>
-                <Text>{normalContent}</Text>
-              </TText>
-            )}
-          </View>
-        </Pressable>
-      </Modal>
-    )
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      return
+    }
+    if (!options) {
+      Tts.stop()
+      return
+    }
+    const { content, lang } = options
+    speak(content, lang)
+  }, [options])
+
+  const speak = async (content: string, lang: string | null) => {
+    if (lang === null) {
+      Tts.stop()
+      Tts.speak(content)
+      return
+    }
+    try {
+      const voices = await Tts.voices()
+      // console.log('voices', { voices })
+      const voice = voices.find(v => {
+        if (lang === 'en') {
+          return v.language === 'en' || v.language === 'en-US'
+        }
+        return v.language === lang
+      })
+      if (voice) {
+        // console.log('voice', { voice })
+        Tts.stop()
+        if (Platform.OS === 'ios') {
+          Tts.speak(content, {
+            iosVoiceId: voice.id,
+          } as any)
+        } else {
+          Tts.speak(content, {
+            androidParams: {
+              KEY_PARAM_PAN: -1,
+              KEY_PARAM_VOLUME: 0.5,
+              KEY_PARAM_STREAM: 'STREAM_MUSIC',
+            },
+          } as any)
+        }
+        return
+      }
+      Tts.stop()
+      Tts.speak(content)
+    } catch (e) {
+      Tts.stop()
+      Tts.speak(content)
+    }
   }
-)
+
+  useImperativeHandle(ref, () => ({
+    speak: (os: SpeakOptions) => {
+      setProgress(0)
+      setOptions(os)
+    },
+  }))
+
+  return (
+    <Modal
+      style={[styles.container, style, { backgroundColor }]}
+      isVisible={isVisible}
+      deviceHeight={frameHeight}
+      animationIn="fadeInUp"
+      animationOut="fadeOutDown"
+      hasBackdrop={false}
+      statusBarTranslucent={true}>
+      <Pressable
+        style={[styles.content, { marginTop: top, marginBottom: bottom }]}
+        onPress={() => setOptions(null)}>
+        <View style={styles.textContainer}>
+          {initError ? (
+            <Text style={[styles.text, { color: colors.warning }]}>{texts.noEngine}</Text>
+          ) : (
+            <TText style={styles.text} typo="text">
+              <Text style={{ color: colors.primary }}>{highlightContent}</Text>
+              <Text>{normalContent}</Text>
+            </TText>
+          )}
+        </View>
+      </Pressable>
+    </Modal>
+  )
+})
 
 type Styles = {
   container: ViewStyle

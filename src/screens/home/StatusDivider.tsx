@@ -77,12 +77,7 @@ export function StatusDivider(props: StatusDividerProps): JSX.Element {
     return {
       transform: [
         {
-          translateX: interpolate(
-            anim.value,
-            [0, 0.5, 1],
-            [-3, 0, 3],
-            Extrapolation.CLAMP
-          ),
+          translateX: interpolate(anim.value, [0, 0.5, 1], [-3, 0, 3], Extrapolation.CLAMP),
         },
       ],
     }
@@ -104,14 +99,10 @@ export function StatusDivider(props: StatusDividerProps): JSX.Element {
           { justifyContent: status === 'none' ? 'center' : 'space-between' },
           backgroundStyle,
         ]}>
-        <TText
-          style={[styles.statusText, { color: contentColor }]}
-          typo="text2">
+        <TText style={[styles.statusText, { color: contentColor }]} typo="text2">
           {text}
         </TText>
-        <Animated.Text style={[styles.statusEmoji, animStyle]}>
-          {emoji}
-        </Animated.Text>
+        <Animated.Text style={[styles.statusEmoji, animStyle]}>{emoji}</Animated.Text>
       </View>
     </View>
   )

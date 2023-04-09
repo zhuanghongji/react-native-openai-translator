@@ -1,16 +1,9 @@
 import React from 'react'
-import {
-  StyleProp,
-  StyleSheet,
-  TextInput,
-  TextInputProps,
-  TextStyle,
-} from 'react-native'
+import { StyleProp, StyleSheet, TextInput, TextInputProps, TextStyle } from 'react-native'
 import Animated, { useAnimatedProps } from 'react-native-reanimated'
 
 Animated.addWhitelistedNativeProps({ text: true })
-const AnimatedTextInput =
-  Animated.createAnimatedComponent<TextInputProps>(TextInput)
+const AnimatedTextInput = Animated.createAnimatedComponent<TextInputProps>(TextInput)
 
 export type RTextProps = {
   style: StyleProp<TextStyle>

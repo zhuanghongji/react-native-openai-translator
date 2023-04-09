@@ -17,11 +17,7 @@ export function ToolButton(props: ToolButtonProps) {
 
   return (
     <Pressable
-      style={[
-        styles.container,
-        { opacity: disabled ? dimensions.disabledOpacity : 1 },
-        style,
-      ]}
+      style={[styles.container, { opacity: disabled ? dimensions.disabledOpacity : 1 }, style]}
       disabled={disabled}
       onPress={onPress}>
       <SvgIcon size={dimensions.iconSmall} color={tint2} name={name} />

@@ -17,13 +17,7 @@ export type AnimRotateContainerProps = PropsWithChildren<{
 }>
 
 export function AnimRotateContainer(props: AnimRotateContainerProps) {
-  const {
-    style,
-    rotating,
-    anticlockwise = false,
-    duration = 3000,
-    children,
-  } = props
+  const { style, rotating, anticlockwise = false, duration = 3000, children } = props
 
   const anim = useSharedValue(0)
   const animStyle = useAnimatedStyle(() => {

@@ -95,9 +95,7 @@ export function ScannerScreen({ navigation, route }: Props): JSX.Element {
   }, [])
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: 'black' }}
-      edges={['left', 'right']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }} edges={['left', 'right']}>
       <View
         style={{ flex: 1 }}
         onLayout={event => {

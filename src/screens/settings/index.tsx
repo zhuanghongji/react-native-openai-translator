@@ -1,13 +1,12 @@
-import { PickModal } from '../../components/PickModal'
+import { PickSelector } from '../../components/PickSelector'
 import { TText } from '../../components/TText'
-import { usePickModal } from '../../hooks'
 import {
   API_MODELS,
   LANGUAGE_KEYS,
   LANGUAGE_MODES,
   SERVICE_PROVIDERS,
   THEME_MODES,
-  TRANSLATE_MODES,
+  TRANSLATOR_MODES,
   languageLabelByKey,
 } from '../../preferences/options'
 import {
@@ -29,14 +28,7 @@ import { PickView } from './PickView'
 import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React from 'react'
-import {
-  Linking,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-} from 'react-native'
+import { Linking, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const DIVIDER_HEIGHT = 20
@@ -50,83 +42,15 @@ export function SettingsScreen(
   const contentColor = useThemeColor('text2')
   const backgroundColor = useThemeColor('background')
 
-  const [serviceProviderAnimatedIndex, serviceProviderModalRef] = usePickModal()
   const [serviceProvider, setServiceProvider] = useServiceProviderPref()
-
   const [apiKey, setApiKey] = useApiKeyPref()
-
-  const [apiModelAnimatedIndex, apiModelModalRef] = usePickModal()
   const [apiModel, setApiModel] = useApiModelPref()
-
   const [apiUrl, setApiUrl] = useApiUrlPref()
   const [apiUrlPath, setApiUrlPath] = useApiUrlPathPref()
-
-  const [defaultTranslatorModeAnimatedIndex, defaultTranslatorModeModalRef] =
-    usePickModal()
-  const [defaultTranslatorMode, setDefaultTranslatorMode] =
-    useDefaultTranslatorModePref()
-
-  const [defaultTargetLangAnimatedIndex, defaultTargetLangModalRef] =
-    usePickModal()
-  const [defaultTargetLang, setDefaultTargetLang] =
-    useDefaultTargetLanguagePref()
-  const defaultTargetLangLabel = languageLabelByKey(defaultTargetLang)
-
-  const [themeModeAnimatedIndex, themeModeModalRef] = usePickModal()
+  const [defaultTranslatorMode, setDefaultTranslatorMode] = useDefaultTranslatorModePref()
+  const [defaultTargetLang, setDefaultTargetLang] = useDefaultTargetLanguagePref()
   const [themeMode, setThemeMode] = useThemeModePref()
-
-  const [langModeAnimatedIndex, langModeModalRef] = usePickModal()
   const [langMode, setLangMode] = useLanguageModePref()
-  const langeModeLabel = languageLabelByKey(langMode)
-
-  const modals = (
-    <>
-      <PickModal
-        ref={serviceProviderModalRef}
-        value={serviceProvider}
-        values={SERVICE_PROVIDERS}
-        animatedIndex={serviceProviderAnimatedIndex}
-        valueToLabel={v => `${v}`}
-        onValueChange={setServiceProvider}
-      />
-      <PickModal
-        ref={apiModelModalRef}
-        value={apiModel}
-        values={API_MODELS}
-        animatedIndex={apiModelAnimatedIndex}
-        onValueChange={setApiModel}
-      />
-      <PickModal
-        ref={defaultTranslatorModeModalRef}
-        value={defaultTranslatorMode}
-        values={TRANSLATE_MODES}
-        animatedIndex={defaultTranslatorModeAnimatedIndex}
-        onValueChange={setDefaultTranslatorMode}
-      />
-      <PickModal
-        ref={defaultTargetLangModalRef}
-        value={defaultTargetLang}
-        values={LANGUAGE_KEYS}
-        animatedIndex={defaultTargetLangAnimatedIndex}
-        valueToLabel={languageLabelByKey}
-        onValueChange={setDefaultTargetLang}
-      />
-      <PickModal
-        ref={themeModeModalRef}
-        value={themeMode}
-        values={THEME_MODES}
-        animatedIndex={themeModeAnimatedIndex}
-        onValueChange={setThemeMode}
-      />
-      <PickModal
-        ref={langModeModalRef}
-        value={langMode}
-        values={LANGUAGE_MODES}
-        animatedIndex={langModeAnimatedIndex}
-        onValueChange={setLangMode}
-      />
-    </>
-  )
 
   const divider = <View style={{ height: DIVIDER_HEIGHT }} />
   return (
@@ -144,10 +68,13 @@ export function SettingsScreen(
         <TText style={styles.title} typo="text">
           Default Service Provider
         </TText>
-        <PickView
-          label={serviceProvider}
-          animatedIndex={serviceProviderAnimatedIndex}
-          pickModalRef={serviceProviderModalRef}
+        <PickSelector
+          style={styles.pick}
+          value={serviceProvider}
+          values={SERVICE_PROVIDERS}
+          valueToLabel={v => `${v}`}
+          renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
+          onValueChange={setServiceProvider}
         />
 
         {divider}
@@ -175,10 +102,13 @@ export function SettingsScreen(
         <TText style={styles.title} typo="text">
           API Model
         </TText>
-        <PickView
-          label={apiModel}
-          animatedIndex={apiModelAnimatedIndex}
-          pickModalRef={apiModelModalRef}
+        <PickSelector
+          style={styles.pick}
+          value={apiModel}
+          values={API_MODELS}
+          valueToLabel={v => `${v}`}
+          renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
+          onValueChange={setApiModel}
         />
 
         {divider}
@@ -197,40 +127,51 @@ export function SettingsScreen(
         <TText style={styles.title} typo="text">
           Default Translate Mode
         </TText>
-        <PickView
-          label={defaultTranslatorMode}
-          animatedIndex={defaultTranslatorModeAnimatedIndex}
-          pickModalRef={defaultTranslatorModeModalRef}
+        <PickSelector
+          style={styles.pick}
+          value={defaultTranslatorMode}
+          values={TRANSLATOR_MODES}
+          valueToLabel={v => `${v}`}
+          renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
+          onValueChange={setDefaultTranslatorMode}
         />
 
         {divider}
         <TText style={styles.title} typo="text">
           Default Target Language
         </TText>
-        <PickView
-          label={defaultTargetLangLabel}
-          animatedIndex={defaultTargetLangAnimatedIndex}
-          pickModalRef={defaultTargetLangModalRef}
+        <PickSelector
+          style={styles.pick}
+          value={defaultTargetLang}
+          values={LANGUAGE_KEYS}
+          valueToLabel={languageLabelByKey}
+          renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
+          onValueChange={setDefaultTargetLang}
         />
 
         {divider}
         <TText style={styles.title} typo="text">
           Theme
         </TText>
-        <PickView
-          label={themeMode}
-          animatedIndex={themeModeAnimatedIndex}
-          pickModalRef={themeModeModalRef}
+        <PickSelector
+          value={themeMode}
+          values={THEME_MODES}
+          valueToLabel={v => `${v}`}
+          renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
+          onValueChange={setThemeMode}
         />
 
         {divider}
         <TText style={styles.title} typo="text">
           Language
         </TText>
-        <PickView
-          label={langeModeLabel}
-          animatedIndex={langModeAnimatedIndex}
-          pickModalRef={langModeModalRef}
+        <PickSelector
+          style={styles.pick}
+          value={langMode}
+          values={LANGUAGE_MODES}
+          valueToLabel={languageLabelByKey}
+          renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
+          onValueChange={setLangMode}
         />
 
         {/* {divider}
@@ -254,8 +195,6 @@ export function SettingsScreen(
           onValueChange={() => {}}
         /> */}
       </ScrollView>
-
-      {modals}
     </SafeAreaView>
   )
 }
@@ -263,6 +202,7 @@ export function SettingsScreen(
 type Styles = {
   title: TextStyle
   caption: TextStyle
+  pick: ViewStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -277,5 +217,8 @@ const styles = StyleSheet.create<Styles>({
     marginTop: 6,
     textAlign: 'justify',
     marginHorizontal: 2,
+  },
+  pick: {
+    marginTop: 6,
   },
 })

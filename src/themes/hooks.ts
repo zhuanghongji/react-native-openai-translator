@@ -1,11 +1,6 @@
 import { colors } from '../res/colors'
 import type { ThemeScheme, ThemeSchemeTypo } from './themes'
-import {
-  ColorValue,
-  StatusBarStyle,
-  TextStyle,
-  useColorScheme,
-} from 'react-native'
+import { ColorValue, StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
 
 const LIGHT_THEME_SCHEME: ThemeScheme = {
   text: colors.black,

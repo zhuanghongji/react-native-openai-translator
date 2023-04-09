@@ -30,8 +30,7 @@ export function sseRequest(
     body: JSON.stringify(data),
   })
 
-  const { onOpen, onMessage, onTimeout, onError, onException, onClose } =
-    callbacks
+  const { onOpen, onMessage, onTimeout, onError, onException, onClose } = callbacks
   es.addEventListener('open', () => {
     print(TAG, 'onOpen')
     onOpen?.()

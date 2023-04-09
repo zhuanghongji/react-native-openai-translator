@@ -30,18 +30,11 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
 
   return (
     <LinearGradient
-      style={[
-        styles.container,
-        { height: dimensions.barHeight + top, paddingTop: top },
-      ]}
+      style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}
       start={{ x: 0, y: 1 }}
       end={{ x: 1, y: 0 }}
       colors={isDark ? DARK_COLORS : LIGHT_COLORS}>
-      <StatusBar
-        translucent
-        barStyle="dark-content"
-        backgroundColor={colors.transparent}
-      />
+      <StatusBar translucent barStyle="dark-content" backgroundColor={colors.transparent} />
       <Pressable style={styles.touchable} onPress={onBackPress}>
         <SvgIcon size={dimensions.iconMedium} color="#000000" name="back" />
       </Pressable>

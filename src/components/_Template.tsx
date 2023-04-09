@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
 export type TemplateProps = {
   style?: StyleProp<ViewStyle>

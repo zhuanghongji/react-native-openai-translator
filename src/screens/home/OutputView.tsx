@@ -13,31 +13,27 @@ export interface OutputViewHandle {
   updateText: (text: string) => void
 }
 
-export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>(
-  (props, ref) => {
-    const { style, text } = props
-    const textColor = useThemeColor('text')
+export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>((props, ref) => {
+  const { style, text } = props
+  const textColor = useThemeColor('text')
 
-    const [displayText, setDisplayText] = useState('')
-    const [preText, setPreText] = useState(text)
-    if (text !== preText) {
-      setPreText(text)
-      setDisplayText(text)
-    }
-
-    useImperativeHandle(ref, () => ({
-      updateText: setDisplayText,
-    }))
-
-    return (
-      <Text
-        selectable
-        style={[sheets.contentText, styles.text, { color: textColor }, style]}>
-        {displayText}
-      </Text>
-    )
+  const [displayText, setDisplayText] = useState('')
+  const [preText, setPreText] = useState(text)
+  if (text !== preText) {
+    setPreText(text)
+    setDisplayText(text)
   }
-)
+
+  useImperativeHandle(ref, () => ({
+    updateText: setDisplayText,
+  }))
+
+  return (
+    <Text selectable style={[sheets.contentText, styles.text, { color: textColor }, style]}>
+      {displayText}
+    </Text>
+  )
+})
 
 type Styles = {
   text: TextStyle

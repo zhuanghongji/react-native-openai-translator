@@ -15,20 +15,9 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const { top } = useSafeAreaInsets()
 
   return (
-    <View
-      style={[
-        styles.container,
-        { height: dimensions.barHeight + top, paddingTop: top },
-      ]}>
-      <StatusBar
-        translucent
-        barStyle="light-content"
-        backgroundColor="transparent"
-      />
-      <Pressable
-        style={styles.touchable}
-        hitSlop={{ right: H_EDGE }}
-        onPress={onBackPress}>
+    <View style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}>
+      <StatusBar translucent barStyle="light-content" backgroundColor="transparent" />
+      <Pressable style={styles.touchable} hitSlop={{ right: H_EDGE }} onPress={onBackPress}>
         <SvgIcon size={dimensions.iconMedium} color="white" name="back" />
       </Pressable>
       <View style={styles.center} />

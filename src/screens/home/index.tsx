@@ -1,8 +1,7 @@
-import { PickModal } from '../../components/PickModal'
+import { PickSelector } from '../../components/PickSelector'
 import { SvgIcon } from '../../components/SvgIcon'
 import { TTSModal, TTSModalHandle } from '../../components/TTSModal'
 import { hapticError, hapticLight, hapticSuccess } from '../../haptic'
-import { usePickModal } from '../../hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
   LANGUAGE_KEYS,
@@ -29,7 +28,7 @@ import { ClipboardTipModal, ClipboardTipModalHandle } from './ClipboardTipModal'
 import { InputView, InputViewHandle } from './InputView'
 import { ModeButton } from './ModeButton'
 import { OutputView, OutputViewHandle } from './OutputView'
-import { PickButton } from './PickButton'
+import { PickView } from './PickView'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
@@ -43,6 +42,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  TextStyle,
   View,
   ViewStyle,
 } from 'react-native'
@@ -61,15 +61,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [apiKey] = useApiKeyPref()
   const [status, setStatus] = useState<TranslatorStatus>('none')
 
-  const [fromLangAnimatedIndex, fromLangModalRef] = usePickModal()
-  const [fromLang, setFromLang] = useState<LanguageKey | null>(
-    getDefaultFromLanguage()
-  )
-  const fromLangLabel = languageLabelByKey(fromLang)
-
-  const [targetLangAnimatedIndex, targetLangModalRef] = usePickModal()
+  const [fromLang, setFromLang] = useState<LanguageKey | null>(getDefaultFromLanguage())
   const [targetLang, setTargetLang] = useState(getDefaultTargetLanguage)
-  const targetLangLabel = languageLabelByKey(targetLang)
 
   const [translatorMode, setTranslatorMode] = useState(getDefaultTranslatorMode)
   const onTranslatorModeChange = (mode: TranslatorMode) => {
@@ -207,12 +200,18 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           width: '100%',
           alignItems: 'center',
         }}>
-        <PickButton
+        <PickSelector
           style={{ marginLeft: dimensions.edge }}
+          labelStyle={styles.pickLabel}
+          value={fromLang}
+          values={FROM_LANGUAGE_KEYS}
           disabled={langsDisabled}
-          label={fromLangLabel}
-          animatedIndex={fromLangAnimatedIndex}
-          pickModalRef={fromLangModalRef}
+          valueToLabel={languageLabelByKey}
+          renderContent={({ label, anim }) => <PickView anim={anim} label={label} />}
+          onValueChange={setFromLang}
+          onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
+            wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
+          }}
         />
         <Pressable
           style={{ opacity: exchangeDisabled ? dimensions.disabledOpacity : 1 }}
@@ -237,12 +236,18 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             name="swap-horiz"
           />
         </Pressable>
-        <PickButton
+        <PickSelector
           style={{ marginRight: dimensions.edge }}
+          labelStyle={styles.pickLabel}
+          value={targetLang}
+          values={LANGUAGE_KEYS}
           disabled={langsDisabled}
-          label={targetLangLabel}
-          animatedIndex={targetLangAnimatedIndex}
-          pickModalRef={targetLangModalRef}
+          valueToLabel={languageLabelByKey}
+          renderContent={({ label, anim }) => <PickView anim={anim} label={label} />}
+          onValueChange={setTargetLang}
+          onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
+            wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
+          }}
         />
         <View style={{ flex: 1 }} />
         <View style={styles.modes}>
@@ -358,28 +363,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         </View>
       </ScrollView>
 
-      <PickModal
-        ref={fromLangModalRef}
-        value={fromLang}
-        values={FROM_LANGUAGE_KEYS}
-        animatedIndex={fromLangAnimatedIndex}
-        valueToLabel={languageLabelByKey}
-        onValueChange={setFromLang}
-        onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
-          wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
-        }}
-      />
-      <PickModal
-        ref={targetLangModalRef}
-        value={targetLang}
-        values={LANGUAGE_KEYS}
-        animatedIndex={targetLangAnimatedIndex}
-        valueToLabel={languageLabelByKey}
-        onValueChange={setTargetLang}
-        onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
-          wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
-        }}
-      />
       <ClipboardTipModal ref={clipboardTipModalRef} />
       <TTSModal ref={ttsModalRef} />
     </SafeAreaView>
@@ -389,6 +372,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 type Styles = {
   modes: ViewStyle
   toolsRow: ViewStyle
+  pickLabel: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -404,5 +388,9 @@ const styles = StyleSheet.create<Styles>({
     height: 32,
     marginTop: dimensions.edge,
     paddingRight: dimensions.edge,
+  },
+  pickLabel: {
+    fontSize: 11,
+    marginHorizontal: 6,
   },
 })

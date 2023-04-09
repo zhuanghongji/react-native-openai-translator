@@ -33,12 +33,7 @@ export function ScanAreaView(props: ScanAreaViewProps): JSX.Element {
   const anim = useSharedValue(0)
   const animProps = useAnimatedProps<RectProps>(() => {
     return {
-      strokeDashoffset: interpolate(
-        anim.value,
-        [0, 1],
-        [0, -perimeter.value],
-        Extrapolation.CLAMP
-      ),
+      strokeDashoffset: interpolate(anim.value, [0, 1], [0, -perimeter.value], Extrapolation.CLAMP),
     }
   })
 

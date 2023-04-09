@@ -6,14 +6,7 @@ import { useThemeColor } from '../../../themes/hooks'
 import { ChatMessage } from '../../../types'
 import { trimContent } from '../../../utils'
 import React from 'react'
-import {
-  Image,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
 export type AssistantMessageProps = {
   style?: StyleProp<ViewStyle>
@@ -35,10 +28,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image
-          style={{ width: 18, height: 18, marginTop: 12 }}
-          source={images.logoMini}
-        />
+        <Image style={{ width: 18, height: 18, marginTop: 12 }} source={images.logoMini} />
       </View>
 
       <View style={[styles.content, { backgroundColor }]}>

@@ -48,10 +48,7 @@ export function useScanCameraDevice(): {
       const _devices = ds
         .filter(d => d.position === 'back' && !d.isMultiCam)
         .sort(({ devices: [a] }, { devices: [b] }) => {
-          if (
-            a === 'ultra-wide-angle-camera' &&
-            b !== 'ultra-wide-angle-camera'
-          ) {
+          if (a === 'ultra-wide-angle-camera' && b !== 'ultra-wide-angle-camera') {
             return -1
           }
           if (a === 'wide-angle-camera' && b === 'telephoto-camera') {
@@ -62,9 +59,7 @@ export function useScanCameraDevice(): {
           }
           return 1
         })
-      const _index = _devices.findIndex(d =>
-        d.devices.includes('wide-angle-camera')
-      )
+      const _index = _devices.findIndex(d => d.devices.includes('wide-angle-camera'))
       if (_index >= 0) {
         setIndex(_index)
       }

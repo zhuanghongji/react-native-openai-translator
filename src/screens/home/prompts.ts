@@ -1,8 +1,4 @@
-import {
-  LanguageKey,
-  TranslatorMode,
-  languageLabelByKey,
-} from '../../preferences/options'
+import { LanguageKey, TranslatorMode, languageLabelByKey } from '../../preferences/options'
 import { Message } from '../../types'
 import { isChineseLang, isEnglishWord } from '../../utils'
 import { useMemo } from 'react'
@@ -30,9 +26,7 @@ export interface GenerateSpecificPromptsOptions {
   inputText: string
 }
 
-export function generatePrompts(
-  options: ChatCompletionsPromptsOptions
-): ChatCompletionsPrompts {
+export function generatePrompts(options: ChatCompletionsPromptsOptions): ChatCompletionsPrompts {
   const { fromLang, targetLang, translatorMode, inputText } = options
   const os: GenerateSpecificPromptsOptions = {
     fromLang,
@@ -57,17 +51,8 @@ export function generatePrompts(
   }
 }
 
-function generatePromptsOfTranslate(
-  os: GenerateSpecificPromptsOptions
-): ChatCompletionsPrompts {
-  const {
-    fromLang,
-    targetLang,
-    targetLangLabel,
-    fromChinese,
-    targetChinese,
-    inputText,
-  } = os
+function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCompletionsPrompts {
+  const { fromLang, targetLang, targetLangLabel, fromChinese, targetChinese, inputText } = os
   let systemPrompt =
     'You are a translation engine that can only translate text and cannot interpret it.'
   const userPrompt = `Translate the content below to ${targetLangLabel} :`
@@ -76,8 +61,7 @@ function generatePromptsOfTranslate(
     if (targetLang === 'wyw') {
       return {
         systemPrompt: '你是一个中国诗词专家。',
-        userPrompt:
-          '假设你是下面的文本的原作者，再写一句同样含义、同样字数的诗词：',
+        userPrompt: '假设你是下面的文本的原作者，再写一句同样含义、同样字数的诗词：',
       }
     }
     if (targetLang === 'zh-Hant' || targetLang === 'yue') {
@@ -186,9 +170,7 @@ function generatePromptsOfTranslate(
   }
 }
 
-function generatePromptsOfPolishing(
-  os: GenerateSpecificPromptsOptions
-): ChatCompletionsPrompts {
+function generatePromptsOfPolishing(os: GenerateSpecificPromptsOptions): ChatCompletionsPrompts {
   const { targetLang, targetLangLabel, targetChinese } = os
   const systemPrompt =
     'Revise the following sentences to make them more clear, concise, and coherent.'
@@ -208,9 +190,7 @@ function generatePromptsOfPolishing(
   return { systemPrompt, userPrompt }
 }
 
-function generatePromptsOfSummarize(
-  os: GenerateSpecificPromptsOptions
-): ChatCompletionsPrompts {
+function generatePromptsOfSummarize(os: GenerateSpecificPromptsOptions): ChatCompletionsPrompts {
   const { targetLang, targetLangLabel, targetChinese } = os
   const systemPrompt =
     "You are a text summarizer, you can only summarize the text, don't interpret it."
@@ -230,9 +210,7 @@ function generatePromptsOfSummarize(
   return { systemPrompt, userPrompt }
 }
 
-function generatePromptsOfAnalyze(
-  os: GenerateSpecificPromptsOptions
-): ChatCompletionsPrompts {
+function generatePromptsOfAnalyze(os: GenerateSpecificPromptsOptions): ChatCompletionsPrompts {
   const { targetLang, targetLangLabel, targetChinese } = os
   const systemPrompt = 'You are a translation engine and grammar analyzer.'
   const userPrompt = `Translate the text below to ${targetLangLabel}  and explain the grammar in the original text using ${targetLangLabel} :`
@@ -251,9 +229,7 @@ function generatePromptsOfAnalyze(
   return { systemPrompt, userPrompt }
 }
 
-export function generateMessagesWithPrompts(
-  options: ChatCompletionsPromptsOptions
-): {
+export function generateMessagesWithPrompts(options: ChatCompletionsPromptsOptions): {
   messages: Message[]
   prompts: ChatCompletionsPrompts
   systemContent: string

@@ -6,20 +6,8 @@ import BottomSheet, {
   BottomSheetBackdropProps,
   BottomSheetFlatList,
 } from '@gorhom/bottom-sheet'
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-} from 'react'
-import {
-  Keyboard,
-  StyleProp,
-  StyleSheet,
-  ViewStyle,
-  useColorScheme,
-} from 'react-native'
+import React, { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
+import { Keyboard, StyleProp, StyleSheet, ViewStyle, useColorScheme } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
@@ -44,10 +32,7 @@ function _valueToLabel<T>(value: T) {
   return `${value}`
 }
 
-function _PickModal<T>(
-  props: PickModalProps<T>,
-  ref: React.ForwardedRef<PickModalHandle>
-) {
+function _PickModal<T>(props: PickModalProps<T>, ref: React.ForwardedRef<PickModalHandle>) {
   const {
     style,
     value,
@@ -99,11 +84,7 @@ function _PickModal<T>(
 
   const renderBackdrop = useCallback(
     (_props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {..._props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-      />
+      <BottomSheetBackdrop {..._props} disappearsOnIndex={-1} appearsOnIndex={0} />
     ),
     []
   )
@@ -125,8 +106,7 @@ function _PickModal<T>(
       onChange={index => {
         if (index < 0) {
           onDismiss?.({
-            wasKeyboardVisibleWhenShowing:
-              wasKeyboardVisibleWhenShowingRef.current,
+            wasKeyboardVisibleWhenShowing: wasKeyboardVisibleWhenShowingRef.current,
           })
         }
       }}>

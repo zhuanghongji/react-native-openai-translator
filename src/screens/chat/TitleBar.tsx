@@ -4,14 +4,7 @@ import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
 import React from 'react'
-import {
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Pressable, StatusBar, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TitleBarProps {
@@ -70,20 +63,9 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const backgroundColor = useThemeColor('backgroundChat')
 
   return (
-    <View
-      style={[
-        styles.container,
-        { height: dimensions.barHeight + top, paddingTop: top },
-      ]}>
-      <StatusBar
-        translucent
-        barStyle={barStyle}
-        backgroundColor={backgroundColor}
-      />
-      <Pressable
-        style={styles.touchable}
-        hitSlop={{ right: H_EDGE }}
-        onPress={onBackPress}>
+    <View style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}>
+      <StatusBar translucent barStyle={barStyle} backgroundColor={backgroundColor} />
+      <Pressable style={styles.touchable} hitSlop={{ right: H_EDGE }} onPress={onBackPress}>
         <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
       </Pressable>
       <View style={styles.center}>

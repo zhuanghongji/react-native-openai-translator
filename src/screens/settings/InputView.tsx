@@ -2,14 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
 import { useTextThemeStyle, useThemeColor } from '../../themes/hooks'
 import React, { useState } from 'react'
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 
 export interface InputViewProps {

@@ -2,15 +2,7 @@ import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import React, { useImperativeHandle, useRef, useState } from 'react'
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import Modal from 'react-native-modal'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
@@ -22,87 +14,84 @@ export interface ClipboardTipModalHandle {
   show: (options: { text: string; onUseItPress: () => void }) => void
 }
 
-export const ClipboardTipModal = React.forwardRef<
-  ClipboardTipModalHandle,
-  ClipboardTipModalProps
->((props, ref) => {
-  const { style } = props
+export const ClipboardTipModal = React.forwardRef<ClipboardTipModalHandle, ClipboardTipModalProps>(
+  (props, ref) => {
+    const { style } = props
 
-  const borderColor = useThemeColor('border2')
-  const backdropColor = useThemeColor('backdrop')
+    const borderColor = useThemeColor('border2')
+    const backdropColor = useThemeColor('backdrop')
 
-  const { width: frameWidth, height: frameHeight } = useSafeAreaFrame()
-  const [text, setText] = useState('')
-  const isVisible = text ? true : false
+    const { width: frameWidth, height: frameHeight } = useSafeAreaFrame()
+    const [text, setText] = useState('')
+    const isVisible = text ? true : false
 
-  const onUseItPressRef = useRef<(() => void) | null>(null)
-  useImperativeHandle(
-    ref,
-    () => ({
-      show: options => {
-        onUseItPressRef.current = options.onUseItPress
-        setText(options.text)
-      },
-    }),
-    []
-  )
+    const onUseItPressRef = useRef<(() => void) | null>(null)
+    useImperativeHandle(
+      ref,
+      () => ({
+        show: options => {
+          onUseItPressRef.current = options.onUseItPress
+          setText(options.text)
+        },
+      }),
+      []
+    )
 
-  const renderButton = (txt: string, onPress?: () => void) => {
+    const renderButton = (txt: string, onPress?: () => void) => {
+      return (
+        <Pressable style={styles.buttonContainer} onPress={onPress}>
+          <TText style={styles.buttonText} typo="text">
+            {txt}
+          </TText>
+        </Pressable>
+      )
+    }
+
     return (
-      <Pressable style={styles.buttonContainer} onPress={onPress}>
-        <TText style={styles.buttonText} typo="text">
-          {txt}
-        </TText>
-      </Pressable>
+      <Modal
+        style={[styles.container, style]}
+        isVisible={isVisible}
+        deviceHeight={frameHeight}
+        animationIn="fadeInUp"
+        animationInTiming={500}
+        animationOut="fadeOutUp"
+        animationOutTiming={500}
+        statusBarTranslucent={true}>
+        <View
+          style={[
+            styles.content,
+            {
+              width: frameWidth * 0.8,
+              backgroundColor: backdropColor,
+            },
+          ]}>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>Clipboard</Text>
+          </View>
+
+          <TText style={styles.title} typo="text">
+            New Text Detected
+          </TText>
+          <TText style={styles.text} typo="text" numberOfLines={7}>
+            {text}
+          </TText>
+          <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
+            {renderButton('Ignore', () => {
+              setText('')
+            })}
+            <View style={[styles.buttonDivider, { backgroundColor: borderColor }]} />
+            {renderButton('Use It', () => {
+              setText('')
+              setTimeout(() => {
+                onUseItPressRef.current?.()
+              }, 600)
+            })}
+          </View>
+        </View>
+      </Modal>
     )
   }
-
-  return (
-    <Modal
-      style={[styles.container, style]}
-      isVisible={isVisible}
-      deviceHeight={frameHeight}
-      animationIn="fadeInUp"
-      animationInTiming={500}
-      animationOut="fadeOutUp"
-      animationOutTiming={500}
-      statusBarTranslucent={true}>
-      <View
-        style={[
-          styles.content,
-          {
-            width: frameWidth * 0.8,
-            backgroundColor: backdropColor,
-          },
-        ]}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>Clipboard</Text>
-        </View>
-
-        <TText style={styles.title} typo="text">
-          New Text Detected
-        </TText>
-        <TText style={styles.text} typo="text" numberOfLines={7}>
-          {text}
-        </TText>
-        <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
-          {renderButton('Ignore', () => {
-            setText('')
-          })}
-          <View
-            style={[styles.buttonDivider, { backgroundColor: borderColor }]}
-          />
-          {renderButton('Use It', () => {
-            setText('')
-            setTimeout(() => {
-              onUseItPressRef.current?.()
-            }, 600)
-          })}
-        </View>
-      </View>
-    </Modal>
-  )
-})
+)
 
 type Styles = {
   container: ViewStyle

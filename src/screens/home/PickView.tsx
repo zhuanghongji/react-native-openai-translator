@@ -9,17 +9,16 @@ import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reani
 
 export interface PickViewProps {
   style?: StyleProp<ViewStyle>
-  label: string
   anim: Animated.SharedValue<number>
+  label: string
 }
 
 export function PickView(props: PickViewProps) {
-  const { style, label, anim } = props
+  const { style, anim, label } = props
 
   const iconColor = useThemeColor('tint')
   const borderColor = useThemeColor('border')
   const backgroundColor = useThemeColor('backdrop2')
-
   const borderStyle = useAnimatedStyle(() => {
     return {
       borderColor: interpolateColor(
@@ -61,10 +60,10 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
+    width: 72,
     height: 32,
-    paddingLeft: 8,
-    paddingRight: 4,
+    paddingLeft: 6,
+    paddingRight: 2,
     borderRadius: 4,
     borderWidth: 0.5,
   },

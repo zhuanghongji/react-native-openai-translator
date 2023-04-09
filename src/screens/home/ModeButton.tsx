@@ -32,11 +32,7 @@ export function ModeButton(props: SelectButtonProps) {
         style,
       ]}
       onPress={() => onPress(mode)}>
-      <SvgIcon
-        size={dimensions.iconSmall}
-        color={selected ? tintSelected : tint}
-        name={icon}
-      />
+      <SvgIcon size={dimensions.iconSmall} color={selected ? tintSelected : tint} name={icon} />
     </Pressable>
   )
 }
