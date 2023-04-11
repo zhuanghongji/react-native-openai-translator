@@ -3,6 +3,7 @@ import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor, useThemeDark } from '../../themes/hooks'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle } from 'react-native-reanimated'
@@ -37,6 +38,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
     []
   )
 
+  const { t } = useTranslation()
   const opacity = sendDisabled ? dimensions.disabledOpacity : 1
 
   return (
@@ -52,7 +54,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
           ]}
           placeholderTextColor={placeholderColor}
           value={value}
-          placeholder="Send a message..."
+          placeholder={t('Send a message...')}
           onChangeText={onChangeText}
         />
         <Pressable

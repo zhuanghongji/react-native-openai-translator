@@ -4,6 +4,7 @@ import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, StatusBar, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -16,47 +17,49 @@ export interface TitleBarProps {
 
 const H_EDGE = 8
 
-function getTitle(mode: TranslatorMode) {
+function useTitle(mode: TranslatorMode) {
+  const { t } = useTranslation()
   if (mode === 'translate') {
-    return 'Translate Chat'
+    return t('Translate Chat')
   }
   if (mode === 'polishing') {
-    return 'Polishing Chat'
+    return t('Polishing Chat')
   }
   if (mode === 'summarize') {
-    return 'Summarize Chat'
+    return t('Summarize Chat')
   }
   if (mode === 'analyze') {
-    return 'Analyze Chat'
+    return t('Analyze Chat')
   }
-  return 'Bubble Chat'
+  return t('Bubble Chat')
 }
 
-function getSubtitle(mode: TranslatorMode, systemPrompt: string) {
+function useSubtitle(mode: TranslatorMode, systemPrompt: string) {
+  const { t } = useTranslation()
   if (systemPrompt) {
     return systemPrompt
   }
   if (mode === 'translate') {
-    return 'system is a language translation engine'
+    return t('system is a language translation engine')
   }
   if (mode === 'polishing') {
-    return 'system is a text polishing engine'
+    return t('system is a text polishing engine')
   }
   if (mode === 'summarize') {
-    return 'system is a text summarization engine'
+    return t('system is a text summarization engine')
   }
   if (mode === 'analyze') {
-    return 'system is a text analysis engine.'
+    return t('system is a text analysis engine')
   }
-  return 'system without preset'
+  return t('system without preset')
 }
 
 export function TitleBar(props: TitleBarProps): JSX.Element {
   const { mode, systemPrompt, onBackPress, onMorePress } = props
   const { top } = useSafeAreaInsets()
 
-  const title = getTitle(mode)
-  const subtitle = getSubtitle(mode, systemPrompt)
+  const title = useTitle(mode)
+  const subtitle = useSubtitle(mode, systemPrompt)
 
   const barStyle = useStatusBarStyle()
   const tintColor = useThemeColor('tint')

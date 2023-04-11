@@ -3,9 +3,10 @@ import { colors } from '../res/colors'
 import type { ThemeScheme, ThemeSchemeTypo } from './themes'
 import { ColorValue, StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
 
-const LIGHT_THEME_SCHEME: ThemeScheme = {
+export const LIGHT_THEME_SCHEME: ThemeScheme = {
   text: colors.black,
-  text2: colors.c54,
+  text2: colors.c33,
+  text3: colors.c66,
 
   tint: colors.black,
   tint2: colors.c54,
@@ -26,9 +27,10 @@ const LIGHT_THEME_SCHEME: ThemeScheme = {
   placeholder: colors.placeholderLight,
 }
 
-const DARK_THEME_SCHEME: ThemeScheme = {
+export const DARK_THEME_SCHEME: ThemeScheme = {
   text: colors.white,
-  text2: colors.cC7,
+  text2: colors.cCC,
+  text3: colors.c99,
 
   tint: colors.white,
   tint2: colors.cCB,

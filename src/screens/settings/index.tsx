@@ -10,6 +10,8 @@ import {
   THEME_MODES,
   TRANSLATOR_MODES,
   languageLabelByKey,
+  useThemeModeLabelFn,
+  useTranslatorModeLabelFn,
 } from '../../preferences/options'
 import {
   useApiKeyPref,
@@ -31,6 +33,7 @@ import { PickView } from './PickView'
 import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Linking, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -57,7 +60,12 @@ export function SettingsScreen(
 
   const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
 
+  const { t, i18n } = useTranslation()
+  const translatorModeLabelFn = useTranslatorModeLabelFn()
+  const themeModeLabelFn = useThemeModeLabelFn()
+
   const divider = <View style={{ height: DIVIDER_HEIGHT }} />
+
   return (
     <SafeAreaView style={[{ flex: 1, backgroundColor }]} edges={['bottom']}>
       <TitleBar
@@ -74,7 +82,7 @@ export function SettingsScreen(
           paddingBottom: DIVIDER_HEIGHT * 3 + bottomInset,
         }}>
         <TText style={styles.title} typo="text">
-          Default Service Provider
+          {t('Service Provider')}
         </TText>
         <PickSelector
           style={styles.pick}
@@ -87,11 +95,12 @@ export function SettingsScreen(
 
         {divider}
         <TText style={styles.title} typo="text">
-          * API Key
+          <Text>{t('API Key')}</Text>
+          <Text style={{ color: colors.warning }}>{' *'}</Text>
         </TText>
         <InputView securable={true} value={apiKey} onChangeText={setApiKey} />
         <Text style={[styles.caption, { color: contentColor }]}>
-          <Text>{'Go to the '}</Text>
+          <Text>{t('Go to the ')}</Text>
           <Text
             style={{ color: colors.link, textDecorationLine: 'underline' }}
             onPress={() => {
@@ -100,15 +109,15 @@ export function SettingsScreen(
             {'OpenAI Page'}
           </Text>
           <Text>
-            {
+            {t(
               ' to get your API Key. You can separate multiple API Keys with English commas to achieve quota doubling and load balancing.'
-            }
+            )}
           </Text>
         </Text>
 
         {divider}
         <TText style={styles.title} typo="text">
-          API Model
+          {t('API Model')}
         </TText>
         <PickSelector
           style={styles.pick}
@@ -121,32 +130,32 @@ export function SettingsScreen(
 
         {divider}
         <TText style={styles.title} typo="text">
-          API URL
+          {t('API URL')}
         </TText>
         <InputView value={apiUrl} onChangeText={setApiUrl} />
 
         {divider}
         <TText style={styles.title} typo="text">
-          API URL Path
+          {t('API URL Path')}
         </TText>
         <InputView value={apiUrlPath} onChangeText={setApiUrlPath} />
 
         {divider}
         <TText style={styles.title} typo="text">
-          Default Translate Mode
+          {t('Default Translator Mode')}
         </TText>
         <PickSelector
           style={styles.pick}
           value={defaultTranslatorMode}
           values={TRANSLATOR_MODES}
-          valueToLabel={v => `${v}`}
+          valueToLabel={translatorModeLabelFn}
           renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
           onValueChange={setDefaultTranslatorMode}
         />
 
         {divider}
         <TText style={styles.title} typo="text">
-          Default Target Language
+          {t('Default Target Language')}
         </TText>
         <PickSelector
           style={styles.pick}
@@ -159,19 +168,20 @@ export function SettingsScreen(
 
         {divider}
         <TText style={styles.title} typo="text">
-          Theme
+          {t('Theme')}
         </TText>
         <PickSelector
+          style={styles.pick}
           value={themeMode}
           values={THEME_MODES}
-          valueToLabel={v => `${v}`}
+          valueToLabel={themeModeLabelFn}
           renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
           onValueChange={setThemeMode}
         />
 
         {divider}
         <TText style={styles.title} typo="text">
-          Language
+          {t('Language')}
         </TText>
         <PickSelector
           style={styles.pick}
@@ -179,7 +189,10 @@ export function SettingsScreen(
           values={LANGUAGE_MODES}
           valueToLabel={languageLabelByKey}
           renderContent={({ label, anim }) => <PickView label={label} anim={anim} />}
-          onValueChange={setLangMode}
+          onValueChange={lang => {
+            setLangMode(lang)
+            i18n.changeLanguage(lang)
+          }}
         />
 
         {/* {divider}
@@ -206,9 +219,9 @@ export function SettingsScreen(
 
       <ConfirmModal
         visible={resetConfirmModalVisible}
-        message="Are you sure to reset all settings except for the API Key ?"
-        leftText="Cancle"
-        rightText="Reset"
+        message={t('Are you sure to reset all settings except for the API Key ?')}
+        leftText={t('Cancle')}
+        rightText={t('Reset')}
         onRightPress={() => {
           setServiceProvider(DEFAULTS.serviceProvider)
           setApiModel(DEFAULTS.apiModel)
@@ -217,6 +230,7 @@ export function SettingsScreen(
           setDefaultTargetLang(DEFAULTS.defaultTargetLanguage)
           setThemeMode(DEFAULTS.themeMode)
           setLangMode(DEFAULTS.languageMode)
+          i18n.changeLanguage(DEFAULTS.languageMode)
         }}
         onDismissRequest={setResetConfirmModalVisible}
       />

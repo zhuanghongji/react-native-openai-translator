@@ -1,3 +1,5 @@
+import { StorageKey } from '../mmkv/keys'
+import { storage } from '../mmkv/storages'
 import { DEFAULTS } from './defaults'
 import {
   ApiModel,
@@ -7,28 +9,9 @@ import {
   ThemeMode,
   TranslatorMode,
 } from './options'
-import { MMKV, useMMKVBoolean, useMMKVString } from 'react-native-mmkv'
+import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv'
 
-const storage = new MMKV()
-
-const enum StorageKey {
-  defaultFromLanguage = 'default_from_language',
-  defaultTargetLanguage = 'default_target_language',
-  serviceProvider = 'service_provider',
-  apiKey = 'api_key',
-  apiModel = 'api_model',
-  apiUrl = 'api_url',
-  apiUrlPath = 'api_url_path',
-  defaultTranslatorMode = 'default_translate_mode',
-  languageMode = 'language_mode',
-  themeMode = 'theme_mode',
-  alwaysShowIcons = 'always_show_icons',
-  autoTranslate = 'auto_translate',
-  restorePreviousPosition = 'restore_previous_position',
-  lastDetectedText = 'last_detected_text',
-}
-
-// MARK: getter
+// MARK: getter、setter
 
 export function getLastDetectedText() {
   return storage.getString(StorageKey.lastDetectedText)

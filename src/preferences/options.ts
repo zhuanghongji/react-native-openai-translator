@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 type UnionFromTuple<T extends readonly unknown[]> = T[number]
 
 // MARK: support languages
@@ -96,6 +98,7 @@ export const API_MODELS = [
 ] as const
 
 export type ApiModel = UnionFromTuple<typeof API_MODELS>
+
 // MARK: translate modes
 
 export const TRANSLATOR_MODES = [
@@ -108,14 +111,46 @@ export const TRANSLATOR_MODES = [
 
 export type TranslatorMode = UnionFromTuple<typeof TRANSLATOR_MODES>
 
+export function useTranslatorModeLabelFn(): (mode: TranslatorMode) => string {
+  const { t } = useTranslation()
+  return (mode: TranslatorMode) => {
+    switch (mode) {
+      case 'translate':
+        return t('Translate')
+      case 'polishing':
+        return t('Polishing')
+      case 'summarize':
+        return t('Summarize')
+      case 'analyze':
+        return t('Analyze')
+      case 'bubble':
+        return t('Bubble')
+    }
+  }
+}
+
 // MARK: theme modes
 
 export const THEME_MODES = ['system', 'dark', 'light'] as const
 
 export type ThemeMode = UnionFromTuple<typeof THEME_MODES>
 
+export function useThemeModeLabelFn(): (mode: ThemeMode) => string {
+  const { t } = useTranslation()
+  return (mode: ThemeMode) => {
+    switch (mode) {
+      case 'system':
+        return t('Follow system')
+      case 'dark':
+        return t('Dark mode')
+      case 'light':
+        return t('Light mode')
+    }
+  }
+}
+
 // MARK: language modes
 
-export const LANGUAGE_MODES = ['en', 'zh-Hans', 'zh-Hant', 'ja', 'th'] satisfies LanguageKey[]
+export const LANGUAGE_MODES = ['en', 'zh-Hans'] satisfies LanguageKey[]
 
 export type LanguageMode = UnionFromTuple<typeof LANGUAGE_MODES>

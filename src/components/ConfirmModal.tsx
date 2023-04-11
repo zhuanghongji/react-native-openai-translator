@@ -1,3 +1,4 @@
+import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { useThemeColor } from '../themes/hooks'
 import { TText } from './TText'
@@ -36,7 +37,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
 
   const dissmiss = () => onDismissRequest(false)
 
-  const renderButton = (txt: string, onPress?: () => void) => {
+  const renderButton = (txtStyle: TextStyle | undefined, txt: string, onPress?: () => void) => {
     return (
       <Pressable
         style={styles.buttonContainer}
@@ -44,7 +45,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
           dissmiss()
           onPress?.()
         }}>
-        <TText style={styles.buttonText} typo="text">
+        <TText style={[styles.buttonText, txtStyle]} typo="text">
           {txt}
         </TText>
       </Pressable>
@@ -72,9 +73,9 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
           {message}
         </TText>
         <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
-          {renderButton(leftText, onLeftPress)}
+          {renderButton(undefined, leftText, onLeftPress)}
           <View style={[styles.buttonDivider, { backgroundColor: borderColor }]} />
-          {renderButton(rightText, onRightPress)}
+          {renderButton({ color: colors.accent }, rightText, onRightPress)}
         </View>
       </View>
     </Modal>

@@ -1,6 +1,6 @@
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useThemeColor } from '../themes/hooks'
+import { LIGHT_THEME_SCHEME, useThemeColor, useThemeDark } from '../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native'
 
@@ -15,15 +15,17 @@ export type PickSelectorItemViewProps = {
 export const PickSelectorItemView = React.memo((props: PickSelectorItemViewProps) => {
   const { style, labelStyle, label, isSelected, onPress } = props
 
-  const textColor = useThemeColor('text')
-  const contentColor = useThemeColor('text2')
-  const backdropColor = useThemeColor('backdrop2')
+  const selectedTextColor = useThemeColor('text')
+  const unselectedTextColor = useThemeColor('text2')
+
+  const isDark = useThemeDark()
+  const selectedBackdropColor = isDark ? colors.c29 : LIGHT_THEME_SCHEME.backdrop2
 
   return (
     <Pressable
       style={[
         {
-          backgroundColor: isSelected ? backdropColor : colors.transparent,
+          backgroundColor: isSelected ? selectedBackdropColor : colors.transparent,
         },
         style,
       ]}
@@ -31,7 +33,7 @@ export const PickSelectorItemView = React.memo((props: PickSelectorItemViewProps
       <Text
         style={[
           styles.text,
-          { color: isSelected ? textColor : contentColor },
+          { color: isSelected ? selectedTextColor : unselectedTextColor },
           { fontWeight: isSelected ? 'bold' : 'normal' },
           labelStyle,
         ]}>

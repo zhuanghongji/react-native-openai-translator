@@ -12,7 +12,7 @@ export function TText(props: TTextProps) {
   const { style, typo, children, ...restProps } = props
   const textStyle = useTextThemeStyle(typo)
   return (
-    <Text style={[style, textStyle]} {...restProps}>
+    <Text style={[textStyle, style]} {...restProps}>
       {children}
     </Text>
   )

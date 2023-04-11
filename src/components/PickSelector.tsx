@@ -1,5 +1,5 @@
 import { colors } from '../res/colors'
-import { useThemeDark } from '../themes/hooks'
+import { useThemeColor, useThemeDark } from '../themes/hooks'
 import { PickSelectorItemView } from './PickSelectorItemView'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -79,7 +79,8 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
   } = props
 
   const isDark = useThemeDark()
-  const selectorBackgroundColor = isDark ? colors.c29 : colors.cF7
+  const selectorBackgroundColor = isDark ? colors.c33 : colors.white
+  const borderColor = useThemeColor('border2')
 
   const wasKeyboardVisibleWhenShowingRef = useRef(false)
   const isKeyboardVisibleRef = useRef(false)
@@ -194,7 +195,9 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
             style={[
               {
                 backgroundColor: selectorBackgroundColor,
+                borderWidth: 1,
                 borderRadius: 4,
+                borderColor,
                 overflow: 'hidden',
               },
               presentAnimStyle,

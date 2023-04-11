@@ -36,6 +36,7 @@ import { generateMessagesWithPrompts, useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   AppState,
   Keyboard,
@@ -55,6 +56,7 @@ const FROM_LANGUAGE_KEYS = [null, ...LANGUAGE_KEYS]
 export function HomeScreen({ navigation }: Props): JSX.Element {
   const tint2 = useThemeColor('tint2')
   const backgroundColor = useThemeColor('background')
+  const { t } = useTranslation()
 
   const [apiUrl] = useApiUrlPref()
   const [apiUrlPath] = useApiUrlPathPref()
@@ -185,6 +187,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
   const langsDisabled = translatorMode === 'bubble'
   const exchangeDisabled = fromLang === null || translatorMode !== 'translate'
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
@@ -323,10 +326,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       </View>
 
       <StatusDivider mode={translatorMode} status={status} />
-
       <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
         <OutputView ref={outputViewRef} text={outputText} />
-
         <View style={styles.toolsRow}>
           {outputText ? (
             <>

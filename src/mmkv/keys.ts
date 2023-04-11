@@ -1,0 +1,16 @@
+export const enum StorageKey {
+  defaultFromLanguage = 'default_from_language',
+  defaultTargetLanguage = 'default_target_language',
+  serviceProvider = 'service_provider',
+  apiKey = 'api_key',
+  apiModel = 'api_model',
+  apiUrl = 'api_url',
+  apiUrlPath = 'api_url_path',
+  defaultTranslatorMode = 'default_translate_mode',
+  languageMode = 'language_mode',
+  themeMode = 'theme_mode',
+  alwaysShowIcons = 'always_show_icons',
+  autoTranslate = 'auto_translate',
+  restorePreviousPosition = 'restore_previous_position',
+  lastDetectedText = 'last_detected_text',
+}

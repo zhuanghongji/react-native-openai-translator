@@ -2,6 +2,7 @@ import { SvgIcon } from '../../components/SvgIcon'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, StatusBar, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -16,6 +17,7 @@ export interface TitleBarProps {
 export function TitleBar(props: TitleBarProps): JSX.Element {
   const { onBackPress, onResetPress } = props
   const { top } = useSafeAreaInsets()
+  const { t } = useTranslation()
 
   return (
     <LinearGradient
@@ -28,7 +30,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
         <SvgIcon size={dimensions.iconMedium} color={colors.black} name="back" />
       </Pressable>
       <View style={styles.center}>
-        <Text style={styles.title}>Settings</Text>
+        <Text style={styles.title}>{t('Settings')}</Text>
       </View>
       <Pressable style={styles.touchable} onPress={onResetPress}>
         <SvgIcon size={dimensions.iconMedium} color={colors.black} name="reset" />

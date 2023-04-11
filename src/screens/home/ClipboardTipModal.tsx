@@ -2,6 +2,7 @@ import { TText } from '../../components/TText'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import React, { useImperativeHandle, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import Modal from 'react-native-modal'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
@@ -17,6 +18,8 @@ export interface ClipboardTipModalHandle {
 export const ClipboardTipModal = React.forwardRef<ClipboardTipModalHandle, ClipboardTipModalProps>(
   (props, ref) => {
     const { style } = props
+
+    const { t } = useTranslation()
 
     const borderColor = useThemeColor('border2')
     const backdropColor = useThemeColor('backdrop')
@@ -66,21 +69,21 @@ export const ClipboardTipModal = React.forwardRef<ClipboardTipModalHandle, Clipb
             },
           ]}>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>Clipboard</Text>
+            <Text style={styles.badgeText}>{t('Clipboard')}</Text>
           </View>
 
           <TText style={styles.title} typo="text">
-            New Text Detected
+            {t('New Text Detected')}
           </TText>
           <TText style={styles.text} typo="text" numberOfLines={7}>
             {text}
           </TText>
           <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
-            {renderButton('Ignore', () => {
+            {renderButton(t('Ignore'), () => {
               setText('')
             })}
             <View style={[styles.buttonDivider, { backgroundColor: borderColor }]} />
-            {renderButton('Use It', () => {
+            {renderButton(t('Use It'), () => {
               setText('')
               setTimeout(() => {
                 onUseItPressRef.current?.()

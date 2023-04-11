@@ -4,6 +4,7 @@ export interface ThemeScheme {
   // text
   text: ColorValue
   text2: ColorValue
+  text3: ColorValue
 
   // image
   tint: ColorValue

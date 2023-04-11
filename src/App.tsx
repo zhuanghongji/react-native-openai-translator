@@ -1,3 +1,4 @@
+import './i18n/config'
 import { ChatScreen } from './screens/chat'
 import { HomeScreen } from './screens/home'
 import { ScannerScreen } from './screens/scanner'

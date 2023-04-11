@@ -4,6 +4,7 @@ import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import { TranslatorStatus } from '../../types'
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import Animated, {
   Extrapolation,
@@ -15,40 +16,6 @@ import Animated, {
 } from 'react-native-reanimated'
 
 type StatusText = Record<TranslatorStatus, string>
-
-const STATUS_TEXTS: Record<TranslatorMode, StatusText> = {
-  translate: {
-    none: 'Translate Mode',
-    pending: 'Translating...',
-    failure: 'Translate failed',
-    success: 'Translated',
-  },
-  polishing: {
-    none: 'Polishing Mode',
-    pending: 'Polishing...',
-    failure: 'Polishing failed',
-    success: 'Polished',
-  },
-  summarize: {
-    none: 'Summarize Mode',
-    pending: 'Summarizing...',
-    failure: 'Summarize failed',
-    success: 'Summarized',
-  },
-  analyze: {
-    none: 'Analyze Mode',
-    pending: 'Analyzing...',
-    failure: 'Analyze failed',
-    success: 'Analyzed',
-  },
-  bubble: {
-    none: 'Bubble Mode',
-    pending: 'Bubbling...',
-    failure: 'Bubble failed',
-    success: 'Bubbled',
-  },
-}
-
 const STATUS_EMOJIS: Record<TranslatorStatus, string> = {
   none: '',
   pending: '✍️',
@@ -63,7 +30,42 @@ export interface StatusDividerProps {
 
 export function StatusDivider(props: StatusDividerProps): JSX.Element {
   const { mode, status } = props
-  const text = STATUS_TEXTS[mode][status]
+
+  const { t } = useTranslation()
+
+  const statusTexts: Record<TranslatorMode, StatusText> = {
+    translate: {
+      none: t('Translate Mode'),
+      pending: t('Translating...'),
+      failure: t('Translate failed'),
+      success: t('Translated'),
+    },
+    polishing: {
+      none: t('Polishing Mode'),
+      pending: t('Polishing...'),
+      failure: t('Polishing failed'),
+      success: t('Polished'),
+    },
+    summarize: {
+      none: t('Summarize Mode'),
+      pending: t('Summarizing...'),
+      failure: t('Summarize failed'),
+      success: t('Summarized'),
+    },
+    analyze: {
+      none: t('Analyze Mode'),
+      pending: t('Analyzing...'),
+      failure: t('Analyze failed'),
+      success: t('Analyzed'),
+    },
+    bubble: {
+      none: t('Bubble Mode'),
+      pending: t('Bubbling...'),
+      failure: t('Bubble failed'),
+      success: t('Bubbled'),
+    },
+  }
+  const text = statusTexts[mode][status]
   const emoji = STATUS_EMOJIS[status]
 
   const contentColor = useThemeColor('text2')
