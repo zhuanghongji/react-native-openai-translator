@@ -32,6 +32,7 @@ import { PickView } from './PickView'
 import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
+import { UnsupportTip } from './UnsupportTip'
 import { generateMessagesWithPrompts, useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -373,6 +374,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             }}
           />
         </View>
+        <UnsupportTip />
       </ScrollView>
 
       <ClipboardTipModal ref={clipboardTipModalRef} />
