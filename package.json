@@ -22,6 +22,7 @@
     "react": "18.2.0",
     "react-i18next": "^12.2.0",
     "react-native": "0.71.6",
+    "react-native-alert-notification": "^0.3.4",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-haptic-feedback": "^2.0.3",
     "react-native-keyboard-controller": "^1.4.4",

@@ -59,5 +59,6 @@
   "system without preset": "该系统没有预设",
   "Unable to find a matching speech engine": "无法找到相匹配的语音引擎",
   "Maybe the Text-to-Speech engine is not (yet) installed on the phone, please install and restart the app": "可能手机上尚未安装语音合成引擎，请安装并重新启动应用程序",
-  "Init Text-to-Speech failed": "初始化文本转语音失败"
+  "Init Text-to-Speech failed": "初始化文本转语音失败",
+  "Copied to clipboard": "已复制到剪贴板"
 }

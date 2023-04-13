@@ -59,5 +59,6 @@
   "system without preset": "system without preset",
   "Unable to find a matching speech engine": "Unable to find a matching speech engine",
   "Maybe the Text-to-Speech engine is not (yet) installed on the phone, please install and restart the app": "Maybe the Text-to-Speech engine is not (yet) installed on the phone, please install and restart the app",
-  "Init Text-to-Speech failed": "Init Text-to-Speech failed"
+  "Init Text-to-Speech failed": "Init Text-to-Speech failed",
+  "Copied to clipboard": "Copied to clipboard"
 }

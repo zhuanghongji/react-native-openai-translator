@@ -47,6 +47,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -310,6 +311,11 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           onPress={() => {
             hapticLight()
             Clipboard.setString(inputText)
+            Toast.show({
+              type: ALERT_TYPE.SUCCESS,
+              title: t('Copied to clipboard'),
+              textBody: inputText,
+            })
           }}
         />
         <ToolButton
@@ -345,6 +351,11 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
                 onPress={() => {
                   hapticLight()
                   Clipboard.setString(outputText)
+                  Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: t('Copied to clipboard'),
+                    textBody: outputText,
+                  })
                 }}
               />
             </>
