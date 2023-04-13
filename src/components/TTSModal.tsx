@@ -1,20 +1,13 @@
 import { LanguageKey } from '../preferences/options'
+import { print } from '../printer'
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { texts } from '../res/texts'
 import { useThemeColor } from '../themes/hooks'
+import { isChineseLang } from '../utils'
 import { TText } from './TText'
 import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react'
-import {
-  Platform,
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import Modal from 'react-native-modal'
 import { useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Tts from 'react-native-tts'
@@ -37,17 +30,8 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
   const { height: frameHeight } = useSafeAreaFrame()
   const { top, bottom } = useSafeAreaInsets()
 
+  const { t } = useTranslation()
   const backgroundColor = useThemeColor('background2')
-
-  const [initError, setInitError] = useState(false)
-  useEffect(() => {
-    // Tts.getInitStatus().catch(err => {
-    //   if (err.code === 'no_engine') {
-    //     // Tts.requestInstallEngine()
-    //   }
-    //   setInitError(true)
-    // })
-  }, [])
 
   const [options, setOptions] = useState<SpeakOptions | null>(null)
   const isVisible = options !== null
@@ -76,74 +60,110 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
     }
   }, [progress, options])
 
+  const [errorMessage, setErrorMessage] = useState('')
+  const [ttsStatus, setTTSStatus] = useState<'unknown' | 'success' | 'error'>('unknown')
+  const [currentLang, setCurrentLang] = useState<LanguageKey | null | undefined>(undefined)
+  if (options?.lang !== undefined && options.lang !== currentLang) {
+    setTTSStatus('unknown')
+    setCurrentLang(options.lang)
+  }
+
+  useEffect(() => {
+    if (currentLang === undefined) {
+      return
+    }
+    const init = async () => {
+      try {
+        const voices = await Tts.voices()
+        const targetVoice = voices.find(v => {
+          if (v.networkConnectionRequired || v.notInstalled) {
+            return false
+          }
+          if (currentLang === null) {
+            return true
+          }
+          if (v.language === currentLang) {
+            return true
+          }
+          if (v.language === 'zh' && isChineseLang(currentLang)) {
+            return true
+          }
+          if (v.language.startsWith('en-') && currentLang === 'en') {
+            return true
+          }
+          return false
+        })
+        if (!targetVoice) {
+          setErrorMessage(t('Unable to find a matching speech engine'))
+          setTTSStatus('error')
+          return
+        }
+        try {
+          await Tts.setDefaultLanguage(targetVoice.language)
+        } catch (err) {
+          // My Samsung S9 has always this error: "Language is not supported"
+        }
+        await Tts.setDefaultVoice(targetVoice.id)
+        print('init success', { targetVoice })
+        setTTSStatus('success')
+      } catch (e: any) {
+        if (e.code === 'no_engine') {
+          setErrorMessage(
+            t(
+              'Maybe the Text-to-Speech engine is not (yet) installed on the phone, please install and restart the app'
+            )
+          )
+        } else {
+          setErrorMessage(t('Init Text-to-Speech failed'))
+        }
+        setTTSStatus('error')
+      }
+    }
+    init()
+  }, [currentLang, t])
+
   useEffect(() => {
     if (!options) {
       return
     }
+    Tts.addEventListener('tts-start', () => {
+      print('tts-start')
+    })
     Tts.addEventListener('tts-progress', event => {
+      // print('tts-progress', event)
+      // Whether to invoke this method depends on the speech engine.
       setProgress(event.location + event.length)
     })
     Tts.addEventListener('tts-finish', () => {
       setOptions(null)
     })
+    Tts.addEventListener('tts-cancel', () => {
+      setOptions(null)
+    })
+    Tts.addEventListener('tts-error', () => {
+      setErrorMessage('Speak failed')
+      setTTSStatus('error')
+    })
     return () => {
+      Tts.removeAllListeners('tts-start')
       Tts.removeAllListeners('tts-progress')
       Tts.removeAllListeners('tts-finish')
+      Tts.removeAllListeners('tts-cancel')
+      Tts.removeAllListeners('tts-error')
     }
   }, [options])
 
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      return
-    }
     if (!options) {
-      Tts.stop()
       return
     }
-    const { content, lang } = options
-    speak(content, lang)
-  }, [options])
-
-  const speak = async (content: string, lang: string | null) => {
-    if (lang === null) {
-      Tts.stop()
-      Tts.speak(content)
+    if (ttsStatus !== 'success') {
       return
     }
-    try {
-      const voices = await Tts.voices()
-      // console.log('voices', { voices })
-      const voice = voices.find(v => {
-        if (lang === 'en') {
-          return v.language === 'en' || v.language === 'en-US'
-        }
-        return v.language === lang
-      })
-      if (voice) {
-        // console.log('voice', { voice })
-        Tts.stop()
-        if (Platform.OS === 'ios') {
-          Tts.speak(content, {
-            iosVoiceId: voice.id,
-          } as any)
-        } else {
-          Tts.speak(content, {
-            androidParams: {
-              KEY_PARAM_PAN: -1,
-              KEY_PARAM_VOLUME: 0.5,
-              KEY_PARAM_STREAM: 'STREAM_MUSIC',
-            },
-          } as any)
-        }
-        return
-      }
-      Tts.stop()
-      Tts.speak(content)
-    } catch (e) {
-      Tts.stop()
-      Tts.speak(content)
-    }
-  }
+    const { content } = options
+    Tts.stop()
+    Tts.speak(content)
+  }, [options, ttsStatus])
 
   useImperativeHandle(ref, () => ({
     speak: (os: SpeakOptions) => {
@@ -165,8 +185,10 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
         style={[styles.content, { marginTop: top, marginBottom: bottom }]}
         onPress={() => setOptions(null)}>
         <View style={styles.textContainer}>
-          {initError ? (
-            <Text style={[styles.text, { color: colors.warning }]}>{texts.noEngine}</Text>
+          {ttsStatus === 'error' ? (
+            <Text style={[styles.text, { color: colors.warning, fontStyle: 'italic' }]}>
+              {errorMessage + ' 😲'}
+            </Text>
           ) : (
             <TText style={styles.text} typo="text">
               <Text style={{ color: colors.primary }}>{highlightContent}</Text>
@@ -205,6 +227,5 @@ const styles = StyleSheet.create<Styles>({
   text: {
     fontSize: 28,
     lineHeight: 37,
-    color: 'white',
   },
 })

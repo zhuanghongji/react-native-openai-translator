@@ -32,7 +32,7 @@ export function sseRequest(
 
   const { onOpen, onMessage, onTimeout, onError, onException, onClose } = callbacks
   es.addEventListener('open', () => {
-    print(TAG, 'onOpen')
+    print(TAG, 'open')
     onOpen?.()
   })
 
@@ -47,17 +47,17 @@ export function sseRequest(
 
   es.addEventListener('error', event => {
     if (event.type === 'timeout') {
-      print(TAG, 'onTimeout')
+      print(TAG, 'timeout')
       onTimeout?.()
       return
     }
     if (event.type === 'error') {
-      print(TAG, 'onError')
+      print(TAG, 'error')
       onError?.(event.message)
       return
     }
     if (event.type === 'exception') {
-      print(TAG, 'onException')
+      print(TAG, 'exception')
       onException?.(event.message, event.error)
       return
     }
@@ -65,7 +65,7 @@ export function sseRequest(
   })
 
   es.addEventListener('close', () => {
-    print(TAG, 'onClose')
+    print(TAG, 'close')
     onClose?.()
   })
 
