@@ -1,7 +1,7 @@
-import { SvgIcon } from '../../components/SvgIcon'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor, useThemeDark } from '../../themes/hooks'
+import { SvgIcon } from '../SvgIcon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'

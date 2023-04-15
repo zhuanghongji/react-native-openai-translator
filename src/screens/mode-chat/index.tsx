@@ -1,3 +1,8 @@
+import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
+import { InputBar } from '../../components/chat/InputBar'
+import { SSEMessageView } from '../../components/chat/SSEMessageView'
+import { UserMessageView } from '../../components/chat/UserMessageView'
+import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { useApiKeyPref, useApiUrlPathPref, useApiUrlPref } from '../../preferences/storages'
@@ -6,11 +11,7 @@ import { useThemeColor } from '../../themes/hooks'
 import { ChatMessage, Message } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
-import { InputBar } from './InputBar'
 import { TitleBar } from './TitleBar'
-import { AssistantMessageView } from './message-view/AssistantMessageView'
-import { SSEMessageView } from './message-view/SSEMessageView'
-import { UserMessageView } from './message-view/UserMessageView'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
 import React, { useEffect, useRef, useState } from 'react'
@@ -19,20 +20,9 @@ import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-key
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Chat'>
+type Props = NativeStackScreenProps<RootStackParamList, 'ModeChat'>
 
-function clamp(value: number, min: number, max: number) {
-  'worklet'
-  if (value < min) {
-    return min
-  }
-  if (value > max) {
-    return max
-  }
-  return value
-}
-
-export function ChatScreen({ navigation, route }: Props): JSX.Element {
+export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const { translatorMode, systemPrompt, userContent, assistantContent } = route.params
 
   const [apiUrl] = useApiUrlPref()
@@ -47,7 +37,7 @@ export function ChatScreen({ navigation, route }: Props): JSX.Element {
     const kbHeight = Math.abs(keyboardHeight.value)
     const contentHeight = listContentHeight.value
     const containerHeight = listContainerHeight.value
-    const offset = clamp(contentHeight - (containerHeight - kbHeight), 0, kbHeight)
+    const offset = workletClamp(contentHeight - (containerHeight - kbHeight), 0, kbHeight)
     return {
       transform: [{ translateY: -offset }],
     }

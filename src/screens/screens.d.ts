@@ -7,7 +7,7 @@ type RootStackParamList = {
   Scanner: {
     onScanSuccess: (blocks: ScanBlock[]) => void
   }
-  Chat: {
+  ModeChat: {
     translatorMode: TranslatorMode
     systemPrompt: string
     userContent: string

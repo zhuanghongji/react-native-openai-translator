@@ -1,7 +1,7 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
-import { ChatScreen } from './chat'
 import { HomeScreen } from './home'
+import { ModeChatScreen } from './mode-chat'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
 import { SettingsScreen } from './settings'
@@ -47,7 +47,7 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="Home" component={HomeScreen} />
         <RootStack.Screen name="Settings" component={SettingsScreen} />
         <RootStack.Screen name="Scanner" component={ScannerScreen} />
-        <RootStack.Screen name="Chat" component={ChatScreen} />
+        <RootStack.Screen name="ModeChat" component={ModeChatScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )
