@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type SSEMessageStatus = 'none' | 'sending' | 'done'
+type SSEMessageStatus = 'none' | 'sending' | 'complete'
 
 interface SSEMessageState {
   status: SSEMessageStatus

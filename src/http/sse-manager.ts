@@ -46,6 +46,7 @@ export function sseRequest(
   })
 
   es.addEventListener('error', event => {
+    setTimeout(() => es.close(), 100)
     if (event.type === 'timeout') {
       print(TAG, 'timeout')
       onTimeout?.()

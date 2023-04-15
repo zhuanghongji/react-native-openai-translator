@@ -4,10 +4,11 @@ import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
+import { useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
-import { useApiKeyPref, useApiUrlPathPref, useApiUrlPref } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
+import { toast } from '../../toast'
 import { ChatMessage, Message } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
@@ -25,9 +26,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ModeChat'>
 export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const { translatorMode, systemPrompt, userContent, assistantContent } = route.params
 
-  const [apiUrl] = useApiUrlPref()
-  const [apiUrlPath] = useApiUrlPathPref()
-  const [apiKey] = useApiKeyPref()
+  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const backgroundColor = useThemeColor('backgroundChat')
 
   const listContainerHeight = useSharedValue(0)
@@ -77,6 +76,9 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const setContent = useSSEMessageStore(state => state.setContent)
 
   const onSendPress = () => {
+    if (!checkIsOptionsValid()) {
+      return
+    }
     setInputText('')
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
@@ -91,33 +93,27 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
     setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
     setStatus('sending')
     sseRequestChatCompletions(
+      urlOptions,
       {
-        apiUrl,
-        apiUrlPath,
-        apiKey,
         messages: messagesToSend,
       },
       {
-        onSubscribe: () => {},
         onNext: content => {
           setContent(content)
+          flashListRef.current?.scrollToEnd()
         },
-        onTimeout: () => {
-          setStatus('done')
+        onError: (code, message) => {
+          setStatus('complete')
           hapticError()
-        },
-        onError: message => {
-          setStatus('done')
-          hapticError()
+          toast('warning', code, message)
         },
         onDone: message => {
           setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
-          setStatus('done')
+          setStatus('complete')
           setContent('')
           hapticSuccess()
           setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
         },
-        onComplete: () => {},
       }
     )
   }

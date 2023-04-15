@@ -1,5 +1,24 @@
+import { texts } from '../../../../res/texts'
 import { Message } from '../../../../types'
 import { sseRequest } from '../../../sse-manager'
+import { OpenAIApiUrlOptions } from '../../type'
+
+/**
+ * {
+ *   code: "invalid_api_key"
+ *   message: "Incorrect API key provided: sk-kf0H0***PLVW. You can find your API key at https://platform.openai.com/account/api-keys."
+ *   param: null
+ *   type: "invalid_request_error"
+ * }
+ */
+export interface ChatCompletionError {
+  error: {
+    code: string
+    message: string
+    param: string
+    type: string
+  }
+}
 
 export interface ChatCompletion {
   id: string
@@ -20,31 +39,29 @@ export interface ChatCompletionChoiceDelta {
   content?: string
 }
 
-export interface ChatCompletionsOptions {
-  apiUrl: string
-  apiUrlPath: string
-  apiKey: string
+export interface ChatCompletionsDataOptions {
   messages: Message[]
+  temperature?: number
 }
 
 export interface ChatCompletionsCallbacks {
-  onSubscribe: () => void
+  onSubscribe?: () => void
   onNext: (content: string) => void
   onDone: (result: Message) => void
-  onTimeout: () => void
-  onError: (message: string) => void
-  onComplete: () => void
+  onError: (code: string, message: string) => void
+  onComplete?: () => void
 }
 
 /**
  * Docs: https://platform.openai.com/docs/api-reference/completions
  */
 export function sseRequestChatCompletions(
-  options: ChatCompletionsOptions,
+  urlOptions: OpenAIApiUrlOptions,
+  dataOptions: ChatCompletionsDataOptions,
   callbacks: ChatCompletionsCallbacks
 ) {
-  const { apiUrl, apiUrlPath, apiKey, messages } = options
-  const { onSubscribe, onNext, onDone, onTimeout, onError, onComplete } = callbacks
+  const { apiUrl, apiUrlPath, apiKey } = urlOptions
+  const { onSubscribe, onNext, onDone, onError, onComplete } = callbacks
 
   const result: Message<string> = { role: '', content: '' }
   const es = sseRequest(
@@ -60,20 +77,19 @@ export function sseRequestChatCompletions(
         frequency_penalty: 1,
         presence_penalty: 1,
         stream: true,
-        messages,
+        ...dataOptions,
       },
     },
     {
       onOpen: onSubscribe,
       onMessage: data => {
-        console.log('onMessage', data)
         if (!data) {
           return
         }
         if (data === '[DONE]') {
           es.close()
           onDone(result as Message)
-          onComplete()
+          onComplete?.()
           return
         }
         const item = JSON.parse(data) as ChatCompletion
@@ -89,16 +105,26 @@ export function sseRequestChatCompletions(
         }
       },
       onTimeout: () => {
-        onTimeout()
-        onComplete()
+        onError(texts.requestTimeout, texts.checkNetworkOrSettings)
+        onComplete?.()
       },
       onError: message => {
-        onError(message)
-        onComplete()
+        try {
+          if (typeof message === 'string') {
+            const { error } = JSON.parse(message) as ChatCompletionError
+            onError(error.code, error.message)
+          } else {
+            const { error } = message as ChatCompletionError
+            onError(error.code, error.message)
+          }
+        } catch (e) {
+          onError(texts.requestError, texts.checkNetworkOrSettings)
+        }
+        onComplete?.()
       },
-      onException: message => {
-        onError(message)
-        onComplete()
+      onException: () => {
+        onError(texts.requestError, texts.checkNetworkOrSettings)
+        onComplete?.()
       },
     }
   )

@@ -91,6 +91,7 @@ const styles = StyleSheet.create<Styles>({
     fontSize: 14,
     lineHeight: 20,
     textAlign: 'justify',
+    textAlignVertical: 'center',
     padding: 0,
   },
   pressable: {

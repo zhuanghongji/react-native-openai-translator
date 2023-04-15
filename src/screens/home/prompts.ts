@@ -63,7 +63,7 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
       return {
         systemPrompt: '作为一个中国诗词专家',
         userPromptPrefix: '假设你是下面输入内容的原作者。\n输入内容："""',
-        userPromptSuffix: '"""\n再写一句同样含义、同样字数的诗词：',
+        userPromptSuffix: '"""\n\n再写一句同样含义、同样字数的诗词：',
       }
     }
     if (targetLang === 'zh-Hant' || targetLang === 'yue') {
@@ -88,7 +88,7 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
 
 輸入內容："""`,
         userPromptSuffix:
-          '"""\n請找出上面輸入內容的作者、朝代、標題、原文內容、原文翻譯、原文註釋和原文欣賞：',
+          '"""\n\n請找出上面輸入內容的作者、朝代、標題、原文內容、原文翻譯、原文註釋和原文欣賞：',
       }
     }
     return {
@@ -112,7 +112,7 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
 
 输入内容："""`,
       userPromptSuffix:
-        '"""\n请找出上面输入内容的作者、朝代、标题、原文内容、原文翻译、原文注释、原文赏析：',
+        '"""\n\n请找出上面输入内容的作者、朝代、标题、原文内容、原文翻译、原文注释、原文赏析：',
     }
   }
 
@@ -161,7 +161,7 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
 
 输入单词："""`,
       userPromptSuffix:
-        '"""请将翻译输入单词，不需要额外解释，同时给出单词原始形态、单词的语种、对应的音标、所词性的中文含义、三个双语示例句子：',
+        '"""\n\n请将翻译输入单词，不需要额外解释，同时给出单词原始形态、单词的语种、对应的音标、所词性的中文含义、三个双语示例句子：',
     }
   }
 

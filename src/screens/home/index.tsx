@@ -2,6 +2,7 @@ import { PickSelector } from '../../components/PickSelector'
 import { SvgIcon } from '../../components/SvgIcon'
 import { TTSModal, TTSModalHandle } from '../../components/TTSModal'
 import { hapticError, hapticLight, hapticSuccess } from '../../haptic'
+import { useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
   LANGUAGE_KEYS,
@@ -15,9 +16,6 @@ import {
   getDefaultTranslatorMode,
   getLastDetectedText,
   setLastDetectedText,
-  useApiKeyPref,
-  useApiUrlPathPref,
-  useApiUrlPref,
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
@@ -49,7 +47,6 @@ import {
   View,
   ViewStyle,
 } from 'react-native'
-import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -61,9 +58,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const backgroundColor = useThemeColor('background')
   const { t } = useTranslation()
 
-  const [apiUrl] = useApiUrlPref()
-  const [apiUrlPath] = useApiUrlPathPref()
-  const [apiKey] = useApiKeyPref()
+  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const [status, setStatus] = useState<TranslatorStatus>('none')
 
   const [fromLang, setFromLang] = useState<LanguageKey | null>(getDefaultFromLanguage())
@@ -156,52 +151,30 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   }
 
   const perfromChatCompletions = (messages: Message[]) => {
-    let enterTip = ''
-    if (!apiUrl) {
-      enterTip = t('Enter API URL first')
-    } else if (!apiUrlPath) {
-      enterTip = t('Enter API URL Path first')
-    } else if (!apiKey) {
-      enterTip = t('Enter API Key first')
-    }
-    if (enterTip) {
-      Toast.show({
-        type: ALERT_TYPE.WARNING,
-        title: t('Warning'),
-        textBody: enterTip,
-        onPress: () => navigation.push('Settings'),
-      })
+    if (!checkIsOptionsValid()) {
       return
     }
-
     setOutputText('')
     setStatus('pending')
     sseRequestChatCompletions(
+      urlOptions,
       {
-        apiUrl,
-        apiUrlPath,
-        apiKey,
         messages,
       },
       {
-        onSubscribe: () => {},
         onNext: content => {
           outputViewRef.current?.updateText(content)
         },
-        onTimeout: () => {
+        onError: (code, message) => {
           setStatus('failure')
           hapticError()
-        },
-        onError: message => {
-          setStatus('failure')
-          hapticError()
+          toast('warning', code, message)
         },
         onDone: message => {
           setOutputText(message.content)
           setStatus('success')
           hapticSuccess()
         },
-        onComplete: () => {},
       }
     )
   }
