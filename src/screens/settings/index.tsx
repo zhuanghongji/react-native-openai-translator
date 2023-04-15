@@ -98,7 +98,12 @@ export function SettingsScreen(
           <Text>{t('API Key')}</Text>
           <Text style={{ color: colors.warning }}>{' *'}</Text>
         </TText>
-        <InputView securable={true} value={apiKey} onChangeText={setApiKey} />
+        <InputView
+          securable={true}
+          value={apiKey}
+          modalTitle={t('API Key')}
+          onChangeText={setApiKey}
+        />
         <Text style={[styles.caption, { color: contentColor }]}>
           <Text>{t('Go to the ')}</Text>
           <Text
@@ -132,13 +137,13 @@ export function SettingsScreen(
         <TText style={styles.title} typo="text">
           {t('API URL')}
         </TText>
-        <InputView value={apiUrl} onChangeText={setApiUrl} />
+        <InputView value={apiUrl} modalTitle={t('API URL')} onChangeText={setApiUrl} />
 
         {divider}
         <TText style={styles.title} typo="text">
           {t('API URL Path')}
         </TText>
-        <InputView value={apiUrlPath} onChangeText={setApiUrlPath} />
+        <InputView value={apiUrlPath} modalTitle={t('API URL Path')} onChangeText={setApiUrlPath} />
 
         {divider}
         <TText style={styles.title} typo="text">
@@ -220,8 +225,8 @@ export function SettingsScreen(
       <ConfirmModal
         visible={resetConfirmModalVisible}
         message={t('Are you sure to reset all settings except for the API Key ?')}
-        leftText={t('Cancle')}
-        rightText={t('Reset')}
+        leftText={t('CANCEL')}
+        rightText={t('RESET')}
         onRightPress={() => {
           setServiceProvider(DEFAULTS.serviceProvider)
           setApiModel(DEFAULTS.apiModel)

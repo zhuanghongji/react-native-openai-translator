@@ -1,14 +1,15 @@
-## react-native-openai-translator 
+## react-native-openai-translator
 
 The translator that does more than just translation:
+
 - Powered by [OpenAI](https://openai.com/)
 - Inspired by [OpenAI Translator](https://github.com/yetone/openai-translator)
 - Implemented by [React Native](https://reactnative.dev/)
 
 ## Res
 
-- https://fonts.google.com/icons
-- https://transform.tools/svg-to-react-native 
+- [google icons-rounded](https://fonts.google.com/icons?icon.style=Rounded)
+- [svg-to-react-native](https://transform.tools/svg-to-react-native)
 
 ## Libs
 
@@ -22,7 +23,6 @@ The translator that does more than just translation:
 - [react-native-clipboard](https://github.com/react-native-clipboard/clipboard)
 - [axios](https://axios-http.com/docs/intro)
 
-
-## License 
+## License
 
 [GNU](./LICENSE)

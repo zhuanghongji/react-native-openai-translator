@@ -79,11 +79,11 @@ export const ClipboardTipModal = React.forwardRef<ClipboardTipModalHandle, Clipb
             {text}
           </TText>
           <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
-            {renderButton(t('Ignore'), () => {
+            {renderButton(t('IGNORE'), () => {
               setText('')
             })}
             <View style={[styles.buttonDivider, { backgroundColor: borderColor }]} />
-            {renderButton(t('Use It'), () => {
+            {renderButton(t('AS INPUT'), () => {
               setText('')
               setTimeout(() => {
                 onUseItPressRef.current?.()

@@ -11,8 +11,8 @@ import SplashScreen from 'react-native-splash-screen'
 export function App(): JSX.Element {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider style={{ flex: 1 }}>
-        <KeyboardProvider statusBarTranslucent>
+      <KeyboardProvider statusBarTranslucent>
+        <SafeAreaProvider style={{ flex: 1 }}>
           <NavigationContainer
             onReady={() => {
               if (Platform.OS === 'ios') {
@@ -23,8 +23,8 @@ export function App(): JSX.Element {
             }}>
             <AppContent />
           </NavigationContainer>
-        </KeyboardProvider>
-      </SafeAreaProvider>
+        </SafeAreaProvider>
+      </KeyboardProvider>
     </GestureHandlerRootView>
   )
 }

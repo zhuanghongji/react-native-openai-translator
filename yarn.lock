@@ -1701,6 +1701,11 @@
   resolved "https://mirrors.cloud.tencent.com/npm/@react-native-community/eslint-plugin/-/eslint-plugin-1.3.0.tgz"
   integrity sha512-+zDZ20NUnSWghj7Ku5aFphMzuM9JulqCW+aPXT6IfIXFbb8tzYTTOSeRFOtuekJ99ibW2fUCSsjuKNlwDIbHFg==
 
+"@react-native-community/hooks@^3.0.0":
+  version "3.0.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/@react-native-community/hooks/-/hooks-3.0.0.tgz#af5f2ca32eea59b792ce9e3d9a4cf0354f9b195f"
+  integrity sha512-g2OyxXHfwIytXUJitBR6Z/ISoOfp0WKx5FOv+NqJ/CrWjRDcTw6zXE5I1C9axfuh30kJqzWchVfCDrkzZYTxqg==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://mirrors.cloud.tencent.com/npm/@react-native/assets/-/assets-1.0.0.tgz"
@@ -6165,10 +6170,10 @@ react-native-haptic-feedback@^2.0.3:
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-haptic-feedback/-/react-native-haptic-feedback-2.0.3.tgz#09133b2175503831c04798cb0dc63ae91e3959c1"
   integrity sha512-7+qvcxXZts/hA+HOOIFyM1x9m9fn/TJVSTgXaoQ8uT4gLc97IMvqHQ559tDmnlth+hHMzd3HRMpmRLWoKPL0DA==
 
-react-native-keyboard-controller@^1.4.4:
-  version "1.4.4"
-  resolved "https://mirrors.cloud.tencent.com/npm/react-native-keyboard-controller/-/react-native-keyboard-controller-1.4.4.tgz#09a6f89a9731eab241c9ed1c349e9022e7d16240"
-  integrity sha512-6gkdgE7ua23crqBfs8CZTAd+UbxMLqwjLCq2DZQaYuts9xs75nXKj+aUVAWHVVDxrZS8SCiuwC1XcI9munDHQw==
+react-native-keyboard-controller@^1.5.1:
+  version "1.5.1"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-keyboard-controller/-/react-native-keyboard-controller-1.5.1.tgz#85b435a1969165f1b836cf96e2ac9c073b23c517"
+  integrity sha512-okaBnvmIqUpLnH/0WRihbfdc7DB8gAWVpwKLQTNNDJXXFq/TQ1j5UbgnsTV7EGay9RQdyqUumUVeU791gAOrVw==
 
 react-native-linear-gradient@^2.6.2:
   version "2.6.2"
@@ -6206,10 +6211,10 @@ react-native-reanimated@^2.14.4:
     setimmediate "^1.0.5"
     string-hash-64 "^1.0.3"
 
-react-native-safe-area-context@^4.5.0:
-  version "4.5.0"
-  resolved "https://mirrors.cloud.tencent.com/npm/react-native-safe-area-context/-/react-native-safe-area-context-4.5.0.tgz#9208313236e8f49e1920ac1e2a2c975f03aed284"
-  integrity sha512-0WORnk9SkREGUg2V7jHZbuN5x4vcxj/1B0QOcXJjdYWrzZHgLcUzYWWIUecUPJh747Mwjt/42RZDOaFn3L8kPQ==
+react-native-safe-area-context@^4.5.1:
+  version "4.5.1"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-safe-area-context/-/react-native-safe-area-context-4.5.1.tgz#6651d216b86ce84a8e9399220a1010d3902d7a2e"
+  integrity sha512-bKcwk6zZvyz+VLoG6Uia1oiYU1jSbv1ysjEKSRLsLtPcDsbixsTc0UgfrPqjZxNTPzvYLMcr8ufA90UQauN4mw==
 
 react-native-screens@^3.20.0:
   version "3.20.0"
@@ -7189,10 +7194,10 @@ typedarray@^0.0.6:
   resolved "https://mirrors.cloud.tencent.com/npm/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^5.0.3:
-  version "5.0.3"
-  resolved "https://mirrors.cloud.tencent.com/npm/typescript/-/typescript-5.0.3.tgz#fe976f0c826a88d0a382007681cbb2da44afdedf"
-  integrity sha512-xv8mOEDnigb/tN9PSMTwSEqAnUvkoXMQlicOb0IUVDBSQCgBSaAAROUZYy2IcUy5qU6XajK5jjjO7TMWqBTKZA==
+typescript@^5.0.4:
+  version "5.0.4"
+  resolved "https://mirrors.cloud.tencent.com/npm/typescript/-/typescript-5.0.4.tgz#b217fd20119bd61a94d4011274e0ab369058da3b"
+  integrity sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==
 
 uglify-es@^3.1.9:
   version "3.3.9"

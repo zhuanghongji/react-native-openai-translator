@@ -129,5 +129,6 @@ const styles = StyleSheet.create<Styles>({
   },
   buttonText: {
     fontSize: 14,
+    fontWeight: 'bold',
   },
 })

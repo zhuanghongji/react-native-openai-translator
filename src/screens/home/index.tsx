@@ -155,6 +155,24 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   }
 
   const perfromChatCompletions = (messages: Message[]) => {
+    let enterTip = ''
+    if (!apiUrl) {
+      enterTip = t('Enter API URL first')
+    } else if (!apiUrlPath) {
+      enterTip = t('Enter API URL Path first')
+    } else if (!apiKey) {
+      enterTip = t('Enter API Key first')
+    }
+    if (enterTip) {
+      Toast.show({
+        type: ALERT_TYPE.WARNING,
+        title: t('Warning'),
+        textBody: enterTip,
+        onPress: () => navigation.push('Settings'),
+      })
+      return
+    }
+
     setOutputText('')
     setStatus('pending')
     sseRequestChatCompletions(
