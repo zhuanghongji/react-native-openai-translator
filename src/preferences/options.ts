@@ -140,11 +140,11 @@ export function useThemeModeLabelFn(): (mode: ThemeMode) => string {
   return (mode: ThemeMode) => {
     switch (mode) {
       case 'system':
-        return t('Follow system')
+        return t('Follow System')
       case 'dark':
-        return t('Dark mode')
+        return t('Dark')
       case 'light':
-        return t('Light mode')
+        return t('Light')
     }
   }
 }
