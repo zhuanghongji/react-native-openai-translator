@@ -20,6 +20,8 @@
     "@shopify/flash-list": "^1.4.2",
     "add": "^2.0.6",
     "i18next": "^22.4.14",
+    "lottie-ios": "3.4.0",
+    "lottie-react-native": "^6.0.0-rc.3",
     "react": "18.2.0",
     "react-i18next": "^12.2.0",
     "react-native": "0.71.6",

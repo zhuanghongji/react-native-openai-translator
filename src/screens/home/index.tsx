@@ -351,7 +351,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       </View>
 
       <StatusDivider mode={translatorMode} status={status} />
-      <ScrollView style={{ flex: 1, marginTop: dimensions.edge }}>
+      <ScrollView
+        style={{ flex: 1, marginTop: dimensions.edge }}
+        contentContainerStyle={{ paddingBottom: dimensions.spaceBottom }}>
         <OutputView ref={outputViewRef} text={outputText} />
         <View style={styles.toolsRow}>
           {outputText ? (
@@ -383,7 +385,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
             name="chat"
             onPress={() => {
               const { systemPrompt } = prompts
-              navigation.push('Chat', {
+              navigation.push('ModeChat', {
                 translatorMode,
                 systemPrompt,
                 userContent,

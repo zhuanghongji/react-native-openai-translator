@@ -84,6 +84,8 @@ const styles = StyleSheet.create<Styles>({
     lineHeight: 20,
     color: colors.warning,
     textAlign: 'justify',
-    margin: dimensions.edge,
+    marginTop: dimensions.edge,
+    marginHorizontal: dimensions.edge,
+    marginBottom: dimensions.edge * 2,
   },
 })

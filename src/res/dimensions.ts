@@ -4,6 +4,7 @@ export const dimensions = {
   edge,
   gap: 6,
   space: 8,
+  spaceBottom: 24,
   barHeight: 48,
   borderRadius: 8,
   iconLarge: 24,

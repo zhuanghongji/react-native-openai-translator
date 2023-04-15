@@ -2,12 +2,23 @@ import { LanguageKey } from '../preferences/options'
 import { print } from '../printer'
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
+import { lotties } from '../res/lotties'
 import { useThemeColor } from '../themes/hooks'
 import { isChineseLang } from '../utils'
 import { TText } from './TText'
-import React, { useEffect, useImperativeHandle, useMemo, useState } from 'react'
+import LottieView from 'lottie-react-native'
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import {
+  Pressable,
+  ScrollView,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native'
 import Modal from 'react-native-modal'
 import { useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Tts from 'react-native-tts'
@@ -32,6 +43,9 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
 
   const { t } = useTranslation()
   const backgroundColor = useThemeColor('background2')
+
+  const speakingRef = useRef(false)
+  const lottieViewRef = useRef<LottieView>(null)
 
   const [options, setOptions] = useState<SpeakOptions | null>(null)
   const isVisible = options !== null
@@ -155,14 +169,21 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
 
   useEffect(() => {
     if (!options) {
+      if (speakingRef.current) {
+        speakingRef.current = false
+        Tts.stop()
+        lottieViewRef.current?.reset()
+      }
       return
     }
     if (ttsStatus !== 'success') {
       return
     }
+    speakingRef.current = true
     const { content } = options
     Tts.stop()
     Tts.speak(content)
+    lottieViewRef.current?.play()
   }, [options, ttsStatus])
 
   useImperativeHandle(ref, () => ({
@@ -181,22 +202,30 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
       animationOut="fadeOutDown"
       hasBackdrop={false}
       statusBarTranslucent={true}>
-      <Pressable
-        style={[styles.content, { marginTop: top, marginBottom: bottom }]}
-        onPress={() => setOptions(null)}>
-        <View style={styles.textContainer}>
-          {ttsStatus === 'error' ? (
-            <Text style={[styles.text, { color: colors.warning, fontStyle: 'italic' }]}>
-              {errorMessage + ' 😲'}
-            </Text>
-          ) : (
-            <TText style={styles.text} typo="text">
-              <Text style={{ color: colors.primary }}>{highlightContent}</Text>
-              <Text>{normalContent}</Text>
-            </TText>
-          )}
+      <View style={[styles.container, { marginTop: top, marginBottom: bottom }]}>
+        <ScrollView style={[styles.scrollView]} contentContainerStyle={styles.scrollContent}>
+          <Pressable onPress={() => setOptions(null)}>
+            {ttsStatus === 'error' ? (
+              <Text style={[styles.text, { color: colors.warning, fontStyle: 'italic' }]}>
+                {errorMessage + ' 😲'}
+              </Text>
+            ) : (
+              <TText style={styles.text} typo="text">
+                <Text style={{ color: colors.primary }}>{highlightContent}</Text>
+                <Text>{normalContent}</Text>
+              </TText>
+            )}
+          </Pressable>
+        </ScrollView>
+        <View style={styles.animContainer}>
+          <LottieView
+            ref={lottieViewRef}
+            style={styles.anim}
+            source={lotties.speaking}
+            loop={true}
+          />
         </View>
-      </Pressable>
+      </View>
     </Modal>
   )
 })
@@ -204,8 +233,11 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
 type Styles = {
   container: ViewStyle
   content: ViewStyle
-  textContainer: ViewStyle
+  scrollView: ViewStyle
+  scrollContent: ViewStyle
   text: TextStyle
+  animContainer: ViewStyle
+  anim: ViewStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -218,14 +250,24 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     width: '100%',
   },
-  textContainer: {
+  scrollView: {
     flex: 1,
+    width: '100%',
     padding: dimensions.edge,
+  },
+  scrollContent: {
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: dimensions.spaceBottom,
   },
   text: {
     fontSize: 28,
     lineHeight: 37,
   },
+  animContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+    padding: dimensions.spaceBottom,
+  },
+  anim: { width: 24, height: 24 },
 })
