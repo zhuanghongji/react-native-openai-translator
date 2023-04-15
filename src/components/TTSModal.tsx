@@ -83,6 +83,37 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
   }
 
   useEffect(() => {
+    if (!options) {
+      return
+    }
+    Tts.addEventListener('tts-start', () => {
+      print('tts-start')
+    })
+    Tts.addEventListener('tts-progress', event => {
+      // print('tts-progress', event)
+      // Whether to invoke this method depends on the speech engine.
+      setProgress(event.location + event.length)
+    })
+    Tts.addEventListener('tts-finish', () => {
+      setOptions(null)
+    })
+    Tts.addEventListener('tts-cancel', () => {
+      setOptions(null)
+    })
+    Tts.addEventListener('tts-error', () => {
+      setErrorMessage('Speak failed')
+      setTTSStatus('error')
+    })
+    return () => {
+      Tts.removeAllListeners('tts-start')
+      Tts.removeAllListeners('tts-progress')
+      Tts.removeAllListeners('tts-finish')
+      Tts.removeAllListeners('tts-cancel')
+      Tts.removeAllListeners('tts-error')
+    }
+  }, [options])
+
+  useEffect(() => {
     if (currentLang === undefined) {
       return
     }
@@ -135,38 +166,6 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
     }
     init()
   }, [currentLang, t])
-
-  useEffect(() => {
-    if (!options) {
-      return
-    }
-    Tts.addEventListener('tts-start', () => {
-      print('tts-start')
-    })
-    Tts.addEventListener('tts-progress', event => {
-      // print('tts-progress', event)
-      // Whether to invoke this method depends on the speech engine.
-      setProgress(event.location + event.length)
-    })
-    Tts.addEventListener('tts-finish', () => {
-      setOptions(null)
-    })
-    Tts.addEventListener('tts-cancel', () => {
-      setOptions(null)
-    })
-    Tts.addEventListener('tts-error', () => {
-      setErrorMessage('Speak failed')
-      setTTSStatus('error')
-    })
-    return () => {
-      Tts.removeAllListeners('tts-start')
-      Tts.removeAllListeners('tts-progress')
-      Tts.removeAllListeners('tts-finish')
-      Tts.removeAllListeners('tts-cancel')
-      Tts.removeAllListeners('tts-error')
-    }
-  }, [options])
-
   useEffect(() => {
     if (!options) {
       if (speakingRef.current) {

@@ -8,6 +8,8 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <queries>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE"/>

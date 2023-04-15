@@ -9,6 +9,8 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
   'Sending `tts-finish` with no listeners registered.',
   'i18next: init: i18next is already initialized. You should call init just once!',
+  '`new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.',
+  '`new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.',
 ])
 
 AppRegistry.registerComponent(appName, () => App)

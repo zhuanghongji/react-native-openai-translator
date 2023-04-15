@@ -21,6 +21,7 @@ import {
 } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
+import { toast } from '../../toast'
 import { Message, ScanBlock, TranslatorStatus } from '../../types'
 import { trimContent } from '../../utils'
 import type { RootStackParamList } from '../screens'
@@ -330,11 +331,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           onPress={() => {
             hapticLight()
             Clipboard.setString(inputText)
-            Toast.show({
-              type: ALERT_TYPE.SUCCESS,
-              title: t('Copied to clipboard'),
-              textBody: inputText,
-            })
+            toast('success', t('Copied to clipboard'), inputText)
           }}
         />
         <ToolButton
@@ -372,11 +369,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
                 onPress={() => {
                   hapticLight()
                   Clipboard.setString(outputText)
-                  Toast.show({
-                    type: ALERT_TYPE.SUCCESS,
-                    title: t('Copied to clipboard'),
-                    textBody: outputText,
-                  })
+                  toast('success', t('Copied to clipboard'), outputText)
                 }}
               />
             </>

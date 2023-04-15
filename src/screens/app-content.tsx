@@ -16,7 +16,7 @@ const COLORS: [IColors, IColors] = [
   // light
   {
     label: colors.black,
-    card: colors.cF6,
+    card: colors.cE2,
     overlay: colors.overlayLight,
     success: colors.primary,
     danger: colors.warning,
@@ -25,7 +25,7 @@ const COLORS: [IColors, IColors] = [
   // dark
   {
     label: colors.white,
-    card: colors.c29,
+    card: colors.c24,
     overlay: colors.overlayDark,
     success: colors.primary,
     danger: colors.warning,

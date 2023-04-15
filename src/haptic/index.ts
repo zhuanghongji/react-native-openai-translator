@@ -1,22 +1,22 @@
-import ReactNativeHapticFeedback, { HapticOptions } from 'react-native-haptic-feedback'
+import HapticFeedback, { HapticOptions } from 'react-native-haptic-feedback'
 
 const DEFAULT_OPTIONS: HapticOptions = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false,
+  ignoreAndroidSystemSettings: true,
 }
 
 export function hapticLight(options: HapticOptions = DEFAULT_OPTIONS) {
-  ReactNativeHapticFeedback.trigger('impactLight', options)
+  HapticFeedback.trigger('impactLight', options)
 }
 
 export function hapticSuccess(options: HapticOptions = DEFAULT_OPTIONS) {
-  ReactNativeHapticFeedback.trigger('notificationSuccess', options)
+  HapticFeedback.trigger('notificationSuccess', options)
 }
 
 export function hapticWarning(options: HapticOptions = DEFAULT_OPTIONS) {
-  ReactNativeHapticFeedback.trigger('notificationWarning', options)
+  HapticFeedback.trigger('notificationWarning', options)
 }
 
 export function hapticError(options: HapticOptions = DEFAULT_OPTIONS) {
-  ReactNativeHapticFeedback.trigger('notificationError', options)
+  HapticFeedback.trigger('notificationError', options)
 }
