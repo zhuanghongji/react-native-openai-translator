@@ -12,7 +12,6 @@ export interface TitleBarProps {
   mode: TranslatorMode
   systemPrompt: string
   onBackPress: () => void
-  onMorePress: () => void
 }
 
 const H_EDGE = 8
@@ -34,32 +33,11 @@ function useTitle(mode: TranslatorMode) {
   return t('Bubble Chat')
 }
 
-function useSubtitle(mode: TranslatorMode, systemPrompt: string) {
-  const { t } = useTranslation()
-  if (systemPrompt) {
-    return systemPrompt
-  }
-  if (mode === 'translate') {
-    return t('system is a language translation engine')
-  }
-  if (mode === 'polishing') {
-    return t('system is a text polishing engine')
-  }
-  if (mode === 'summarize') {
-    return t('system is a text summarization engine')
-  }
-  if (mode === 'analyze') {
-    return t('system is a text analysis engine')
-  }
-  return t('system without preset')
-}
-
 export function TitleBar(props: TitleBarProps): JSX.Element {
-  const { mode, systemPrompt, onBackPress, onMorePress } = props
+  const { mode, systemPrompt, onBackPress } = props
   const { top } = useSafeAreaInsets()
 
   const title = useTitle(mode)
-  const subtitle = useSubtitle(mode, systemPrompt)
 
   const barStyle = useStatusBarStyle()
   const tintColor = useThemeColor('tint')
@@ -75,19 +53,13 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
         <TText style={styles.title} typo="text">
           {title}
         </TText>
-        <TText
-          style={[
-            styles.subtitle,
-            { textDecorationLine: mode === 'bubble' ? 'line-through' : 'none' },
-          ]}
-          numberOfLines={1}
-          typo="text2">
-          {subtitle}
-        </TText>
+        {systemPrompt ? (
+          <TText style={styles.subtitle} numberOfLines={1} typo="text2">
+            {systemPrompt}
+          </TText>
+        ) : null}
       </View>
-      <Pressable style={styles.touchable} onPress={onMorePress}>
-        <SvgIcon size={dimensions.iconLarge} color={tintColor} name="more" />
-      </Pressable>
+      <View style={styles.touchable} />
     </View>
   )
 }

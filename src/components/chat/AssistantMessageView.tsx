@@ -60,6 +60,5 @@ const styles = StyleSheet.create<Styles>({
   },
   text: {
     textAlign: 'justify',
-    color: 'white',
   },
 })

@@ -131,10 +131,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
       <TitleBar
         mode={translatorMode}
         systemPrompt={systemPrompt}
-        onBackPress={() => {
-          navigation.goBack()
-        }}
-        onMorePress={() => {}}
+        onBackPress={() => navigation.goBack()}
       />
       <Animated.View style={[{ flex: 1, overflow: 'hidden' }]}>
         <Animated.View

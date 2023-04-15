@@ -201,7 +201,8 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
       animationIn="fadeInUp"
       animationOut="fadeOutDown"
       hasBackdrop={false}
-      statusBarTranslucent={true}>
+      statusBarTranslucent={true}
+      onBackButtonPress={() => setOptions(null)}>
       <View style={[styles.container, { marginTop: top, marginBottom: bottom }]}>
         <ScrollView style={[styles.scrollView]} contentContainerStyle={styles.scrollContent}>
           <Pressable onPress={() => setOptions(null)}>

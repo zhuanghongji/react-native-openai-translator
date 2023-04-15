@@ -35,6 +35,5 @@ const styles = StyleSheet.create<Styles>({
     alignItems: 'center',
     width: 32,
     height: 32,
-    // backgroundColor: 'red',
   },
 })
