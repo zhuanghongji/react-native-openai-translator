@@ -10,20 +10,13 @@ import {
   TranslatorMode,
   languageLabelByKey,
 } from '../../preferences/options'
-import {
-  getDefaultFromLanguage,
-  getDefaultTargetLanguage,
-  getDefaultTranslatorMode,
-  getLastDetectedText,
-  setLastDetectedText,
-} from '../../preferences/storages'
+import { getDefaultTargetLanguage, getDefaultTranslatorMode } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import { toast } from '../../toast'
 import { Message, ScanBlock, TranslatorStatus } from '../../types'
-import { trimContent } from '../../utils'
 import type { RootStackParamList } from '../screens'
-import { ClipboardTipModal, ClipboardTipModalHandle } from './ClipboardTipModal'
+import { ClipboardDetectedModal } from './ClipboardDetectedModal'
 import { InputView, InputViewHandle } from './InputView'
 import { ModeButton } from './ModeButton'
 import { OutputView, OutputViewHandle } from './OutputView'
@@ -35,10 +28,9 @@ import { UnsupportTip } from './UnsupportTip'
 import { generateMessagesWithPrompts, useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  AppState,
   Keyboard,
   Pressable,
   ScrollView,
@@ -61,7 +53,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const [status, setStatus] = useState<TranslatorStatus>('none')
 
-  const [fromLang, setFromLang] = useState<LanguageKey | null>(getDefaultFromLanguage())
+  const [fromLang, setFromLang] = useState<LanguageKey | null>(null)
   const [targetLang, setTargetLang] = useState(getDefaultTargetLanguage)
 
   const [translatorMode, setTranslatorMode] = useState(getDefaultTranslatorMode)
@@ -87,36 +79,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const outputViewRef = useRef<OutputViewHandle>(null)
   const [outputText, setOutputText] = useState('')
   const ttsModalRef = useRef<TTSModalHandle>(null)
-
-  // Detect text in Clipboard when to be active
-  const clipboardTipModalRef = useRef<ClipboardTipModalHandle>(null)
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', async state => {
-      if (state !== 'active') {
-        return
-      }
-      try {
-        const _text = await Clipboard.getString()
-        const text = trimContent(_text)
-        const lastText = getLastDetectedText()
-        if (!text || text === lastText || text === outputText) {
-          return
-        }
-        Keyboard.dismiss()
-        setLastDetectedText(text)
-        clipboardTipModalRef.current?.show({
-          text,
-          onUseItPress: () => {
-            setInputText(text)
-            inputViewRef.current?.focus()
-          },
-        })
-      } catch (e) {
-        // do nothing
-      }
-    })
-    return () => subscription.remove()
-  }, [outputText])
 
   const onScanSuccess = (blocks: ScanBlock[]) => {
     const content = blocks
@@ -363,7 +325,14 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
         <UnsupportTip />
       </ScrollView>
 
-      <ClipboardTipModal ref={clipboardTipModalRef} />
+      <ClipboardDetectedModal
+        inputText={inputText}
+        outputText={outputText}
+        onConfirmPress={text => {
+          setInputText(text)
+          inputViewRef.current?.focus()
+        }}
+      />
       <TTSModal ref={ttsModalRef} />
     </SafeAreaView>
   )

@@ -10,6 +10,7 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context'
 export interface ConfirmModalProps {
   style?: StyleProp<ViewStyle>
   visible: boolean
+  title?: string
   message: string
   leftText: string
   rightText: string
@@ -22,6 +23,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
   const {
     style,
     visible,
+    title,
     message,
     leftText,
     rightText,
@@ -58,6 +60,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
       isVisible={visible}
       animationIn="fadeIn"
       animationOut="fadeOut"
+      animationOutTiming={1}
       deviceHeight={frameHeight}
       statusBarTranslucent={true}
       onBackdropPress={dissmiss}>
@@ -69,6 +72,11 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
             backgroundColor: backdropColor,
           },
         ]}>
+        {title ? (
+          <TText style={styles.title} typo="text">
+            {title}
+          </TText>
+        ) : null}
         <TText style={styles.message} typo="text">
           {message}
         </TText>
@@ -85,6 +93,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
 type Styles = {
   container: ViewStyle
   content: ViewStyle
+  title: TextStyle
   message: TextStyle
   buttonRow: ViewStyle
   buttonContainer: ViewStyle
@@ -105,12 +114,18 @@ const styles = StyleSheet.create<Styles>({
     alignItems: 'center',
     overflow: 'hidden',
   },
+  title: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: 'bold',
+    marginTop: 24,
+  },
   message: {
     width: '100%',
     fontSize: 16,
     lineHeight: 24,
     paddingHorizontal: 16,
-    marginVertical: 36,
+    marginVertical: 32,
   },
   buttonRow: {
     flexDirection: 'row',

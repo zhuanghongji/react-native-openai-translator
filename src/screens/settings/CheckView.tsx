@@ -1,5 +1,6 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { TText } from '../../components/TText'
+import { hapticSoft } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import React from 'react'
@@ -22,9 +23,14 @@ export function CheckView(props: CheckViewProps) {
       <TText style={styles.text} typo="text">
         {title}
       </TText>
-      <Pressable onPress={() => onValueChange(!value)}>
+      <Pressable
+        hitSlop={dimensions.hitSlop}
+        onPress={() => {
+          hapticSoft()
+          onValueChange(!value)
+        }}>
         <SvgIcon
-          size={dimensions.iconSmall}
+          size={dimensions.iconMedium}
           color={iconColor}
           name={value ? 'check-on' : 'check-off'}
         />

@@ -127,6 +127,7 @@ export const InputModal = React.memo((props: InputModalProps) => {
       isVisible={visible}
       animationIn="fadeIn"
       animationOut="fadeOut"
+      animationOutTiming={1}
       deviceHeight={frameHeight}
       statusBarTranslucent={true}
       onBackButtonPress={() => onDismissRequest(false)}

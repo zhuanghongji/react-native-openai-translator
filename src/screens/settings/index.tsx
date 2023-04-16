@@ -20,6 +20,7 @@ import {
   useApiUrlPref,
   useDefaultTargetLanguagePref,
   useDefaultTranslatorModePref,
+  useEnableClipboardDetectPref,
   useLanguageModePref,
   useServiceProviderPref,
   useThemeModePref,
@@ -28,6 +29,7 @@ import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
+import { CheckView } from './CheckView'
 import { InputView } from './InputView'
 import { PickView } from './PickView'
 import { TitleBar } from './TitleBar'
@@ -57,6 +59,7 @@ export function SettingsScreen(
   const [defaultTargetLang, setDefaultTargetLang] = useDefaultTargetLanguagePref()
   const [themeMode, setThemeMode] = useThemeModePref()
   const [langMode, setLangMode] = useLanguageModePref()
+  const [enableClipboardDetect, setEnableClipboardDetect] = useEnableClipboardDetectPref()
 
   const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
 
@@ -200,26 +203,12 @@ export function SettingsScreen(
           }}
         />
 
-        {/* {divider}
-        <CheckView
-          title="Always show icons"
-          value={false}
-          onValueChange={() => {}}
-        />
-
         {divider}
         <CheckView
-          title="Auto Translate"
-          value={false}
-          onValueChange={() => {}}
+          title={t('Enable Clipboard Detect')}
+          value={enableClipboardDetect}
+          onValueChange={setEnableClipboardDetect}
         />
-
-        {divider}
-        <CheckView
-          title="Restore Previous Position"
-          value={false}
-          onValueChange={() => {}}
-        /> */}
       </ScrollView>
 
       <ConfirmModal

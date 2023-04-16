@@ -13,19 +13,6 @@ import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv'
 
 // MARK: getter、setter
 
-export function getLastDetectedText() {
-  return storage.getString(StorageKey.lastDetectedText)
-}
-
-export function setLastDetectedText(text: string) {
-  return storage.set(StorageKey.lastDetectedText, text)
-}
-
-export function getDefaultFromLanguage() {
-  return (storage.getString(StorageKey.defaultFromLanguage) ??
-    DEFAULTS.defaultFromLanguage) as LanguageKey
-}
-
 export function getDefaultTargetLanguage() {
   return (storage.getString(StorageKey.defaultTargetLanguage) ??
     DEFAULTS.defaultTargetLanguage) as LanguageKey
@@ -48,16 +35,12 @@ function useStorageString<T extends string, U = SetValue<T>>(
   return [(value as T | undefined) ?? defaultValue, setValue as U]
 }
 
-function useStorageBoolean<T extends boolean, U = SetValue<T>>(
+function useStorageBoolean<T extends boolean, U = (value: T) => void>(
   key: StorageKey,
   defaultValue: T
 ): [T, U] {
   const [value, setValue] = useMMKVBoolean(key)
   return [(value as T | undefined) ?? defaultValue, setValue as U]
-}
-
-export function useFromLanguagePref() {
-  return useStorageString<LanguageKey>(StorageKey.defaultFromLanguage, DEFAULTS.defaultFromLanguage)
 }
 
 export function useDefaultTargetLanguagePref() {
@@ -102,14 +85,6 @@ export function useThemeModePref() {
   return useStorageString<ThemeMode>(StorageKey.themeMode, DEFAULTS.themeMode)
 }
 
-export function useAlwaysShowIconsPref() {
-  return useStorageBoolean(StorageKey.alwaysShowIcons, DEFAULTS.alwaysShowIcons)
-}
-
-export function useAutoTranslatePref() {
-  return useStorageBoolean(StorageKey.autoTranslate, DEFAULTS.autoTranslate)
-}
-
-export function useRestorePreviousPositionPref() {
-  return useStorageBoolean(StorageKey.restorePreviousPosition, DEFAULTS.restorePreviousPosition)
+export function useEnableClipboardDetectPref() {
+  return useStorageBoolean(StorageKey.enableClipboardDetect, DEFAULTS.enableClipboardDetect)
 }

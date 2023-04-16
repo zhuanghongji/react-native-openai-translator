@@ -1,9 +1,11 @@
-import { colors } from '../res/colors'
+import { useEnableClipboardDetectPref } from '../preferences/storages'
+import { print } from '../printer'
 import { dimensions } from '../res/dimensions'
-import { useTextThemeStyle } from '../themes/hooks'
+import { useTextThemeStyle, useThemeColor } from '../themes/hooks'
 import { SvgIcon } from './SvgIcon'
 import Clipboard from '@react-native-clipboard/clipboard'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import Animated, {
   Easing,
@@ -26,10 +28,12 @@ const HEIGHT = 84
 export const InputModalPasteTip = React.memo((props: InputModalPasteTipProps) => {
   const { style, onPastePress } = props
 
+  const { t } = useTranslation()
   const textStyle = useTextThemeStyle('text')
+  const tintColor = useThemeColor('tint')
 
   const [text, setText] = useState('')
-  const [pressable, setPressed] = useState(false)
+  const [applied, setApplied] = useState(false)
 
   const anim = useSharedValue(0)
   const animStyle = useAnimatedStyle(() => ({
@@ -38,21 +42,30 @@ export const InputModalPasteTip = React.memo((props: InputModalPasteTipProps) =>
     marginBottom: interpolate(anim.value, [0, 1], [0, MARGIN_V * 2], Extrapolation.CLAMP),
   }))
 
+  const [enableClipboardDetect] = useEnableClipboardDetectPref()
   useEffect(() => {
-    Clipboard.getString().then(value => {
-      setText(value.trim())
-      anim.value = withTiming(1)
-    })
-  }, [])
+    if (!enableClipboardDetect) {
+      return
+    }
+    Clipboard.getString()
+      .then(value => {
+        setText(value.trim())
+        anim.value = withTiming(1)
+      })
+      .catch(() => {
+        print('Read clipboard error')
+        setText('')
+      })
+  }, [enableClipboardDetect])
 
-  if (!text || pressable) {
+  if (!text || applied) {
     return null
   }
   return (
     <Animated.View style={[styles.container, style, animStyle]}>
       <View style={{ flex: 1, paddingLeft: 24, alignItems: 'center' }}>
-        <Text style={[textStyle, { fontWeight: 'bold', marginVertical: 8 }]}>
-          Clipboard Detected
+        <Text style={[textStyle, { fontWeight: 'bold', marginTop: 8 }]}>
+          {t('Clipboard Detected')}
         </Text>
         <Text style={[styles.text, textStyle]} numberOfLines={2}>
           {text}
@@ -63,10 +76,10 @@ export const InputModalPasteTip = React.memo((props: InputModalPasteTipProps) =>
         onPress={() => {
           onPastePress(text)
           anim.value = withTiming(0, { easing: Easing.inOut(Easing.ease) }, () => {
-            runOnJS(setPressed)(true)
+            runOnJS(setApplied)(true)
           })
         }}>
-        <SvgIcon size={dimensions.iconMedium} color={colors.accent} name="input-circle" />
+        <SvgIcon size={dimensions.iconMedium} color={tintColor} name="input-circle" />
       </Pressable>
     </Animated.View>
   )
@@ -93,6 +106,7 @@ const styles = StyleSheet.create<Styles>({
     textAlign: 'justify',
     textAlignVertical: 'center',
     padding: 0,
+    // backgroundColor: 'red',
   },
   pressable: {
     width: HEIGHT,

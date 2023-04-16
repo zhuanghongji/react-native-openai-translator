@@ -8,31 +8,25 @@ import {
 } from './options'
 
 export const DEFAULTS: {
-  defaultFromLanguage: LanguageKey
-  defaultTargetLanguage: LanguageKey
   serviceProvider: ServiceProvider
   apiKey: string
   apiModel: ApiModel
   apiUrl: string
   apiUrlPath: string
   defaultTranslatorMode: TranslatorMode
-  languageMode: LanguageMode
+  defaultTargetLanguage: LanguageKey
   themeMode: ThemeMode
-  alwaysShowIcons: boolean
-  autoTranslate: boolean
-  restorePreviousPosition: boolean
+  languageMode: LanguageMode
+  enableClipboardDetect: boolean
 } = {
-  defaultFromLanguage: 'en',
-  defaultTargetLanguage: 'zh-Hans',
   serviceProvider: 'OpenAI',
   apiKey: '',
   apiModel: 'gpt-3.5-turbo',
   apiUrl: 'https://api.openai.com',
   apiUrlPath: '/v1/chat/completions',
   defaultTranslatorMode: 'translate',
-  languageMode: 'en',
+  defaultTargetLanguage: 'zh-Hans',
   themeMode: 'system',
-  alwaysShowIcons: true,
-  autoTranslate: false,
-  restorePreviousPosition: false,
+  languageMode: 'en',
+  enableClipboardDetect: true,
 }
