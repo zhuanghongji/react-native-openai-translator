@@ -52,6 +52,24 @@ export interface ChatCompletionsCallbacks {
   onComplete?: () => void
 }
 
+const LastAPIKeyChunkRef = { current: '' }
+function parseAPIKeyChunk(apiKey: string): string {
+  if (!apiKey || !apiKey.trim()) {
+    return ''
+  }
+  const chunks = apiKey
+    .split(',')
+    .map(v => v.trim())
+    .filter(v => (v ? true : false))
+  const lastChunkIndex = chunks.indexOf(LastAPIKeyChunkRef.current)
+  if (lastChunkIndex < 0) {
+    return chunks[0]
+  }
+  const chunk = chunks[(lastChunkIndex + 1) % chunks.length]
+  LastAPIKeyChunkRef.current = chunk
+  return chunk
+}
+
 /**
  * Docs: https://platform.openai.com/docs/api-reference/completions
  */
@@ -69,7 +87,7 @@ export function sseRequestChatCompletions(
     `${apiUrl}${apiUrlPath}`,
     {
       method: 'POST',
-      apiKey,
+      apiKey: parseAPIKeyChunk(apiKey),
       data: {
         model: 'gpt-3.5-turbo',
         temperature: 0,
