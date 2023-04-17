@@ -1,7 +1,7 @@
 import { PickSelector } from '../../components/PickSelector'
 import { SvgIcon } from '../../components/SvgIcon'
 import { TTSModal, TTSModalHandle } from '../../components/TTSModal'
-import { hapticError, hapticLight, hapticSuccess } from '../../haptic'
+import { hapticError, hapticSoft, hapticSuccess } from '../../haptic'
 import { useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
@@ -264,7 +264,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           name="copy"
           disabled={!hasUserContent}
           onPress={() => {
-            hapticLight()
+            hapticSoft()
             Clipboard.setString(inputText)
             toast('success', t('Copied to clipboard'), inputText)
           }}
@@ -273,7 +273,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           name="clean"
           disabled={!hasUserContent}
           onPress={() => {
-            hapticLight()
+            hapticSoft()
             setStatus('none')
             setInputText('')
             setOutputText('')
@@ -302,7 +302,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
               <ToolButton
                 name="copy"
                 onPress={() => {
-                  hapticLight()
+                  hapticSoft()
                   Clipboard.setString(outputText)
                   toast('success', t('Copied to clipboard'), outputText)
                 }}

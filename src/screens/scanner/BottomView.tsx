@@ -1,5 +1,5 @@
 import { SvgIcon } from '../../components/SvgIcon'
-import { hapticLight } from '../../haptic'
+import { hapticSoft } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
@@ -39,7 +39,7 @@ export function BottomView(props: BottomViewProps): JSX.Element {
           hitSlop={dimensions.hitSlop}
           disabled={!torchable}
           onPress={() => {
-            hapticLight()
+            hapticSoft()
             onTorchOnChange(!torchOn)
           }}>
           <SvgIcon size={ICON_SIZE} color="white" name={torchOn ? 'flash-on' : 'flash-off'} />
@@ -49,7 +49,7 @@ export function BottomView(props: BottomViewProps): JSX.Element {
           hitSlop={dimensions.hitSlop}
           disabled={!comfirmable}
           onPress={() => {
-            hapticLight()
+            hapticSoft()
             onConfirmPress()
           }}>
           <View style={styles.inCircle} />
@@ -63,7 +63,7 @@ export function BottomView(props: BottomViewProps): JSX.Element {
           hitSlop={dimensions.hitSlop}
           disabled={!switchable}
           onPress={() => {
-            hapticLight()
+            hapticSoft()
             onSwitchPress()
           }}>
           <SvgIcon size={ICON_SIZE} color="white" name="crop" />
