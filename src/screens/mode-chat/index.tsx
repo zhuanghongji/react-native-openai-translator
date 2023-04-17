@@ -4,7 +4,7 @@ import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
-import { useOpenAIApiUrlOptions } from '../../http/apis/hooks'
+import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { dimensions } from '../../res/dimensions'
 import { useThemeColor } from '../../themes/hooks'
@@ -27,6 +27,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const { translatorMode, systemPrompt, userContent, assistantContent } = route.params
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
+  const customizedOptions = useOpenAIApiCustomizedOptions()
   const backgroundColor = useThemeColor('backgroundChat')
 
   const listContainerHeight = useSharedValue(0)
@@ -92,30 +93,24 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
     }
     setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
     setStatus('sending')
-    sseRequestChatCompletions(
-      urlOptions,
-      {
-        messages: messagesToSend,
+    sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
+      onNext: content => {
+        setContent(content)
+        flashListRef.current?.scrollToEnd()
       },
-      {
-        onNext: content => {
-          setContent(content)
-          flashListRef.current?.scrollToEnd()
-        },
-        onError: (code, message) => {
-          setStatus('complete')
-          hapticError()
-          toast('warning', code, message)
-        },
-        onDone: message => {
-          setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
-          setStatus('complete')
-          setContent('')
-          hapticSuccess()
-          setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
-        },
-      }
-    )
+      onError: (code, message) => {
+        setStatus('complete')
+        hapticError()
+        toast('warning', code, message)
+      },
+      onDone: message => {
+        setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
+        setStatus('complete')
+        setContent('')
+        hapticSuccess()
+        setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
+      },
+    })
   }
 
   const renderItemSeparator = () => {

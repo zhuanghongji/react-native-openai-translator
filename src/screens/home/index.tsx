@@ -2,7 +2,7 @@ import { PickSelector } from '../../components/PickSelector'
 import { SvgIcon } from '../../components/SvgIcon'
 import { TTSModal, TTSModalHandle } from '../../components/TTSModal'
 import { hapticError, hapticSoft, hapticSuccess } from '../../haptic'
-import { useOpenAIApiUrlOptions } from '../../http/apis/hooks'
+import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import {
   LANGUAGE_KEYS,
@@ -51,6 +51,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const { t } = useTranslation()
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
+  const customizedOptions = useOpenAIApiCustomizedOptions()
   const [status, setStatus] = useState<TranslatorStatus>('none')
 
   const [fromLang, setFromLang] = useState<LanguageKey | null>(null)
@@ -118,27 +119,21 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     }
     setOutputText('')
     setStatus('pending')
-    sseRequestChatCompletions(
-      urlOptions,
-      {
-        messages,
+    sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
+      onNext: content => {
+        outputViewRef.current?.updateText(content)
       },
-      {
-        onNext: content => {
-          outputViewRef.current?.updateText(content)
-        },
-        onError: (code, message) => {
-          setStatus('failure')
-          hapticError()
-          toast('warning', code, message)
-        },
-        onDone: message => {
-          setOutputText(message.content)
-          setStatus('success')
-          hapticSuccess()
-        },
-      }
-    )
+      onError: (code, message) => {
+        setStatus('failure')
+        hapticError()
+        toast('warning', code, message)
+      },
+      onDone: message => {
+        setOutputText(message.content)
+        setStatus('success')
+        hapticSuccess()
+      },
+    })
   }
 
   const langsDisabled = translatorMode === 'bubble'

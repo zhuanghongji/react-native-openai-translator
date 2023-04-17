@@ -39,8 +39,8 @@ export interface ChatCompletionChoiceDelta {
   content?: string
 }
 
-export interface ChatCompletionsDataOptions {
-  messages: Message[]
+export interface ChatCompletionsCustomizedOptions {
+  model?: string
   temperature?: number
 }
 
@@ -57,7 +57,8 @@ export interface ChatCompletionsCallbacks {
  */
 export function sseRequestChatCompletions(
   urlOptions: OpenAIApiUrlOptions,
-  dataOptions: ChatCompletionsDataOptions,
+  customizedOptions: ChatCompletionsCustomizedOptions,
+  messages: Message[],
   callbacks: ChatCompletionsCallbacks
 ) {
   const { apiUrl, apiUrlPath, apiKey } = urlOptions
@@ -77,7 +78,8 @@ export function sseRequestChatCompletions(
         frequency_penalty: 1,
         presence_penalty: 1,
         stream: true,
-        ...dataOptions,
+        ...customizedOptions,
+        messages,
       },
     },
     {
