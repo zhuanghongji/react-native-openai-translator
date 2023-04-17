@@ -1,9 +1,9 @@
-import { PickModalHandle } from '../../components/PickModal'
-import { SvgIcon } from '../../components/SvgIcon'
-import { TText } from '../../components/TText'
-import { colors } from '../../res/colors'
-import { dimensions } from '../../res/dimensions'
-import { useThemeColor } from '../../themes/hooks'
+import { PickModalHandle } from '../../../components/PickModal'
+import { SvgIcon } from '../../../components/SvgIcon'
+import { TText } from '../../../components/TText'
+import { colors } from '../../../res/colors'
+import { dimensions } from '../../../res/dimensions'
+import { useThemeColor } from '../../../themes/hooks'
 import React from 'react'
 import {
   Pressable,

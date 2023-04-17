@@ -1,6 +1,6 @@
-import { dimensions } from '../../res/dimensions'
-import { sheets } from '../../res/sheets'
-import { useThemeColor } from '../../themes/hooks'
+import { dimensions } from '../../../res/dimensions'
+import { sheets } from '../../../res/sheets'
+import { useThemeColor } from '../../../themes/hooks'
 import React, { useImperativeHandle, useState } from 'react'
 import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
 

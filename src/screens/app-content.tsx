@@ -1,6 +1,6 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
-import { HomeScreen } from './home'
+import { HomeScreen } from './main/home'
 import { ModeChatScreen } from './mode-chat'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'

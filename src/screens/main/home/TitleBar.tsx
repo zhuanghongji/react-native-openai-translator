@@ -1,9 +1,9 @@
-import { SvgIcon } from '../../components/SvgIcon'
-import { TText } from '../../components/TText'
-import { colors } from '../../res/colors'
-import { dimensions } from '../../res/dimensions'
-import { images } from '../../res/images'
-import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
+import { SvgIcon } from '../../../components/SvgIcon'
+import { TText } from '../../../components/TText'
+import { colors } from '../../../res/colors'
+import { dimensions } from '../../../res/dimensions'
+import { images } from '../../../res/images'
+import { useStatusBarStyle, useThemeColor } from '../../../themes/hooks'
 import React from 'react'
 import {
   Image,

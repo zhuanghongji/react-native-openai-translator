@@ -1,6 +1,6 @@
-import { LanguageKey, TranslatorMode, languageLabelByKey } from '../../preferences/options'
-import { Message } from '../../types'
-import { isChineseLang, isEnglishWord } from '../../utils'
+import { LanguageKey, TranslatorMode, languageLabelByKey } from '../../../preferences/options'
+import { Message } from '../../../types'
+import { isChineseLang, isEnglishWord } from '../../../utils'
 import { useMemo } from 'react'
 
 export interface ChatCompletionsPrompts {
