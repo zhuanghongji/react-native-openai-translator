@@ -3,6 +3,60 @@ import { Message } from '../../../types'
 import { isChineseLang, isEnglishWord } from '../../../utils'
 import { useMemo } from 'react'
 
+const WYW_CHINESE_COMPLEX_PREFIX = `所需格式：
+作者：<作者>
+朝代：<朝代>
+標題：<標題>
+
+原文内容：
+<原文内容>
+
+原文翻譯：
+<原文翻譯>
+
+原文註釋：
+<原文註釋>
+
+原文欣賞：
+<原文欣賞>
+
+輸入內容："""`
+const WYW_CHINESE_COMPLEX_SUFFIX =
+  '"""\n\n請找出上面輸入內容的作者、朝代、標題、原文內容、原文翻譯、原文註釋和原文欣賞：'
+
+const WYW_CHINESE_SIMPLE_PREFIX = `所需格式：
+作者：<作者>
+朝代：<朝代>
+标题：<标题>
+
+原文内容：
+<原文内容>
+
+原文翻译：
+<原文翻译>
+
+原文注释：
+<原文注释>
+
+原文赏析：
+<原文赏析>
+
+输入内容："""`
+const WYW_CHINESE_SIMPLE_SUFFIX =
+  '"""\n\n请找出上面输入内容的作者、朝代、标题、原文内容、原文翻译、原文注释、原文赏析：'
+
+const ENGLISH_WORD_CHINESE_PREFIX = `所需格式：：
+<输入单词>
+[<语种>] · / <单词音标>
+[<词性缩写>] <中文含义>]
+
+例句：
+<序号><例句>\n(例句翻译)
+
+输入单词："""`
+const ENGLISH_WORD_CHINESE_SUFFIX =
+  '"""\n\n请将翻译输入单词，不需要额外解释，同时给出单词原始形态、单词的语种、对应的音标、所词性的中文含义、三个双语示例句子：'
+
 export interface ChatCompletionsPrompts {
   systemPrompt: string
   userPromptPrefix?: string
@@ -52,71 +106,42 @@ export function generatePrompts(options: ChatCompletionsPromptsOptions): ChatCom
       return { systemPrompt: '', userPromptPrefix: `Language of reply: ${targetLangLabel}\n` }
   }
 }
-
 function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCompletionsPrompts {
-  const { fromLang, targetLang, targetLangLabel, fromChinese, targetChinese, inputText } = os
+  const { fromLang, targetLang, targetLangLabel, targetChinese, inputText } = os
   let systemPrompt = 'Act as a language translation engine'
   const userPromptPrefix = `Translate the following text into ${targetLangLabel} without explaining it:`
 
-  if (fromLang === 'wyw' && targetChinese) {
-    if (targetLang === 'wyw') {
+  // targetChinese
+  if (targetChinese) {
+    if ((fromLang === null || fromLang === 'en') && isEnglishWord(inputText)) {
+      return {
+        systemPrompt: '作为一个英语翻译引擎',
+        userPromptPrefix: ENGLISH_WORD_CHINESE_PREFIX,
+        userPromptSuffix: ENGLISH_WORD_CHINESE_SUFFIX,
+      }
+    }
+    if (fromLang === 'wyw' && targetChinese) {
+      if (targetLang === 'wyw') {
+        return {
+          systemPrompt: '作为一个中国诗词专家',
+          userPromptPrefix: '假设你是下面输入内容的原作者。\n输入内容："""',
+          userPromptSuffix: '"""\n\n再写一句同样含义、同样字数的诗词：',
+        }
+      }
+      if (targetLang === 'zh-Hant' || targetLang === 'yue') {
+        return {
+          systemPrompt: '作為一個中國詩詞專家',
+          userPromptPrefix: WYW_CHINESE_COMPLEX_PREFIX,
+          userPromptSuffix: WYW_CHINESE_COMPLEX_SUFFIX,
+        }
+      }
       return {
         systemPrompt: '作为一个中国诗词专家',
-        userPromptPrefix: '假设你是下面输入内容的原作者。\n输入内容："""',
-        userPromptSuffix: '"""\n\n再写一句同样含义、同样字数的诗词：',
+        userPromptPrefix: WYW_CHINESE_SIMPLE_PREFIX,
+        userPromptSuffix: WYW_CHINESE_SIMPLE_SUFFIX,
       }
     }
-    if (targetLang === 'zh-Hant' || targetLang === 'yue') {
-      return {
-        systemPrompt: '作為一個中國詩詞專家',
-        userPromptPrefix: `所需格式：
-作者：<作者>
-朝代：<朝代>
-標題：<標題>
 
-原文内容：
-<原文内容>
-
-原文翻譯：
-<原文翻譯>
-
-原文註釋：
-<原文註釋>
-
-原文欣賞：
-<原文欣賞>
-
-輸入內容："""`,
-        userPromptSuffix:
-          '"""\n\n請找出上面輸入內容的作者、朝代、標題、原文內容、原文翻譯、原文註釋和原文欣賞：',
-      }
-    }
-    return {
-      systemPrompt: '作为一个中国诗词专家',
-      userPromptPrefix: `所需格式：
-作者：<作者>
-朝代：<朝代>
-标题：<标题>
-
-原文内容：
-<原文内容>
-
-原文翻译：
-<原文翻译>
-
-原文注释：
-<原文注释>
-
-原文赏析：
-<原文赏析>
-
-输入内容："""`,
-      userPromptSuffix:
-        '"""\n\n请找出上面输入内容的作者、朝代、标题、原文内容、原文翻译、原文注释、原文赏析：',
-    }
-  }
-
-  if (fromChinese) {
     systemPrompt = '作为一个语言翻译引擎'
     if (targetLang === 'zh-Hans') {
       return {
@@ -147,24 +172,7 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
       userPromptPrefix,
     }
   }
-
-  if (fromLang === 'en' && targetChinese && isEnglishWord(inputText)) {
-    return {
-      systemPrompt: '作为一个英语翻译引擎',
-      userPromptPrefix: `所需格式：：
-<输入单词>
-[<语种>] · / <单词音标>
-[<词性缩写>] <中文含义>]
-
-例句：
-<序号><例句>\n(例句翻译)
-
-输入单词："""`,
-      userPromptSuffix:
-        '"""\n\n请将翻译输入单词，不需要额外解释，同时给出单词原始形态、单词的语种、对应的音标、所词性的中文含义、三个双语示例句子：',
-    }
-  }
-
+  // others
   return {
     systemPrompt,
     userPromptPrefix,
