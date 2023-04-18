@@ -145,7 +145,6 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
               paddingVertical: dimensions.messageSeparator,
             }}
             data={messages}
-            initialScrollIndex={1}
             getItemType={item => item.role}
             keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
             renderItem={({ item }) => {
