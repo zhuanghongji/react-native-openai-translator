@@ -25,10 +25,10 @@ import { StatusDivider } from './StatusDivider'
 import { TitleBar } from './TitleBar'
 import { ToolButton } from './ToolButton'
 import { UnsupportTip } from './UnsupportTip'
-import { generateMessagesWithPrompts, useMessagesWithPrompts } from './prompts'
+import { useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Keyboard,
@@ -81,6 +81,19 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   const [outputText, setOutputText] = useState('')
   const ttsModalRef = useRef<TTSModalHandle>(null)
 
+  // auto focus after scan success
+  const scanSuccessRef = useRef(false)
+  useEffect(() => {
+    if (!scanSuccessRef.current) {
+      return
+    }
+    scanSuccessRef.current = false
+    const timer = setTimeout(() => {
+      inputViewRef.current?.focus()
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [inputText])
+
   const onScanSuccess = (blocks: ScanBlock[]) => {
     const content = blocks
       .map(block => block.text)
@@ -89,6 +102,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     if (!content) {
       return
     }
+    scanSuccessRef.current = true
     setInputText(content)
 
     const _langKeys: LanguageKey[] = []
@@ -103,14 +117,6 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
     const langKeys = [...new Set(_langKeys)]
     const nextFromLang = langKeys.length === 1 ? langKeys[0] : null
     setFromLang(nextFromLang)
-
-    const { messages } = generateMessagesWithPrompts({
-      fromLang: nextFromLang,
-      targetLang,
-      translatorMode,
-      inputText: content,
-    })
-    perfromChatCompletions(messages)
   }
 
   const perfromChatCompletions = (messages: Message[]) => {

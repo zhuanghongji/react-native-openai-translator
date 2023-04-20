@@ -63,5 +63,6 @@
   "Enter API URL first": "Please enter the API URL first",
   "Enter API URL Path first": "Please enter the API URL Path first",
   "Enter API Key first": "Please enter the API Key first",
-  "Warning": "Warning"
+  "Warning": "Warning",
+  "Text recognition seems not stable on Android": "Text recognition seems not stable on Android"
 }

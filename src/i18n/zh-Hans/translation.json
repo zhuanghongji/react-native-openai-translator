@@ -63,5 +63,6 @@
   "Enter API URL first": "请先输入 API 网址",
   "Enter API URL Path first": "请先输入 API 网址路径",
   "Enter API Key first": "请先输入 API 密钥",
-  "Warning": "警告"
+  "Warning": "警告",
+  "Text recognition seems not stable on Android": "文本识别在 Android 上似乎不太稳定"
 }

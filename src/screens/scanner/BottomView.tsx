@@ -1,8 +1,10 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { hapticSoft } from '../../haptic'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import React from 'react'
-import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { Platform, Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 
 const ICON_SIZE = 32
 
@@ -31,9 +33,19 @@ export function BottomView(props: BottomViewProps): JSX.Element {
     onSwitchPress,
   } = props
 
+  const { t } = useTranslation()
+
   return (
     <View style={[styles.container, style]}>
-      <View style={styles.row}>
+      {Platform.OS === 'android' ? (
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ color: colors.white, marginTop: dimensions.edgeTwice }}>
+            {t('Text recognition seems not stable on Android')}
+          </Text>
+        </View>
+      ) : null}
+
+      <View style={[styles.row, { marginTop: Platform.OS === 'android' ? 30 : 40 }]}>
         <Pressable
           style={{ opacity: torchable ? 1 : dimensions.disabledOpacity }}
           hitSlop={dimensions.hitSlop}
@@ -93,7 +105,6 @@ const styles = StyleSheet.create<Styles>({
   row: {
     flexDirection: 'row',
     width: '100%',
-    marginTop: 40,
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },

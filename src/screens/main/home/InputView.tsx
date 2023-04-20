@@ -31,7 +31,12 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
   useImperativeHandle(
     ref,
     () => ({
-      focus: () => textInputRef.current?.focus(),
+      focus: () => {
+        textInputRef.current?.focus()
+        textInputRef.current?.setNativeProps({
+          selection: { start: value.length, end: value.length },
+        })
+      },
       blur: () => textInputRef.current?.blur(),
     }),
     []
