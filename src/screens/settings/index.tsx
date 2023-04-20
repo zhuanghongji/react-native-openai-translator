@@ -32,6 +32,7 @@ import type { RootStackParamList } from '../screens'
 import { CheckView } from './CheckView'
 import { InputView } from './InputView'
 import { PickView } from './PickView'
+import { RepoLinks } from './RepoLinks'
 import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
@@ -110,7 +111,7 @@ export function SettingsScreen(
         <Text style={[styles.caption, { color: contentColor }]}>
           <Text>{t('Go to the ')}</Text>
           <Text
-            style={{ color: colors.link, textDecorationLine: 'underline' }}
+            style={styles.link}
             onPress={() => {
               Linking.openURL('https://platform.openai.com/account/api-keys')
             }}>
@@ -209,6 +210,8 @@ export function SettingsScreen(
           value={enableClipboardDetect}
           onValueChange={setEnableClipboardDetect}
         />
+
+        <RepoLinks />
       </ScrollView>
 
       <ConfirmModal
@@ -236,6 +239,7 @@ type Styles = {
   title: TextStyle
   caption: TextStyle
   pick: ViewStyle
+  link: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -253,5 +257,9 @@ const styles = StyleSheet.create<Styles>({
   },
   pick: {
     marginTop: 6,
+  },
+  link: {
+    color: colors.link,
+    textDecorationLine: 'underline',
   },
 })

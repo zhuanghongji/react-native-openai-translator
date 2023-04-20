@@ -54,7 +54,7 @@ const styles = StyleSheet.create<Styles>({
     paddingLeft: dimensions.edge,
   },
   blocksArea: {
-    marginTop: dimensions.edge * 2,
+    marginTop: dimensions.edgeTwice,
     padding: dimensions.edge,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },

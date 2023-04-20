@@ -26,7 +26,7 @@ export function ScannerScreen({ navigation, route }: Props): JSX.Element {
   const { onScanSuccess } = route.params
 
   const { width: frameWidth } = useSafeAreaFrame()
-  const scanWidth = frameWidth - dimensions.edge * 2
+  const scanWidth = frameWidth - dimensions.edgeTwice
 
   const cameraRef = useRef<Camera>(null)
   const { device, deviceText, devices, nextDevice } = useScanCameraDevice()

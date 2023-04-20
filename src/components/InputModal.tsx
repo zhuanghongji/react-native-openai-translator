@@ -248,7 +248,7 @@ const styles = StyleSheet.create<Styles>({
   },
   title: {
     fontSize: 16,
-    marginVertical: dimensions.edge * 2,
+    marginVertical: dimensions.edgeTwice,
   },
   input: {
     flexDirection: 'row',
@@ -258,7 +258,7 @@ const styles = StyleSheet.create<Styles>({
     paddingVertical: 8,
     minHeight: 42,
     paddingLeft: dimensions.edge,
-    marginBottom: dimensions.edge * 2,
+    marginBottom: dimensions.edgeTwice,
   },
   text: {
     flex: 1,

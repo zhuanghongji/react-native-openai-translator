@@ -2,6 +2,8 @@ const edge = 10
 
 export const dimensions = {
   edge,
+  edgeTwice: edge * 2,
+  edgeTriple: edge * 3,
   gap: 6,
   space: 8,
   spaceBottom: 24,

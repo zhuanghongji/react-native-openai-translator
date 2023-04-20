@@ -9,7 +9,7 @@ export function Template(props: TemplateProps) {
   const { style } = props
 
   return (
-    <View style={[style, styles.container]}>
+    <View style={[styles.container, style]}>
       <Text style={styles.text}>Template</Text>
     </View>
   )

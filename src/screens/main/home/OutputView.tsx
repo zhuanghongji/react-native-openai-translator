@@ -42,6 +42,6 @@ type Styles = {
 const styles = StyleSheet.create<Styles>({
   text: {
     textAlign: 'justify',
-    marginHorizontal: dimensions.edge * 2,
+    marginHorizontal: dimensions.edgeTwice,
   },
 })
