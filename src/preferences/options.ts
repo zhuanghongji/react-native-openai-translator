@@ -82,7 +82,8 @@ export function languageLabelByKey(key: LanguageKey | null): string {
 
 // MARK: service providers
 
-export const SERVICE_PROVIDERS = ['OpenAI', 'Azure'] as const
+// export const SERVICE_PROVIDERS = ['OpenAI', 'Azure'] as const
+export const SERVICE_PROVIDERS = ['OpenAI'] as const
 
 export type ServiceProvider = UnionFromTuple<typeof SERVICE_PROVIDERS>
 
