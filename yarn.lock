@@ -6213,6 +6213,11 @@ react-native-pager-view@^6.2.0:
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz#51380d93fbe47f6380dc71d613a787bf27a4ca37"
   integrity sha512-pf9OnL/Tkr+5s4Gjmsn7xh91PtJLDa6qxYa/bmtUhd/+s4cQdWQ8DIFoOFghwZIHHHwVdWtoXkp6HtpjN+r20g==
 
+react-native-quick-sqlite@^8.0.2:
+  version "8.0.2"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-quick-sqlite/-/react-native-quick-sqlite-8.0.2.tgz#67ad0a330ede647f9cd02c83115810722d5bd828"
+  integrity sha512-w5m4y0q5ggaiVS8vHmN0ihynD9hMPgLNAZJA7ZRcXs6WwR+VSW9WXUlEn1N0fgIrmoYRLNXyU5TjXx/IiKPlMA==
+
 react-native-reanimated@^2.14.4:
   version "2.14.4"
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-reanimated/-/react-native-reanimated-2.14.4.tgz#3fa3da4e7b99f5dfb28f86bcf24d9d1024d38836"
@@ -6268,6 +6273,11 @@ react-native-url-polyfill@^1.3.0:
   integrity sha512-w9JfSkvpqqlix9UjDvJjm1EjSt652zVQ6iwCIj1cVVkwXf4jQhQgTNXY6EVTwuAmUjg6BC6k9RHCBynoLFo3IQ==
   dependencies:
     whatwg-url-without-unicode "8.0.0-3"
+
+react-native-view-shot@^3.6.0:
+  version "3.6.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-view-shot/-/react-native-view-shot-3.6.0.tgz#2c5febd03cb1effb9923372b29aed227c680d9fd"
+  integrity sha512-QUYGaIaAxQwOTydUzqGMooBwrg455cuOQgTloZ+gPO1QCUuLRdncCqrEMwKW5eUnN5U8JGMKeFRll2m6egOxtA==
 
 react-native-vision-camera@^2.15.4:
   version "2.15.4"

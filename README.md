@@ -21,6 +21,8 @@ The translator that does more than just translation:
 - [react-native-bottom-sheet](https://gorhom.github.io/react-native-bottom-sheet/)
 - [react-native-safe-area-context](https://github.com/th3rdwave/react-native-safe-area-context)
 - [react-native-clipboard](https://github.com/react-native-clipboard/clipboard)
+- [react-native-view-shot](https://github.com/gre/react-native-view-shot)
+- [react-native-quick-sqlite](https://github.com/margelo/react-native-quick-sqlite)
 - [axios](https://axios-http.com/docs/intro)
 
 ## License
