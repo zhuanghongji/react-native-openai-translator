@@ -3,48 +3,6 @@ import { Message } from '../../../types'
 import { isChineseLang, isEnglishWord } from '../../../utils'
 import { useMemo } from 'react'
 
-const WYW_CHINESE_COMPLEX_PREFIX = `所需格式：
-作者：<作者>
-朝代：<朝代>
-標題：<標題>
-
-原文内容：
-<原文内容>
-
-原文翻譯：
-<原文翻譯>
-
-原文註釋：
-<原文註釋>
-
-原文欣賞：
-<原文欣賞>
-
-輸入內容："""`
-const WYW_CHINESE_COMPLEX_SUFFIX =
-  '"""\n\n請找出上面輸入內容的作者、朝代、標題、原文內容、原文翻譯、原文註釋和原文欣賞：'
-
-const WYW_CHINESE_SIMPLE_PREFIX = `所需格式：
-作者：<作者>
-朝代：<朝代>
-标题：<标题>
-
-原文内容：
-<原文内容>
-
-原文翻译：
-<原文翻译>
-
-原文注释：
-<原文注释>
-
-原文赏析：
-<原文赏析>
-
-输入内容："""`
-const WYW_CHINESE_SIMPLE_SUFFIX =
-  '"""\n\n请找出上面输入内容的作者、朝代、标题、原文内容、原文翻译、原文注释、原文赏析：'
-
 const ENGLISH_WORD_CHINESE_PREFIX = `所需格式：：
 <输入单词>
 [<语种>] · / <单词音标>
@@ -64,32 +22,24 @@ export interface ChatCompletionsPrompts {
 }
 
 export interface ChatCompletionsPromptsOptions {
-  fromLang: LanguageKey | null
   targetLang: LanguageKey
   translatorMode: TranslatorMode
   inputText: string
 }
 
 export interface GenerateSpecificPromptsOptions {
-  fromLang: LanguageKey | null
   targetLang: LanguageKey
-  fromLangLabel: string
   targetLangLabel: string
-  fromChinese: boolean
   targetChinese: boolean
   inputText: string
 }
 
 export function generatePrompts(options: ChatCompletionsPromptsOptions): ChatCompletionsPrompts {
-  const { fromLang, targetLang, translatorMode, inputText } = options
-  const fromLangLabel = languageLabelByKey(fromLang)
+  const { targetLang, translatorMode, inputText } = options
   const targetLangLabel = languageLabelByKey(targetLang)
   const os: GenerateSpecificPromptsOptions = {
-    fromLang,
     targetLang,
-    fromLangLabel,
     targetLangLabel,
-    fromChinese: isChineseLang(fromLang),
     targetChinese: isChineseLang(targetLang),
     inputText,
   }
@@ -107,41 +57,19 @@ export function generatePrompts(options: ChatCompletionsPromptsOptions): ChatCom
   }
 }
 function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCompletionsPrompts {
-  const { fromLang, targetLang, targetLangLabel, targetChinese, inputText } = os
+  const { targetLang, targetLangLabel, targetChinese, inputText } = os
   let systemPrompt = 'Act as a language translation engine'
   const userPromptPrefix = `Translate the following text into ${targetLangLabel} without explaining it:`
 
   // targetChinese
   if (targetChinese) {
-    if ((fromLang === null || fromLang === 'en') && isEnglishWord(inputText)) {
+    if (isEnglishWord(inputText)) {
       return {
         systemPrompt: '作为一个英语翻译引擎',
         userPromptPrefix: ENGLISH_WORD_CHINESE_PREFIX,
         userPromptSuffix: ENGLISH_WORD_CHINESE_SUFFIX,
       }
     }
-    if (fromLang === 'wyw' && targetChinese) {
-      if (targetLang === 'wyw') {
-        return {
-          systemPrompt: '作为一个中国诗词专家',
-          userPromptPrefix: '假设你是下面输入内容的原作者。\n输入内容："""',
-          userPromptSuffix: '"""\n\n再写一句同样含义、同样字数的诗词：',
-        }
-      }
-      if (targetLang === 'zh-Hant' || targetLang === 'yue') {
-        return {
-          systemPrompt: '作為一個中國詩詞專家',
-          userPromptPrefix: WYW_CHINESE_COMPLEX_PREFIX,
-          userPromptSuffix: WYW_CHINESE_COMPLEX_SUFFIX,
-        }
-      }
-      return {
-        systemPrompt: '作为一个中国诗词专家',
-        userPromptPrefix: WYW_CHINESE_SIMPLE_PREFIX,
-        userPromptSuffix: WYW_CHINESE_SIMPLE_SUFFIX,
-      }
-    }
-
     systemPrompt = '作为一个语言翻译引擎'
     if (targetLang === 'zh-Hans') {
       return {
@@ -259,13 +187,12 @@ export function generateMessagesWithPrompts(options: ChatCompletionsPromptsOptio
 }
 
 export function useMessagesWithPrompts(options: ChatCompletionsPromptsOptions) {
-  const { fromLang, targetLang, translatorMode, inputText } = options
+  const { targetLang, translatorMode, inputText } = options
   return useMemo(() => {
     return generateMessagesWithPrompts({
-      fromLang,
       targetLang,
       translatorMode,
       inputText,
     })
-  }, [fromLang, targetLang, translatorMode, inputText])
+  }, [targetLang, translatorMode, inputText])
 }

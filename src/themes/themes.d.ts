@@ -1,31 +1,29 @@
-import type { ColorValue } from 'react-native'
-
 export interface ThemeScheme {
   // text
-  text: ColorValue
-  text2: ColorValue
-  text3: ColorValue
+  text: string
+  text2: string
+  text3: string
 
   // image
-  tint: ColorValue
-  tint2: ColorValue
-  tint3: ColorValue
-  tintSelected: ColorValue
+  tint: string
+  tint2: string
+  tint3: string
+  tintSelected: string
 
   // view
-  border: ColorValue
-  border2: ColorValue
-  backdrop: ColorValue
-  backdrop2: ColorValue
-  backdropSelected: ColorValue
-  background: ColorValue
-  background2: ColorValue
-  backgroundChat: ColorValue
-  backgroundMessage: ColorValue
+  border: string
+  border2: string
+  backdrop: string
+  backdrop2: string
+  backdropSelected: string
+  background: string
+  background2: string
+  backgroundChat: string
+  backgroundMessage: string
 
   // others
-  error: ColorValue
-  placeholder: ColorValue
+  error: string
+  placeholder: string
 }
 
 export type ThemeSchemeTypo = keyof ThemeScheme

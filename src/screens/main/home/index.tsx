@@ -1,85 +1,84 @@
-import { PickSelector } from '../../../components/PickSelector'
-import { SvgIcon } from '../../../components/SvgIcon'
-import { TTSModal, TTSModalHandle } from '../../../components/TTSModal'
-import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
-import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
-import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
-import {
-  LANGUAGE_KEYS,
-  LanguageKey,
-  TranslatorMode,
-  languageLabelByKey,
-} from '../../../preferences/options'
+import { SvgIcon, SvgIconName } from '../../../components/SvgIcon'
+import { AnimatedPagerView, usePageScrollHandler } from '../../../extensions/pager-view'
+import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { getDefaultTargetLanguage, getDefaultTranslatorMode } from '../../../preferences/storages'
 import { dimensions } from '../../../res/dimensions'
 import { useThemeColor } from '../../../themes/hooks'
-import { toast } from '../../../toast'
-import { Message, ScanBlock, TranslatorStatus } from '../../../types'
+import { ScanBlock } from '../../../types'
 import type { RootStackParamList } from '../../screens'
-import { ClipboardDetectedModal } from './ClipboardDetectedModal'
-import { InputView, InputViewHandle } from './InputView'
 import { ModeButton } from './ModeButton'
-import { OutputView, OutputViewHandle } from './OutputView'
-import { PickView } from './PickView'
-import { StatusDivider } from './StatusDivider'
+import { ModeScene, ModeSceneHandle } from './ModeScene'
+import { ModeTargetLangSelectors } from './ModeTargetLangSelectors'
 import { TitleBar } from './TitleBar'
-import { ToolButton } from './ToolButton'
-import { UnsupportTip } from './UnsupportTip'
-import { useMessagesWithPrompts } from './prompts'
-import Clipboard from '@react-native-clipboard/clipboard'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-  Keyboard,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Keyboard, StyleSheet, View, ViewStyle } from 'react-native'
+import PagerView from 'react-native-pager-view'
+import { useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
 
-const FROM_LANGUAGE_KEYS = [null, ...LANGUAGE_KEYS]
+interface ModeItem {
+  icon: SvgIconName
+  mode: TranslatorMode
+}
+
+const MODE_ITEMS: ModeItem[] = [
+  {
+    icon: 'language',
+    mode: 'translate',
+  },
+  {
+    icon: 'palette',
+    mode: 'polishing',
+  },
+  {
+    icon: 'summarize',
+    mode: 'summarize',
+  },
+  {
+    icon: 'analytics',
+    mode: 'analyze',
+  },
+  {
+    icon: 'bubble',
+    mode: 'bubble',
+  },
+]
+const MODES = MODE_ITEMS.map(v => v.mode)
 
 export function HomeScreen({ navigation }: Props): JSX.Element {
   const tint2 = useThemeColor('tint2')
   const backgroundColor = useThemeColor('background')
-  const { t } = useTranslation()
 
-  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
-  const customizedOptions = useOpenAIApiCustomizedOptions()
-  const [status, setStatus] = useState<TranslatorStatus>('none')
+  const initialModeIndex = useMemo(() => {
+    const mode = getDefaultTranslatorMode()
+    const index = MODE_ITEMS.findIndex(v => v.mode === mode)
+    return index < 0 ? 0 : index
+  }, [])
+  const [currentModeIndex, setCurrentModeIndex] = useState(initialModeIndex)
+  const isBubble = MODE_ITEMS[currentModeIndex]?.mode === 'bubble'
 
-  const [fromLang, setFromLang] = useState<LanguageKey | null>(null)
-  const [targetLang, setTargetLang] = useState(getDefaultTargetLanguage)
-
-  const [translatorMode, setTranslatorMode] = useState(getDefaultTranslatorMode)
-  const onTranslatorModeChange = (mode: TranslatorMode) => {
-    setTranslatorMode(mode)
-    setStatus('none')
-  }
-
-  const inputViewRef = useRef<InputViewHandle>(null)
-  const [inputText, setInputText] = useState('')
-  const {
-    messages: messagesToSend,
-    prompts,
-    userContent,
-  } = useMessagesWithPrompts({
-    fromLang,
-    targetLang,
-    translatorMode,
-    inputText,
+  const [targetLangs, setTargetLangs] = useState<LanguageKey[]>(() => {
+    const lang = getDefaultTargetLanguage()
+    return MODES.map(_ => lang)
   })
-  const hasUserContent = inputText ? true : false
 
-  const outputViewRef = useRef<OutputViewHandle>(null)
-  const [outputText, setOutputText] = useState('')
-  const ttsModalRef = useRef<TTSModalHandle>(null)
+  const pagerViewRef = useRef<PagerView>(null)
+  const pageOffset = useSharedValue(initialModeIndex)
+  const pageScrollHandler = usePageScrollHandler({
+    onPageScroll: e => {
+      'worklet'
+      pageOffset.value = e.position + e.offset
+    },
+  })
+
+  const modeSceneRefs = useRef<(ModeSceneHandle | null)[]>([])
+  const inputFocus = useCallback(() => {
+    // print('inputFocus', { currentModeIndex })
+    modeSceneRefs.current[currentModeIndex]?.inputFocus()
+  }, [currentModeIndex])
 
   // auto focus after scan success
   const scanSuccessRef = useRef(false)
@@ -88,11 +87,9 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       return
     }
     scanSuccessRef.current = false
-    const timer = setTimeout(() => {
-      inputViewRef.current?.focus()
-    }, 300)
+    const timer = setTimeout(inputFocus, 300)
     return () => clearTimeout(timer)
-  }, [inputText])
+  }, [inputFocus])
 
   const onScanSuccess = (blocks: ScanBlock[]) => {
     const content = blocks
@@ -103,47 +100,8 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
       return
     }
     scanSuccessRef.current = true
-    setInputText(content)
-
-    const _langKeys: LanguageKey[] = []
-    for (const block of blocks) {
-      for (const lang of block.langs) {
-        const k = LANGUAGE_KEYS.find(v => v === lang)
-        if (k) {
-          _langKeys.push(k)
-        }
-      }
-    }
-    const langKeys = [...new Set(_langKeys)]
-    const nextFromLang = langKeys.length === 1 ? langKeys[0] : null
-    setFromLang(nextFromLang)
+    modeSceneRefs.current[currentModeIndex]?.inputText(content)
   }
-
-  const perfromChatCompletions = (messages: Message[]) => {
-    if (!checkIsOptionsValid()) {
-      return
-    }
-    setOutputText('')
-    setStatus('pending')
-    sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
-      onNext: content => {
-        outputViewRef.current?.updateText(content)
-      },
-      onError: (code, message) => {
-        setStatus('failure')
-        hapticError()
-        toast('warning', code, message)
-      },
-      onDone: message => {
-        setOutputText(message.content)
-        setStatus('success')
-        hapticSuccess()
-      },
-    })
-  }
-
-  const langsDisabled = translatorMode === 'bubble'
-  const exchangeDisabled = fromLang === null || translatorMode !== 'translate'
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
@@ -159,190 +117,65 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
           flexDirection: 'row',
           width: '100%',
           alignItems: 'center',
+          paddingHorizontal: dimensions.edge,
         }}>
-        <PickSelector
-          style={{ marginLeft: dimensions.edge }}
-          labelStyle={styles.pickLabel}
-          value={fromLang}
-          values={FROM_LANGUAGE_KEYS}
-          disabled={langsDisabled}
-          valueToLabel={languageLabelByKey}
-          renderContent={({ label, anim }) => <PickView anim={anim} label={label} />}
-          onValueChange={setFromLang}
-          onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
-            wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
-          }}
-        />
-        <Pressable
-          style={{ opacity: exchangeDisabled ? dimensions.disabledOpacity : 1 }}
-          disabled={exchangeDisabled}
-          onPress={() => {
-            if (fromLang === null) {
-              return
-            }
-            setFromLang(targetLang)
-            setTargetLang(fromLang)
-            if (inputText && outputText) {
-              setInputText(outputText)
-              setOutputText(inputText)
-            } else {
-              setOutputText('')
-            }
-          }}>
-          <SvgIcon
-            style={{ marginHorizontal: 4 }}
-            size={dimensions.iconSmall}
-            color={tint2}
-            name="swap-horiz"
-          />
-        </Pressable>
-        <PickSelector
-          style={{ marginRight: dimensions.edge }}
-          labelStyle={styles.pickLabel}
-          value={targetLang}
-          values={LANGUAGE_KEYS}
-          disabled={langsDisabled}
-          valueToLabel={languageLabelByKey}
-          renderContent={({ label, anim }) => <PickView anim={anim} label={label} />}
-          onValueChange={setTargetLang}
-          onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
-            wasKeyboardVisibleWhenShowing && inputViewRef.current?.focus()
-          }}
-        />
-        <View style={{ flex: 1 }} />
         <View style={styles.modes}>
-          <ModeButton
-            icon="language"
-            mode="translate"
-            currentMode={translatorMode}
-            onPress={onTranslatorModeChange}
-          />
-          <ModeButton
-            icon="palette"
-            mode="polishing"
-            currentMode={translatorMode}
-            onPress={onTranslatorModeChange}
-          />
-          <ModeButton
-            icon="summarize"
-            mode="summarize"
-            currentMode={translatorMode}
-            onPress={onTranslatorModeChange}
-          />
-          <ModeButton
-            icon="analytics"
-            mode="analyze"
-            currentMode={translatorMode}
-            onPress={onTranslatorModeChange}
-          />
-          <ModeButton
-            icon="bubble"
-            mode="bubble"
-            currentMode={translatorMode}
-            onPress={onTranslatorModeChange}
-          />
+          {MODE_ITEMS.map((item, index) => {
+            const { icon, mode } = item
+            return (
+              <ModeButton
+                key={`${index}_${mode}`}
+                index={index}
+                icon={icon}
+                mode={mode}
+                pageOffset={pageOffset}
+                onPress={() => pagerViewRef.current?.setPage(index)}
+              />
+            )
+          })}
         </View>
-      </View>
-
-      <InputView
-        ref={inputViewRef}
-        value={inputText}
-        onChangeText={setInputText}
-        onSubmitEditing={() => perfromChatCompletions(messagesToSend)}
-      />
-      <View style={styles.toolsRow}>
-        <ToolButton
-          name="compaign"
-          disabled={!hasUserContent}
-          onPress={() => {
-            ttsModalRef.current?.speak({
-              content: inputText,
-              lang: fromLang,
-            })
-          }}
+        <View style={{ flex: 1 }} />
+        <SvgIcon
+          style={{ opacity: isBubble ? 0.4 : 1, marginHorizontal: 4 }}
+          size={dimensions.iconSmall}
+          color={tint2}
+          name="line-end"
         />
-        <ToolButton
-          name="copy"
-          disabled={!hasUserContent}
-          onPress={() => {
-            hapticSoft()
-            Clipboard.setString(inputText)
-            toast('success', t('Copied to clipboard'), inputText)
-          }}
-        />
-        <ToolButton
-          name="clean"
-          disabled={!hasUserContent}
-          onPress={() => {
-            hapticSoft()
-            setStatus('none')
-            setInputText('')
-            setOutputText('')
-            inputViewRef.current?.focus()
-          }}
+        <ModeTargetLangSelectors
+          pageOffset={pageOffset}
+          modes={MODES}
+          targetLangs={targetLangs}
+          onTargetLangsChange={setTargetLangs}
+          onInputFocusRequest={inputFocus}
         />
       </View>
 
-      <StatusDivider mode={translatorMode} status={status} />
-      <ScrollView
-        style={{ flex: 1, marginTop: dimensions.edge }}
-        contentContainerStyle={{ paddingBottom: dimensions.spaceBottom }}>
-        <OutputView ref={outputViewRef} text={outputText} />
-        <View style={styles.toolsRow}>
-          {outputText ? (
-            <>
-              <ToolButton
-                name="compaign"
-                onPress={() => {
-                  ttsModalRef.current?.speak({
-                    content: outputText,
-                    lang: targetLang,
-                  })
-                }}
-              />
-              <ToolButton
-                name="copy"
-                onPress={() => {
-                  hapticSoft()
-                  Clipboard.setString(outputText)
-                  toast('success', t('Copied to clipboard'), outputText)
-                }}
-              />
-            </>
-          ) : null}
-          <ToolButton
-            name="chat"
-            onPress={() => {
-              const { systemPrompt } = prompts
-              navigation.push('ModeChat', {
-                translatorMode,
-                systemPrompt,
-                userContent,
-                assistantContent: outputText,
-              })
-            }}
-          />
-        </View>
-        <UnsupportTip />
-      </ScrollView>
-
-      <ClipboardDetectedModal
-        inputText={inputText}
-        outputText={outputText}
-        onConfirmPress={text => {
-          setInputText(text)
-          inputViewRef.current?.focus()
-        }}
-      />
-      <TTSModal ref={ttsModalRef} />
+      <AnimatedPagerView
+        ref={pagerViewRef}
+        style={{ flex: 1 }}
+        initialPage={initialModeIndex}
+        onPageScroll={pageScrollHandler}
+        onPageSelected={e => setCurrentModeIndex(e.nativeEvent.position)}>
+        {MODE_ITEMS.map((item, index) => {
+          const { mode } = item
+          const focused = index === currentModeIndex
+          return (
+            <ModeScene
+              key={`${index}_${mode}`}
+              ref={ref => (modeSceneRefs.current[index] = ref)}
+              focused={focused}
+              targetLang={targetLangs[index]}
+              translatorMode={mode}
+            />
+          )
+        })}
+      </AnimatedPagerView>
     </SafeAreaView>
   )
 }
 
 type Styles = {
   modes: ViewStyle
-  toolsRow: ViewStyle
-  pickLabel: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -350,17 +183,5 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     gap: dimensions.gap,
     marginRight: dimensions.edge,
-  },
-  toolsRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    height: 32,
-    marginTop: dimensions.edge,
-    paddingRight: dimensions.edge,
-  },
-  pickLabel: {
-    fontSize: 11,
-    marginHorizontal: 6,
   },
 })

@@ -1,39 +1,86 @@
-import { SvgIcon, SvgIconName } from '../../../components/SvgIcon'
+import { AnimatedSvgIcon, SvgIconName } from '../../../components/SvgIcon'
+import { AnimatedPressable } from '../../../extensions/reanimated'
 import { TranslatorMode } from '../../../preferences/options'
 import { dimensions } from '../../../res/dimensions'
 import { useThemeColor } from '../../../themes/hooks'
 import React from 'react'
-import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import {
+  Extrapolation,
+  SharedValue,
+  interpolate,
+  interpolateColor,
+  useAnimatedProps,
+  useAnimatedStyle,
+} from 'react-native-reanimated'
+import { PathProps } from 'react-native-svg'
 
 export interface SelectButtonProps {
   style?: StyleProp<ViewStyle>
+  index: number
   icon: SvgIconName
   mode: TranslatorMode
-  currentMode: TranslatorMode
-  onPress: (mode: TranslatorMode) => void
+  pageOffset: SharedValue<number>
+  onPress: (index: number, mode: TranslatorMode) => void
 }
 
 export function ModeButton(props: SelectButtonProps) {
-  const { style, icon, mode, currentMode, onPress } = props
+  const { style, index, icon, mode, pageOffset, onPress } = props
 
   const tint = useThemeColor('tint')
   const tintSelected = useThemeColor('tintSelected')
   const backdropColor = useThemeColor('backdrop2')
   const backdropSelectedColor = useThemeColor('backdropSelected')
 
-  const selected = mode === currentMode
+  const backgroundStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: interpolateColor(
+        pageOffset.value,
+        [index - 1, index, index + 1],
+        [backdropColor, backdropSelectedColor, backdropColor]
+      ),
+    }
+  })
+
+  const animatedProps1 = useAnimatedProps<PathProps>(() => {
+    return {
+      fillOpacity: interpolate(
+        pageOffset.value,
+        [index - 1, index, index + 1],
+        [1, 0, 1],
+        Extrapolation.CLAMP
+      ),
+    }
+  })
+  const animatedProps2 = useAnimatedProps<PathProps>(() => {
+    return {
+      fillOpacity: interpolate(
+        pageOffset.value,
+        [index - 1, index, index + 1],
+        [0, 1, 0],
+        Extrapolation.CLAMP
+      ),
+    }
+  })
+
   return (
-    <Pressable
-      style={[
-        styles.container,
-        {
-          backgroundColor: selected ? backdropSelectedColor : backdropColor,
-        },
-        style,
-      ]}
-      onPress={() => onPress(mode)}>
-      <SvgIcon size={dimensions.iconSmall} color={selected ? tintSelected : tint} name={icon} />
-    </Pressable>
+    <AnimatedPressable
+      style={[styles.container, backgroundStyle, style]}
+      onPress={() => onPress(index, mode)}>
+      <AnimatedSvgIcon
+        style={{ position: 'absolute' }}
+        size={dimensions.iconSmall}
+        color={tint}
+        name={icon}
+        animatedProps={animatedProps1}
+      />
+      <AnimatedSvgIcon
+        size={dimensions.iconSmall}
+        color={tintSelected}
+        name={icon}
+        animatedProps={animatedProps2}
+      />
+    </AnimatedPressable>
   )
 }
 

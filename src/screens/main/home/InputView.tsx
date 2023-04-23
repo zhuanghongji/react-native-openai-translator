@@ -3,7 +3,7 @@ import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
 import { sheets } from '../../../res/sheets'
 import { useTextThemeStyle, useThemeColor } from '../../../themes/hooks'
-import React, { useImperativeHandle, useRef, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Pressable, StyleSheet, TextInput, TextStyle, View, ViewStyle } from 'react-native'
 import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils'
 
@@ -27,6 +27,11 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
   const borderColor = useThemeColor('border')
   const backdropColor = useThemeColor('backdrop')
 
+  const textLengthRef = useRef(value.length)
+  useEffect(() => {
+    textLengthRef.current = value.length
+  }, [value])
+
   const textInputRef = useRef<TextInput>(null)
   useImperativeHandle(
     ref,
@@ -34,7 +39,7 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
       focus: () => {
         textInputRef.current?.focus()
         textInputRef.current?.setNativeProps({
-          selection: { start: value.length, end: value.length },
+          selection: { start: textLengthRef.current, end: textLengthRef.current },
         })
       },
       blur: () => textInputRef.current?.blur(),

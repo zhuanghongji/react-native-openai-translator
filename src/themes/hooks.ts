@@ -1,7 +1,7 @@
 import { useThemeModePref } from '../preferences/storages'
 import { colors } from '../res/colors'
 import type { ThemeScheme, ThemeSchemeTypo } from './themes'
-import { ColorValue, StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
+import { StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
 
 export const LIGHT_THEME_SCHEME: ThemeScheme = {
   text: colors.black,
@@ -68,11 +68,11 @@ export function useThemeScheme(): ThemeScheme {
   return useThemeDark() ? DARK_THEME_SCHEME : LIGHT_THEME_SCHEME
 }
 
-export function useThemeColor(typo: ThemeSchemeTypo): ColorValue {
+export function useThemeColor(typo: ThemeSchemeTypo): string {
   return useThemeScheme()[typo]
 }
 
-export function useThemeColors(typos: ThemeSchemeTypo[]): ColorValue[] {
+export function useThemeColors(typos: ThemeSchemeTypo[]): string[] {
   const theme = useThemeScheme()
   return typos.map(typo => theme[typo])
 }

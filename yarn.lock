@@ -6208,6 +6208,11 @@ react-native-modal@^13.0.1:
     prop-types "^15.6.2"
     react-native-animatable "1.3.3"
 
+react-native-pager-view@^6.2.0:
+  version "6.2.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/react-native-pager-view/-/react-native-pager-view-6.2.0.tgz#51380d93fbe47f6380dc71d613a787bf27a4ca37"
+  integrity sha512-pf9OnL/Tkr+5s4Gjmsn7xh91PtJLDa6qxYa/bmtUhd/+s4cQdWQ8DIFoOFghwZIHHHwVdWtoXkp6HtpjN+r20g==
+
 react-native-reanimated@^2.14.4:
   version "2.14.4"
   resolved "https://mirrors.cloud.tencent.com/npm/react-native-reanimated/-/react-native-reanimated-2.14.4.tgz#3fa3da4e7b99f5dfb28f86bcf24d9d1024d38836"

@@ -11,13 +11,14 @@ import { AppState, Keyboard, StyleProp, ViewStyle } from 'react-native'
 
 export interface ClipboardDetectedModalProps {
   style?: StyleProp<ViewStyle>
+  enabled: boolean
   inputText: string
   outputText: string
   onConfirmPress: (text: string) => void
 }
 
 export const ClipboardDetectedModal = React.memo((props: ClipboardDetectedModalProps) => {
-  const { style, inputText, outputText, onConfirmPress } = props
+  const { style, enabled, inputText, outputText, onConfirmPress } = props
 
   const { t } = useTranslation()
   const [visible, setVisible] = useState(false)
@@ -28,7 +29,7 @@ export const ClipboardDetectedModal = React.memo((props: ClipboardDetectedModalP
   const isFocused = useIsFocused()
   const [enableClipboardDetect] = useEnableClipboardDetectPref()
   useEffect(() => {
-    if (!isFocused || !enableClipboardDetect) {
+    if (!enableClipboardDetect) {
       return
     }
     const subscription = AppState.addEventListener('change', async state => {
@@ -39,7 +40,14 @@ export const ClipboardDetectedModal = React.memo((props: ClipboardDetectedModalP
         const _text = await Clipboard.getString()
         const text = trimContent(_text)
         const lastText = getMMKVString(StorageKey.lastDetectedText)
-        if (!text || text === lastText || text === inputText || text === outputText) {
+        if (
+          !enabled ||
+          !isFocused ||
+          !text ||
+          text === lastText ||
+          text === inputText ||
+          text === outputText
+        ) {
           return
         }
         Keyboard.dismiss()
@@ -51,7 +59,7 @@ export const ClipboardDetectedModal = React.memo((props: ClipboardDetectedModalP
       }
     })
     return () => subscription.remove()
-  }, [isFocused, enableClipboardDetect, inputText, outputText])
+  }, [enabled, isFocused, enableClipboardDetect, inputText, outputText])
 
   return (
     <ConfirmModal

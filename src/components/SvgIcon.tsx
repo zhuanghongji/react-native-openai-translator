@@ -1,6 +1,7 @@
+import { AnimatedPath, AnimatedSvg } from '../extensions/reanimated'
 import * as React from 'react'
 import { ColorValue, StyleProp, ViewStyle } from 'react-native'
-import Svg, { Path } from 'react-native-svg'
+import Svg, { Path, PathProps } from 'react-native-svg'
 
 const SVG_NAMES = {
   settings:
@@ -67,6 +68,10 @@ const SVG_NAMES = {
     'M479.956 651Q449 651 427 628.956q-22-22.045-22-53Q405 545 427.044 523q22.045-22 53-22Q511 501 533 523.044q22 22.045 22 53Q555 607 532.956 629q-22.045 22-53 22ZM480 936q-142 0-245-95.5T121 605q-1-12 7.5-21t21.5-9q12 0 20.5 8.5T181 605q11 115 96.5 193T480 876q125.357 0 212.679-87.321Q780 701.357 780 576t-87.321-212.679Q605.357 276 480 276q-68 0-129 31t-105 82h74q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T320 449H172q-12.75 0-21.375-8.625T142 419V271q0-12.75 8.675-21.375 8.676-8.625 21.5-8.625 12.825 0 21.325 8.625T202 271v76q52-61 125-96t153-35q75 0 140.5 28T735 321q49 49 77 114.5T840 576q0 75-28 140.5T735 831q-49 49-114.5 77T480 936',
   ['input-circle']:
     'M450 541v406q0 13 8.5 21.5T480 977q13 0 21.5-8.5T510 947V541l93 92q9 8 21 8.5t21-8.5q9-9 9-21t-9-21L501 447q-9-9-21-9t-21 9L315 591q-9 9-9 21t9 21q9 9 21 9t21-9l93-92Zm30-305q-142 0-241 99t-99 241q0 40 8.5 78.5T175 728q6 12 4.5 25T168 775q-9 8-20.5 7T130 770q-25-45-37.5-94T80 576q0-83 31.5-156T197 293q54-54 127-85.5T480 176q83 0 156 31.5T763 293q54 54 85.5 127T880 576q0 51-12.5 100T830 770q-6 11-17.5 12t-20.5-7q-10-9-11.5-22t4.5-25q17-35 26-73.5t9-78.5q0-142-99-241t-241-99Z',
+  ['line-end']:
+    'M495 821q-10 7-18.5-1t-2.5-19l119-195H120q-13 0-21.5-8.5T90 576q0-13 8.5-21.5T120 546h473L474 351q-6-11 2.5-19t18.5-1l345 220q14 9 14 25t-14 25L495 821Z',
+  start:
+    'M617.842 796.391Q609 787 609 774.533q0-12.466 9-21.533l147-147H269q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T269 546h496L618 398q-9-9-9-21t9-21q9-9 21-9t21 9l199 199q5 5 7 10.133 2 5.134 2 11Q868 582 866 587q-2 5-7 10L660 796q-9 9-21.158 9-12.158 0-21-8.609ZM109.825 816Q97 816 88.5 807.375T80 786V366q0-12.75 8.675-21.375 8.676-8.625 21.5-8.625 12.825 0 21.325 8.625T140 366v420q0 12.75-8.675 21.375-8.676 8.625-21.5 8.625Z',
 }
 
 export type SvgIconName = keyof typeof SVG_NAMES
@@ -85,5 +90,24 @@ export function SvgIcon(props: SvgIconProps) {
     <Svg style={style} viewBox="0 96 960 960" width={size} height={size}>
       <Path fill={color} d={d} />
     </Svg>
+  )
+}
+
+export interface AnimatedSvgIconProps {
+  style?: StyleProp<ViewStyle>
+  size: number
+  color: ColorValue
+  name: SvgIconName
+  animatedProps: Partial<PathProps>
+}
+
+export function AnimatedSvgIcon(props: AnimatedSvgIconProps) {
+  const { style, size, color, name, animatedProps } = props
+  const d = SVG_NAMES[name]
+
+  return (
+    <AnimatedSvg style={style} viewBox="0 96 960 960" width={size} height={size}>
+      <AnimatedPath d={d} fill={color} animatedProps={animatedProps} />
+    </AnimatedSvg>
   )
 }

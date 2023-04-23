@@ -140,7 +140,7 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
   const anim = useSharedValue(0)
   const show = () => {
     containerRef.current?.measureInWindow((x, y, width, height) => {
-      console.log({ x, y, width, height })
+      // console.log({ x, y, width, height })
       wasKeyboardVisibleWhenShowingRef.current = isKeyboardVisibleRef.current
       Keyboard.dismiss()
       setSize({ x, y, width, height })
@@ -152,6 +152,11 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
     anim.value = withTiming(0, WITH_TIMING_CONFIG, () => {
       runOnJS(setVisible)(false)
     })
+    setTimeout(() => {
+      onDismiss?.({
+        wasKeyboardVisibleWhenShowing: wasKeyboardVisibleWhenShowingRef.current,
+      })
+    }, WITH_TIMING_CONFIG.duration)
   }
 
   const presentAnimStyle = useAnimatedStyle(() => {
@@ -185,10 +190,10 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
         coverScreen={true}
         backdropOpacity={0}
         onBackdropPress={dismiss}
+        onBackButtonPress={dismiss}
         onDismiss={() => {
-          onDismiss?.({
-            wasKeyboardVisibleWhenShowing: wasKeyboardVisibleWhenShowingRef.current,
-          })
+          // console.log('onDismiss')
+          // seems do not work on Android
         }}>
         <View style={[sizeStyle, { overflow: 'hidden' }]}>
           <Animated.View
