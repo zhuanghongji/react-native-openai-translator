@@ -26,6 +26,10 @@ The translator that does more than just translation:
 - [react-native-permissions](https://github.com/zoontek/react-native-permissions#readme)
 - [@react-native-camera-roll/camera-roll](https://github.com/react-native-cameraroll/react-native-cameraroll)
 
+## Notice
+
+- `react-native-vision-camera` do not support `react-native-reanimated v3`, so we should keep the version of reanimated at `^2.14.4`.
+
 ## License
 
 [GNU](./LICENSE)
