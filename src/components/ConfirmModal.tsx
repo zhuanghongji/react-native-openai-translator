@@ -1,7 +1,7 @@
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useThemeColor } from '../themes/hooks'
-import { TText } from './TText'
+import { TText } from '../themes/TText'
+import { useThemeScheme } from '../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 import Modal from 'react-native-modal'
@@ -32,8 +32,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
     onDismissRequest,
   } = props
 
-  const borderColor = useThemeColor('border2')
-  const backdropColor = useThemeColor('backdrop')
+  const { border2: borderColor, backdrop: backdropColor } = useThemeScheme()
 
   const { width: frameWidth, height: frameHeight } = useSafeAreaFrame()
 

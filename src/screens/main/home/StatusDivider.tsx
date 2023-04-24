@@ -1,7 +1,7 @@
-import { TText } from '../../../components/TText'
 import { TranslatorMode } from '../../../preferences/options'
 import { dimensions } from '../../../res/dimensions'
-import { useThemeColor } from '../../../themes/hooks'
+import { TText } from '../../../themes/TText'
+import { useThemeScheme } from '../../../themes/hooks'
 import { TranslatorStatus } from '../../../types'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -68,11 +68,8 @@ export function StatusDivider(props: StatusDividerProps): JSX.Element {
   const text = statusTexts[mode][status]
   const emoji = STATUS_EMOJIS[status]
 
-  const contentColor = useThemeColor('text2')
-  const backgroundColor = useThemeColor('backdrop2')
-  const backgroundStyle: ViewStyle = {
-    backgroundColor,
-  }
+  const { text2: contentColor, backdrop2: backgroundColor } = useThemeScheme()
+  const backgroundStyle: ViewStyle = { backgroundColor }
 
   const anim = useSharedValue(0.5)
   const animStyle = useAnimatedStyle(() => {

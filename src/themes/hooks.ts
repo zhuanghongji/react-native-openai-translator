@@ -1,6 +1,8 @@
 import { useThemeModePref } from '../preferences/storages'
 import { colors } from '../res/colors'
+import { ThemeSchemeContext } from './ThemeSchemeProvider'
 import type { ThemeScheme, ThemeSchemeTypo } from './themes'
+import { useContext, useMemo } from 'react'
 import { StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
 
 export const LIGHT_THEME_SCHEME: ThemeScheme = {
@@ -65,19 +67,10 @@ export function useStatusBarStyle(): StatusBarStyle {
 }
 
 export function useThemeScheme(): ThemeScheme {
-  return useThemeDark() ? DARK_THEME_SCHEME : LIGHT_THEME_SCHEME
+  return useContext(ThemeSchemeContext)
 }
 
-export function useThemeColor(typo: ThemeSchemeTypo): string {
-  return useThemeScheme()[typo]
-}
-
-export function useThemeColors(typos: ThemeSchemeTypo[]): string[] {
+export function useThemeTextStyle(typo: ThemeSchemeTypo): TextStyle {
   const theme = useThemeScheme()
-  return typos.map(typo => theme[typo])
-}
-
-export function useTextThemeStyle(typo: ThemeSchemeTypo): TextStyle {
-  const theme = useThemeScheme()
-  return { color: theme[typo] }
+  return useMemo<TextStyle>(() => ({ color: theme[typo] }), [theme, typo])
 }

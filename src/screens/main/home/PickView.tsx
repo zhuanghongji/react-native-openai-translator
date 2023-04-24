@@ -1,8 +1,8 @@
 import { SvgIcon } from '../../../components/SvgIcon'
-import { TText } from '../../../components/TText'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
-import { useThemeColor } from '../../../themes/hooks'
+import { TText } from '../../../themes/TText'
+import { useThemeScheme } from '../../../themes/hooks'
 import React from 'react'
 import { StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native'
 import Animated, { interpolateColor, useAnimatedStyle } from 'react-native-reanimated'
@@ -16,9 +16,8 @@ export interface PickViewProps {
 export function PickView(props: PickViewProps) {
   const { style, anim, label } = props
 
-  const iconColor = useThemeColor('tint')
-  const borderColor = useThemeColor('border')
-  const backgroundColor = useThemeColor('backdrop2')
+  const { tint: iconColor, border: borderColor, backdrop2: backgroundColor } = useThemeScheme()
+
   const borderStyle = useAnimatedStyle(() => {
     return {
       borderColor: interpolateColor(

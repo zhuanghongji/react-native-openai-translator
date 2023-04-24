@@ -1,5 +1,6 @@
 import './i18n/config'
 import { AppContent } from './screens/app-content'
+import { ThemeSchemeProvider } from './themes/ThemeSchemeProvider'
 import { NavigationContainer } from '@react-navigation/native'
 import React from 'react'
 import { Platform } from 'react-native'
@@ -13,16 +14,18 @@ export function App(): JSX.Element {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardProvider statusBarTranslucent>
         <SafeAreaProvider style={{ flex: 1 }}>
-          <NavigationContainer
-            onReady={() => {
-              if (Platform.OS === 'ios') {
-                SplashScreen.hide()
-              } else {
-                setTimeout(() => SplashScreen.hide(), 600)
-              }
-            }}>
-            <AppContent />
-          </NavigationContainer>
+          <ThemeSchemeProvider>
+            <NavigationContainer
+              onReady={() => {
+                if (Platform.OS === 'ios') {
+                  SplashScreen.hide()
+                } else {
+                  setTimeout(() => SplashScreen.hide(), 600)
+                }
+              }}>
+              <AppContent />
+            </NavigationContainer>
+          </ThemeSchemeProvider>
         </SafeAreaProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>

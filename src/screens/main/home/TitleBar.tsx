@@ -1,9 +1,9 @@
 import { SvgIcon } from '../../../components/SvgIcon'
-import { TText } from '../../../components/TText'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
 import { images } from '../../../res/images'
-import { useStatusBarStyle, useThemeColor } from '../../../themes/hooks'
+import { TText } from '../../../themes/TText'
+import { useStatusBarStyle, useThemeScheme } from '../../../themes/hooks'
 import React from 'react'
 import {
   Image,
@@ -27,8 +27,10 @@ const H_EDGE = 8
 export function TitleBar(props: TitleBarProps): JSX.Element {
   const { onScannerPress, onSettingsPress } = props
   const { top } = useSafeAreaInsets()
+
   const barStyle = useStatusBarStyle()
-  const iconColor = useThemeColor('tint')
+
+  const { tint: iconColor } = useThemeScheme()
 
   return (
     <View style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}>

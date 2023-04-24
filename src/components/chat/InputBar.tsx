@@ -1,6 +1,6 @@
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { useThemeColor, useThemeDark } from '../../themes/hooks'
+import { useThemeDark, useThemeScheme } from '../../themes/hooks'
 import { SvgIcon } from '../SvgIcon'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -26,7 +26,8 @@ export function InputBar(props: InputBarProps): JSX.Element {
   const textColor = isDark ? colors.white : colors.black
   const backgroundColor = isDark ? colors.c1C : colors.cF7
   const backgroundColor2 = isDark ? colors.c28 : colors.white
-  const placeholderColor = useThemeColor('placeholder')
+
+  const { placeholder: placeholderColor } = useThemeScheme()
 
   const { bottom } = useSafeAreaInsets()
   const { height, progress } = useReanimatedKeyboardAnimation()

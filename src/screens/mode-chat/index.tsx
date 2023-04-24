@@ -7,7 +7,7 @@ import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { dimensions } from '../../res/dimensions'
-import { useThemeColor } from '../../themes/hooks'
+import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
 import { ChatMessage, Message } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
@@ -28,7 +28,8 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
-  const backgroundColor = useThemeColor('backgroundChat')
+
+  const { backgroundChat: backgroundColor } = useThemeScheme()
 
   const listContainerHeight = useSharedValue(0)
   const listContentHeight = useSharedValue(0)

@@ -1,8 +1,8 @@
 import { SvgIcon } from '../../components/SvgIcon'
-import { TText } from '../../components/TText'
 import { hapticSoft } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
-import { useThemeColor } from '../../themes/hooks'
+import { TText } from '../../themes/TText'
+import { useThemeScheme } from '../../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
@@ -16,7 +16,7 @@ export interface CheckViewProps {
 export function CheckView(props: CheckViewProps) {
   const { style, title, value, onValueChange } = props
 
-  const iconColor = useThemeColor('tint')
+  const { tint: iconColor } = useThemeScheme()
 
   return (
     <View style={[styles.container, style]}>

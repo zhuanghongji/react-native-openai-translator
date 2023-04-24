@@ -1,8 +1,8 @@
 import { SvgIcon } from '../../components/SvgIcon'
-import { TText } from '../../components/TText'
 import { TranslatorMode } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
-import { useStatusBarStyle, useThemeColor } from '../../themes/hooks'
+import { TText } from '../../themes/TText'
+import { useStatusBarStyle, useThemeScheme } from '../../themes/hooks'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, StatusBar, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
@@ -40,8 +40,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const title = useTitle(mode)
 
   const barStyle = useStatusBarStyle()
-  const tintColor = useThemeColor('tint')
-  const backgroundColor = useThemeColor('backgroundChat')
+  const { tint: tintColor, backgroundChat: backgroundColor } = useThemeScheme()
 
   return (
     <View style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}>

@@ -3,7 +3,7 @@ import { AnimatedPagerView, usePageScrollHandler } from '../../../extensions/pag
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { getDefaultTargetLanguage, getDefaultTranslatorMode } from '../../../preferences/storages'
 import { dimensions } from '../../../res/dimensions'
-import { useThemeColor } from '../../../themes/hooks'
+import { useThemeScheme } from '../../../themes/hooks'
 import { ScanBlock } from '../../../types'
 import type { RootStackParamList } from '../../screens'
 import { ModeButton } from './ModeButton'
@@ -49,8 +49,7 @@ const MODE_ITEMS: ModeItem[] = [
 const MODES = MODE_ITEMS.map(v => v.mode)
 
 export function HomeScreen({ navigation }: Props): JSX.Element {
-  const tint2 = useThemeColor('tint2')
-  const backgroundColor = useThemeColor('background')
+  const { tint2, background: backgroundColor } = useThemeScheme()
 
   const initialModeIndex = useMemo(() => {
     const mode = getDefaultTranslatorMode()

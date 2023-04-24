@@ -1,10 +1,10 @@
 import { print } from '../printer'
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useTextThemeStyle, useThemeColor } from '../themes/hooks'
+import { TText } from '../themes/TText'
+import { useThemeScheme, useThemeTextStyle } from '../themes/hooks'
 import { InputModalPasteTip } from './InputModalPasteTip'
 import { SvgIcon } from './SvgIcon'
-import { TText } from './TText'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   Keyboard,
@@ -51,11 +51,13 @@ export const InputModal = React.memo((props: InputModalProps) => {
 
   const { width: frameWidth, height: frameHeight } = useSafeAreaFrame()
 
-  const textStyle = useTextThemeStyle('text')
-  const iconColor = useThemeColor('tint')
-  const borderColor = useThemeColor('border2')
-  const backdropColor = useThemeColor('backdrop')
-  const backgroundColor = useThemeColor('backdrop2')
+  const {
+    tint: iconColor,
+    border2: borderColor,
+    backdrop: backdropColor,
+    backdrop2: backgroundColor,
+  } = useThemeScheme()
+  const textStyle = useThemeTextStyle('text')
 
   const [currentValue, setCurrentValue] = useState(initialValue)
   const [preInitialValue, setPreInitialValue] = useState(initialValue)

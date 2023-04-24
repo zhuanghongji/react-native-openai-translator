@@ -1,11 +1,11 @@
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
 import { sheets } from '../../res/sheets'
-import { useThemeColor } from '../../themes/hooks'
+import { TText } from '../../themes/TText'
+import { useThemeScheme } from '../../themes/hooks'
 import { trimContent } from '../../utils'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { AnimRotateContainer } from '../AnimRotateContainer'
-import { TText } from '../TText'
 import React from 'react'
 import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
@@ -16,7 +16,7 @@ export type SSEMessageProps = {
 export function SSEMessageView(props: SSEMessageProps) {
   const { style } = props
 
-  const backgroundColor = useThemeColor('backgroundMessage')
+  const { backgroundMessage: backgroundColor } = useThemeScheme()
 
   const status = useSSEMessageStore(state => state.status)
   const content = useSSEMessageStore(state => state.content)

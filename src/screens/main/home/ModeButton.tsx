@@ -2,7 +2,7 @@ import { AnimatedSvgIcon, SvgIconName } from '../../../components/SvgIcon'
 import { AnimatedPressable } from '../../../extensions/reanimated'
 import { TranslatorMode } from '../../../preferences/options'
 import { dimensions } from '../../../res/dimensions'
-import { useThemeColor } from '../../../themes/hooks'
+import { useThemeScheme } from '../../../themes/hooks'
 import React from 'react'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'
 import {
@@ -27,10 +27,12 @@ export interface SelectButtonProps {
 export function ModeButton(props: SelectButtonProps) {
   const { style, index, icon, mode, pageOffset, onPress } = props
 
-  const tint = useThemeColor('tint')
-  const tintSelected = useThemeColor('tintSelected')
-  const backdropColor = useThemeColor('backdrop2')
-  const backdropSelectedColor = useThemeColor('backdropSelected')
+  const {
+    tint,
+    tintSelected: tintSelected,
+    backdrop2: backdropColor,
+    backdropSelected: backdropSelectedColor,
+  } = useThemeScheme()
 
   const backgroundStyle = useAnimatedStyle(() => {
     return {

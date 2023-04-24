@@ -1,6 +1,6 @@
-import { TText } from '../../components/TText'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
+import { TText } from '../../themes/TText'
 import React from 'react'
 import { Linking, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 

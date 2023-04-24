@@ -1,7 +1,7 @@
 import { useEnableClipboardDetectPref } from '../preferences/storages'
 import { print } from '../printer'
 import { dimensions } from '../res/dimensions'
-import { useTextThemeStyle, useThemeColor } from '../themes/hooks'
+import { useThemeScheme, useThemeTextStyle } from '../themes/hooks'
 import { SvgIcon } from './SvgIcon'
 import Clipboard from '@react-native-clipboard/clipboard'
 import React, { useEffect, useState } from 'react'
@@ -29,8 +29,8 @@ export const InputModalPasteTip = React.memo((props: InputModalPasteTipProps) =>
   const { style, onPastePress } = props
 
   const { t } = useTranslation()
-  const textStyle = useTextThemeStyle('text')
-  const tintColor = useThemeColor('tint')
+  const { tint: tintColor } = useThemeScheme()
+  const textStyle = useThemeTextStyle('text')
 
   const [text, setText] = useState('')
   const [applied, setApplied] = useState(false)

@@ -1,6 +1,6 @@
 import { dimensions } from '../../../res/dimensions'
 import { sheets } from '../../../res/sheets'
-import { useThemeColor } from '../../../themes/hooks'
+import { useThemeScheme } from '../../../themes/hooks'
 import React, { useImperativeHandle, useState } from 'react'
 import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
 
@@ -15,7 +15,7 @@ export interface OutputViewHandle {
 
 export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>((props, ref) => {
   const { style, text } = props
-  const textColor = useThemeColor('text')
+  const { text: textColor } = useThemeScheme()
 
   const [displayText, setDisplayText] = useState('')
   const [preText, setPreText] = useState(text)

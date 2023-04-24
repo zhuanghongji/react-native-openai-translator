@@ -2,7 +2,7 @@ import { SvgIcon } from '../../../components/SvgIcon'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
 import { sheets } from '../../../res/sheets'
-import { useTextThemeStyle, useThemeColor } from '../../../themes/hooks'
+import { useThemeScheme, useThemeTextStyle } from '../../../themes/hooks'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Pressable, StyleSheet, TextInput, TextStyle, View, ViewStyle } from 'react-native'
 import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils'
@@ -22,10 +22,8 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
   const { value, onChangeText, onSubmitEditing } = props
   const [foucus, setFocus] = useState(false)
 
-  const textStyle = useTextThemeStyle('text')
-  const tintColor = useThemeColor('tint')
-  const borderColor = useThemeColor('border')
-  const backdropColor = useThemeColor('backdrop')
+  const { tint: tintColor, border: borderColor, backdrop: backdropColor } = useThemeScheme()
+  const textStyle = useThemeTextStyle('text')
 
   const textLengthRef = useRef(value.length)
   useEffect(() => {

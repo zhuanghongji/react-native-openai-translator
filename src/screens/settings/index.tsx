@@ -1,6 +1,5 @@
 import { ConfirmModal } from '../../components/ConfirmModal'
 import { PickSelector } from '../../components/PickSelector'
-import { TText } from '../../components/TText'
 import { DEFAULTS } from '../../preferences/defaults'
 import {
   API_MODELS,
@@ -27,7 +26,8 @@ import {
 } from '../../preferences/storages'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { useThemeColor } from '../../themes/hooks'
+import { TText } from '../../themes/TText'
+import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { CheckView } from './CheckView'
 import { InputView } from './InputView'
@@ -48,8 +48,7 @@ export function SettingsScreen(
   const { navigation } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
-  const contentColor = useThemeColor('text2')
-  const backgroundColor = useThemeColor('background')
+  const { text2: contentColor, background: backgroundColor } = useThemeScheme()
 
   const [serviceProvider, setServiceProvider] = useServiceProviderPref()
   const [apiKey, setApiKey] = useApiKeyPref()

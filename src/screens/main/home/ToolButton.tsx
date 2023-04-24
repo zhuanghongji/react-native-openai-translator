@@ -1,6 +1,6 @@
 import { SvgIcon, SvgIconName } from '../../../components/SvgIcon'
 import { dimensions } from '../../../res/dimensions'
-import { useThemeColor } from '../../../themes/hooks'
+import { useThemeScheme } from '../../../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
@@ -13,7 +13,8 @@ export interface ToolButtonProps {
 
 export function ToolButton(props: ToolButtonProps) {
   const { style, disabled, name, onPress } = props
-  const tint2 = useThemeColor('tint2')
+
+  const { tint2 } = useThemeScheme()
 
   return (
     <Pressable

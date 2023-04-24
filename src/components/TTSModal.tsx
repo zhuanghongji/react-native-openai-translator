@@ -3,9 +3,9 @@ import { print } from '../printer'
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { lotties } from '../res/lotties'
-import { useThemeColor } from '../themes/hooks'
+import { TText } from '../themes/TText'
+import { useThemeScheme } from '../themes/hooks'
 import { isChineseLang } from '../utils'
-import { TText } from './TText'
 import LottieView from 'lottie-react-native'
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -42,7 +42,7 @@ export const TTSModal = React.forwardRef<TTSModalHandle, TTSModalProps>((props, 
   const { top, bottom } = useSafeAreaInsets()
 
   const { t } = useTranslation()
-  const backgroundColor = useThemeColor('background2')
+  const { background2: backgroundColor } = useThemeScheme()
 
   const speakingRef = useRef(false)
   const lottieViewRef = useRef<LottieView>(null)

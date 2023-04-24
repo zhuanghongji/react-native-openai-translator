@@ -1,10 +1,10 @@
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
 import { sheets } from '../../res/sheets'
-import { useThemeColor } from '../../themes/hooks'
+import { TText } from '../../themes/TText'
+import { useThemeScheme } from '../../themes/hooks'
 import { ChatMessage } from '../../types'
 import { trimContent } from '../../utils'
-import { TText } from '../TText'
 import React from 'react'
 import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
@@ -17,7 +17,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
   const { style, message } = props
   const { content } = message
 
-  const backgroundColor = useThemeColor('backgroundMessage')
+  const { backgroundMessage: backgroundColor } = useThemeScheme()
 
   return (
     <View style={[style, styles.container]}>

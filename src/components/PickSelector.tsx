@@ -1,5 +1,5 @@
 import { colors } from '../res/colors'
-import { useThemeColor, useThemeDark } from '../themes/hooks'
+import { useThemeDark, useThemeScheme } from '../themes/hooks'
 import { PickSelectorItemView } from './PickSelectorItemView'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -80,7 +80,7 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
 
   const isDark = useThemeDark()
   const selectorBackgroundColor = isDark ? colors.c33 : colors.white
-  const borderColor = useThemeColor('border2')
+  const { border2: borderColor } = useThemeScheme()
 
   const wasKeyboardVisibleWhenShowingRef = useRef(false)
   const isKeyboardVisibleRef = useRef(false)

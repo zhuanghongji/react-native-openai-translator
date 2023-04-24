@@ -1,7 +1,7 @@
 import { InputModal } from '../../components/InputModal'
 import { SvgIcon } from '../../components/SvgIcon'
 import { dimensions } from '../../res/dimensions'
-import { useTextThemeStyle, useThemeColor } from '../../themes/hooks'
+import { useThemeScheme, useThemeTextStyle } from '../../themes/hooks'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native'
@@ -22,9 +22,8 @@ export function InputView(props: InputViewProps) {
   const [secureTextEntry, setSecureTextEntry] = useState(true)
   const [modalVisible, setModalVisible] = useState(false)
 
-  const textStyle = useTextThemeStyle('text')
-  const iconColor = useThemeColor('tint')
-  const backgroundColor = useThemeColor('backdrop2')
+  const { tint: iconColor, backdrop2: backgroundColor } = useThemeScheme()
+  const textStyle = useThemeTextStyle('text')
 
   const text = securable && secureTextEntry ? '·'.repeat(Math.min(value.length, 24)) : value
   const letterSpacing = securable && secureTextEntry ? 3 : 0

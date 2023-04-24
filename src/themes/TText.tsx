@@ -1,5 +1,5 @@
-import { useTextThemeStyle } from '../themes/hooks'
-import { ThemeSchemeTypo } from '../themes/themes'
+import { useThemeTextStyle } from './hooks'
+import { ThemeSchemeTypo } from './themes'
 import React from 'react'
 import { Text, TextProps } from 'react-native'
 
@@ -10,7 +10,7 @@ export type TTextProps = TextProps & { typo: ThemeSchemeTypo }
  */
 export function TText(props: TTextProps) {
   const { style, typo, children, ...restProps } = props
-  const textStyle = useTextThemeStyle(typo)
+  const textStyle = useThemeTextStyle(typo)
   return (
     <Text style={[textStyle, style]} {...restProps}>
       {children}

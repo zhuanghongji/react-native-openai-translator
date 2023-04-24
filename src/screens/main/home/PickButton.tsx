@@ -1,9 +1,9 @@
 import { PickModalHandle } from '../../../components/PickModal'
 import { SvgIcon } from '../../../components/SvgIcon'
-import { TText } from '../../../components/TText'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
-import { useThemeColor } from '../../../themes/hooks'
+import { TText } from '../../../themes/TText'
+import { useThemeScheme } from '../../../themes/hooks'
 import React from 'react'
 import {
   Pressable,
@@ -28,9 +28,7 @@ export interface PickButtonProps {
 export function PickButton(props: PickButtonProps) {
   const { style, disabled, label, animatedIndex, pickModalRef } = props
 
-  const iconColor = useThemeColor('tint')
-  const borderColor = useThemeColor('border')
-  const backgroundColor = useThemeColor('backdrop2')
+  const { tint: iconColor, border: borderColor, backdrop2: backgroundColor } = useThemeScheme()
 
   const borderStyle = useAnimatedStyle(() => {
     return {
