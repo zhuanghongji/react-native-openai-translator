@@ -8,12 +8,6 @@ Not just a translator, and more than chat.
 
 ## Instruction
 
-<style>
-table th {
-    width: 20%;
-}
-</style>
-
 <table>
   <tr>
     <th>Translate Mode</th>
@@ -26,30 +20,35 @@ table th {
   <tr>
     <td>
       <img 
+        width="170"
         src="./docs/screenshots/v0.0.1_1.jpeg" 
         title="The special case of translate English Word into Chinese" 
       />
     </td>
     <td>
       <img 
+        width="170"
         src="./docs/screenshots/v0.0.1_2.jpeg"
         title="You can chat continuously with every mode in Home screen"  
       />
     </td>
     <td>
       <img 
+        width="170"
         src="./docs/screenshots/v0.0.1_3.jpeg"
         title="Settings - Light"
       />
     </td>
     <td>
       <img 
+        width="170"
         src="./docs/screenshots/v0.0.1_4.jpeg"
         title="Settings - Dark"
       />
     </td>
     <td>
       <img 
+        width="170"
         src="./docs/screenshots/v0.0.1_5.jpeg"
         title="Polish Mode"
       />
