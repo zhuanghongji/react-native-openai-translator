@@ -10,24 +10,16 @@ Not just a translator, and more than chat.
 
 <table>
   <tr>
-    <th>Translate Mode</th>
-    <th>Mode Chat</th>
-    <th>Settings - Light</th>
-    <th>Settings - Dark</th>
-    <th>Polish Mode</th>
-  </tr>
-
-  <tr>
     <td>
       <img 
         src="./docs/screenshots/v0.0.1_1.jpeg" 
-        title="The special case of translate English Word into Chinese" 
+        title="Translate Mode &#10;&#10;The special case of translate English Word into Chinese" 
       />
     </td>
     <td>
       <img 
         src="./docs/screenshots/v0.0.1_2.jpeg"
-        title="You can chat continuously with every mode in Home screen"  
+        title="Mode Chat &#10;&#10;You can chat continuously with every mode in Home screen"  
       />
     </td>
     <td>
