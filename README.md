@@ -11,7 +11,7 @@ Not just a translator, and more than chat.
 <table>
   <tr>
     <th>Translate Mode</th>
-    <th>Mode Chat Continuously</th>
+    <th>Mode Chat</th>
     <th>Settings - Light</th>
     <th>Settings - Dark</th>
     <th>Polish Mode</th>
@@ -20,35 +20,30 @@ Not just a translator, and more than chat.
   <tr>
     <td>
       <img 
-        width="170"
         src="./docs/screenshots/v0.0.1_1.jpeg" 
         title="The special case of translate English Word into Chinese" 
       />
     </td>
     <td>
       <img 
-        width="170"
         src="./docs/screenshots/v0.0.1_2.jpeg"
         title="You can chat continuously with every mode in Home screen"  
       />
     </td>
     <td>
       <img 
-        width="170"
         src="./docs/screenshots/v0.0.1_3.jpeg"
         title="Settings - Light"
       />
     </td>
     <td>
       <img 
-        width="170"
         src="./docs/screenshots/v0.0.1_4.jpeg"
         title="Settings - Dark"
       />
     </td>
     <td>
       <img 
-        width="170"
         src="./docs/screenshots/v0.0.1_5.jpeg"
         title="Polish Mode"
       />
