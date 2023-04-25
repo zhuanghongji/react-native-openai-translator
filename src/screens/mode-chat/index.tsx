@@ -6,6 +6,7 @@ import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
+import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -15,11 +16,12 @@ import { RootStackParamList } from '../screens'
 import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
-import React, { useEffect, useRef, useState } from 'react'
-import { Keyboard, View } from 'react-native'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Keyboard } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import EventSource from 'react-native-sse'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ModeChat'>
 
@@ -59,21 +61,15 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
       },
     ]
   })
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (messages.length === 0) {
-  //       return
-  //     }
-  //     flashListRef.current?.scrollToEnd()
-  //   }, 100)
-  //   return () => clearTimeout(timer)
-  // }, [])
+  const messagesInverted = useMemo(() => {
+    return [...messages].reverse()
+  }, [messages])
 
   const flashListRef = useRef<FlashList<ChatMessage>>(null)
   useEffect(() => {
     const show = KeyboardEvents.addListener('keyboardWillShow', () => {
       if (messages.length > 0) {
-        flashListRef.current?.scrollToEnd()
+        flashListRef.current?.scrollToOffset({ offset: 0, animated: true })
       }
     })
     return () => show.remove()
@@ -86,6 +82,15 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const setStatus = useSSEMessageStore(state => state.setStatus)
   const setContent = useSSEMessageStore(state => state.setContent)
 
+  const esRef = useRef<EventSource | undefined>(undefined)
+  const esRequesting = useRef(false)
+  useEffect(() => {
+    print('esRequesting.current = ' + esRequesting.current)
+    if (esRequesting.current) {
+      esRef.current?.close()
+      setStatus('none')
+    }
+  }, [setStatus])
   const onSendPress = () => {
     if (!checkIsOptionsValid()) {
       return
@@ -101,12 +106,14 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
     if (systemPrompt) {
       messagesToSend.push({ role: 'system', content: systemPrompt })
     }
-    setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
+    setTimeout(() => flashListRef.current?.scrollToOffset({ offset: 0, animated: true }), 200)
     setStatus('sending')
-    sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
+    esRequesting.current = true
+    esRef.current?.close()
+    esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
       onNext: content => {
         setContent(content)
-        flashListRef.current?.scrollToEnd()
+        flashListRef.current?.scrollToOffset({ offset: 0, animated: true })
       },
       onError: (code, message) => {
         setStatus('complete')
@@ -118,13 +125,12 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
         setStatus('complete')
         setContent('')
         hapticSuccess()
-        setTimeout(() => flashListRef.current?.scrollToEnd(), 200)
+        setTimeout(() => flashListRef.current?.scrollToOffset({ offset: 0, animated: true }), 200)
+      },
+      onComplete: () => {
+        esRequesting.current = false
       },
     })
-  }
-
-  const renderItemSeparator = () => {
-    return <View style={{ height: dimensions.messageSeparator }} />
   }
 
   return (
@@ -143,25 +149,33 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
           <FlashList
             ref={flashListRef}
             contentContainerStyle={{
-              paddingVertical: dimensions.messageSeparator,
+              paddingTop: dimensions.messageSeparator,
             }}
-            data={messages}
+            inverted={true}
+            data={messagesInverted}
             getItemType={item => item.role}
             keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
             renderItem={({ item }) => {
               if (item.role === 'user') {
-                return <UserMessageView message={item} />
+                return (
+                  <UserMessageView
+                    style={{ marginVertical: dimensions.messageSeparator }}
+                    message={item}
+                  />
+                )
               }
               if (item.role === 'assistant') {
                 return <AssistantMessageView message={item} />
               }
               return null
             }}
-            ItemSeparatorComponent={renderItemSeparator}
-            ListFooterComponent={<SSEMessageView />}
+            // Do not use it because of https://github.com/Shopify/flash-list/issues/638
+            // ItemSeparatorComponent={renderItemSeparator}
+            ListHeaderComponent={<SSEMessageView />}
             estimatedItemSize={200}
             onScrollBeginDrag={() => Keyboard.dismiss()}
             onContentSizeChange={(_, h) => (listContentHeight.value = h)}
+            onEndReached={() => console.log('onEndReached')}
           />
         </Animated.View>
       </Animated.View>

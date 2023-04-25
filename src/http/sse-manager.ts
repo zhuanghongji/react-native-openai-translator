@@ -2,8 +2,6 @@ import { print } from '../printer'
 import EventSource from 'react-native-sse'
 import 'react-native-url-polyfill/auto'
 
-const TAG = 'SSEManager'
-
 export function sseRequest(
   url: string,
   options: {
@@ -32,12 +30,12 @@ export function sseRequest(
 
   const { onOpen, onMessage, onTimeout, onError, onException, onClose } = callbacks
   es.addEventListener('open', () => {
-    print(TAG, 'open')
+    print('open')
     onOpen?.()
   })
 
   es.addEventListener('message', event => {
-    print(TAG, 'onMessage')
+    print('sseRequest - onMessage', event)
     if (event.type !== 'message' || !event.data) {
       return
     }
@@ -48,25 +46,25 @@ export function sseRequest(
   es.addEventListener('error', event => {
     setTimeout(() => es.close(), 100)
     if (event.type === 'timeout') {
-      print(TAG, 'timeout')
+      print('sseRequest - timeout')
       onTimeout?.()
       return
     }
     if (event.type === 'error') {
-      print(TAG, 'error')
+      print('sseRequest - error')
       onError?.(event.message)
       return
     }
     if (event.type === 'exception') {
-      print(TAG, 'exception')
+      print('sseRequest - exception')
       onException?.(event.message, event.error)
       return
     }
-    print(TAG, 'unknown error')
+    print('sseRequest - unknown error')
   })
 
   es.addEventListener('close', () => {
-    print(TAG, 'close')
+    print('sseRequest - close')
     onClose?.()
   })
 

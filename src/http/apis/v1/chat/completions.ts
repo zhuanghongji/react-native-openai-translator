@@ -2,6 +2,7 @@ import { texts } from '../../../../res/texts'
 import { Message } from '../../../../types'
 import { sseRequest } from '../../../sse-manager'
 import { OpenAIApiUrlOptions } from '../../type'
+import EventSource from 'react-native-sse'
 
 /**
  * {
@@ -78,7 +79,7 @@ export function sseRequestChatCompletions(
   customizedOptions: ChatCompletionsCustomizedOptions,
   messages: Message[],
   callbacks: ChatCompletionsCallbacks
-) {
+): EventSource {
   const { apiUrl, apiUrlPath, apiKey } = urlOptions
   const { onSubscribe, onNext, onDone, onError, onComplete } = callbacks
 
@@ -148,4 +149,6 @@ export function sseRequestChatCompletions(
       },
     }
   )
+
+  return es
 }

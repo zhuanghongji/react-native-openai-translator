@@ -32,6 +32,8 @@ Not only a translator, more than just chat.
   </tr>
 </table>
 
+> The screenshots above are from v0.0.1, which is not the final version you are looking for.
+
 ## Rodemap
 
 ### Screens
@@ -64,7 +66,7 @@ Not only a translator, more than just chat.
 - [ ] docs: how to contribute
 - [ ] docs: how to build iOS app for personal use
 - [x] ux: if it is better to remove "from-lang" from the Home screen ?
-- [ ] ux: invert ChatListComponent until the issue [@shopify/FlashList - issues/638](https://github.com/Shopify/flash-list/issues/638) fixed
+- [x] ux: invert "chat-list"
 - [x] refactor: reimplement theme-setting by React Context
 
 ### Maybe To-Do List
@@ -127,10 +129,14 @@ cd android
 # - application name of debug-apk: AIDev
 # - application name of release-apk: AITranslator
 
-# Tip2:
+# Tip 2:
 # - To install the release-apk into you device, run the following commands:
-cd ${your-project-parent-dir-path}/react-native-openai-translator/android/app/build/outputs/apk/release
-adb install app-release.apk
+# - cd ${your-project-parent-dir-path}/react-native-openai-translator/android/app/build/outputs/apk/release
+# - adb install app-release.apk
+
+# Tip 3:
+# - If you have experienced slow server-sent-event requests on Android during debugging,
+#   there is no need to worry as they function properly in the release version.
 ```
 
 ### Build iOS

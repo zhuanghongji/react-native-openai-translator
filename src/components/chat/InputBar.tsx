@@ -55,7 +55,9 @@ export function InputBar(props: InputBarProps): JSX.Element {
           ]}
           placeholderTextColor={placeholderColor}
           value={value}
+          multiline={true}
           placeholder={t('Send a message...')}
+          onSubmitEditing={() => onChangeText(`${value}\n`)}
           onChangeText={onChangeText}
         />
         <Pressable
@@ -91,11 +93,13 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
     minHeight: 48,
     alignItems: 'center',
+    paddingVertical: 6,
     paddingHorizontal: H_EDGE,
   },
   input: {
     flex: 1,
     minHeight: 36,
+    paddingVertical: 6,
     paddingHorizontal: dimensions.edge,
     borderRadius: dimensions.borderRadius,
     marginLeft: dimensions.edge,
