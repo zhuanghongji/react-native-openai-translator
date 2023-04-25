@@ -1,12 +1,18 @@
 # react-native-openai-translator
 
-Not only a translator, more than just chat.
+Not just a translator, and more than chat.
 
 - Inspired by [OpenAI Translator](https://github.com/yetone/openai-translator)
 - Powered by [OpenAI ChatGPT API](https://platform.openai.com/docs/api-reference)
 - Implemented by [React Native](https://reactnative.dev/)
 
 ## Instruction
+
+<style>
+table th {
+    width: 20%;
+}
+</style>
 
 <table>
   <tr>
@@ -20,19 +26,38 @@ Not only a translator, more than just chat.
   <tr>
     <td>
       <img 
-        width="480" 
         src="./docs/screenshots/v0.0.1_1.jpeg" 
-        alt="Special case of transe English word into Chinese" 
+        title="The special case of translate English Word into Chinese" 
       />
     </td>
-    <td><img width="480" src="./docs/screenshots/v0.0.1_2.jpeg"/></td>
-    <td><img width="480" src="./docs/screenshots/v0.0.1_3.jpeg"/></td>
-    <td><img width="480" src="./docs/screenshots/v0.0.1_4.jpeg"/></td>
-    <td><img width="480" src="./docs/screenshots/v0.0.1_5.jpeg"/></td>
+    <td>
+      <img 
+        src="./docs/screenshots/v0.0.1_2.jpeg"
+        title="You can chat continuously with every mode in Home screen"  
+      />
+    </td>
+    <td>
+      <img 
+        src="./docs/screenshots/v0.0.1_3.jpeg"
+        title="Settings - Light"
+      />
+    </td>
+    <td>
+      <img 
+        src="./docs/screenshots/v0.0.1_4.jpeg"
+        title="Settings - Dark"
+      />
+    </td>
+    <td>
+      <img 
+        src="./docs/screenshots/v0.0.1_5.jpeg"
+        title="Polish Mode"
+      />
+    </td>
   </tr>
 </table>
 
-> The screenshots above are from v0.0.1, which is not the final version you are looking for.
+> The screenshots above are all from v0.0.1, which is not the final version you are looking for.
 
 ## Rodemap
 
