@@ -1,17 +1,89 @@
-## react-native-openai-translator
+# react-native-openai-translator
 
-The translator that does more than just translation:
+Not only a translator, more than just chat.
 
-- Powered by [OpenAI](https://openai.com/)
 - Inspired by [OpenAI Translator](https://github.com/yetone/openai-translator)
+- Powered by [OpenAI ChatGPT API](https://platform.openai.com/docs/api-reference)
 - Implemented by [React Native](https://reactnative.dev/)
 
-## Res
+## Instruction
 
-- [google-icons-rounded](https://fonts.google.com/icons?icon.style=Rounded)
+<table>
+  <tr>
+    <th>Translate Mode</th>
+    <th>Mode Chat Continuously</th>
+    <th>Settings - Light</th>
+    <th>Settings - Dark</th>
+    <th>Polish Mode</th>
+  </tr>
+
+  <tr>
+    <td>
+      <img 
+        width="480" 
+        src="./docs/screenshots/v0.0.1_1.jpeg" 
+        alt="Special case of transe English word into Chinese" 
+      />
+    </td>
+    <td><img width="480" src="./docs/screenshots/v0.0.1_2.jpeg"/></td>
+    <td><img width="480" src="./docs/screenshots/v0.0.1_3.jpeg"/></td>
+    <td><img width="480" src="./docs/screenshots/v0.0.1_4.jpeg"/></td>
+    <td><img width="480" src="./docs/screenshots/v0.0.1_5.jpeg"/></td>
+  </tr>
+</table>
+
+## Rodemap
+
+### Screens
+
+- AITranslator
+  - [x] Splash
+  - [ ] Main
+    - [x] Home
+    - [ ] Chats
+    - [ ] Explore
+    - [ ] Mine
+  - [ ] Scanner
+  - [x] Settings
+  - [x] ModeChat
+  - [ ] CustomChat
+  - [ ] DialogueShot
+  - [ ] PromptGuideEn
+  - [ ] PromptGuideZh
+  - [ ] ModeCollections
+  - [ ] ...
+
+### To-Do List
+
+- [x] feat: make translator-mode pageable in Home screen
+- [ ] feat: support custom chat
+- [ ] feat: support "text-shot" and "view-shot" of a single dialogue
+- [ ] feat: support chat-persist by sqlite
+- [ ] feat: support at least 5 user language
+- [ ] feat: provide an option to hide avatars in chat
+- [ ] docs: how to contribute
+- [ ] docs: how to build iOS app for personal use
+- [x] ux: if it is better to remove "from-lang" from the Home screen ?
+- [ ] ux: invert ChatListComponent until the issue [@shopify/FlashList - issues/638](https://github.com/Shopify/flash-list/issues/638) fixed
+- [x] refactor: reimplement theme-setting by React Context
+
+### Maybe To-Do List
+
+- [ ] feat: support Azure OpenAI Service
+- [ ] feat: support Azure TTS
+- [ ] feat: support "As keyboard everywhere"
+- [ ] feat: support MarkDown preview by inner WebView
+- [ ] feat: support "Big Bang English-Word"
+- [ ] optimization: text-recognition-seems-not-stable on Android
+
+## Development
+
+### Res
+
+- [google-icons](https://fonts.google.com/icons?icon.style=Rounded)
 - [svg-to-react-native](https://transform.tools/svg-to-react-native)
 
-## Libs
+### Libs
 
 - [react-navigation](https://reactnavigation.org)
 - [react-native-svg](https://github.com/software-mansion/react-native-svg)
@@ -26,10 +98,47 @@ The translator that does more than just translation:
 - [react-native-permissions](https://github.com/zoontek/react-native-permissions#readme)
 - [@react-native-camera-roll/camera-roll](https://github.com/react-native-cameraroll/react-native-cameraroll)
 
-## Notice
+### Note
 
 - `react-native-vision-camera` do not support `react-native-reanimated v3`, so we should keep the version of reanimated at `^2.14.4`.
 
+### Build Android
+
+```bash
+# 1. Clone the souce code
+git clone git@github.com:zhuanghongji/react-native-openai-translator.git
+
+# 2. Install node modules
+cd react-native-openai-translator
+yarn install
+
+# 3.1 if `debug`
+yarn run start
+yarn run android
+
+# 3.2 else if `release` by terminal.
+# After the following two command, you can find the apk file in
+cd android
+./gradlew assembleRelease
+
+# Tip 1:
+# - The applicationId of debug-apk will automatically be suffixed with `.dev` from that of the
+# release-apk, so you run both debug-apk and release-apk in a single device.
+# - application name of debug-apk: AIDev
+# - application name of release-apk: AITranslator
+
+# Tip2:
+# - To install the release-apk into you device, run the following commands:
+cd ${your-project-parent-dir-path}/react-native-openai-translator/android/app/build/outputs/apk/release
+adb install app-release.apk
+```
+
+### Build iOS
+
+```shell
+# TBD
+```
+
 ## License
 
-[GNU](./LICENSE)
+[GNU AFFERO GENERAL PUBLIC LICENSE](./LICENSE)
