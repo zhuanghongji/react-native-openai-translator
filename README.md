@@ -84,23 +84,25 @@ table th {
 
 - [x] feat: make translator-mode pageable in Home screen
 - [ ] feat: support custom chat
-- [ ] feat: support "text-shot" and "view-shot" of a single dialogue
+- [ ] feat: support 'text-shot' and 'view-shot' of a single dialogue
 - [ ] feat: support chat-persist by sqlite
 - [ ] feat: support at least 5 user language
 - [ ] feat: provide an option to hide avatars in chat
+- [ ] feat: double back-press to exit app on Android
+- [ ] feat: show app version in settings screen
 - [ ] docs: how to contribute
 - [ ] docs: how to build iOS app for personal use
-- [x] ux: if it is better to remove "from-lang" from the Home screen ?
-- [x] ux: invert "chat-list"
+- [x] ux: is it better to remove 'from-lang' from the Home screen or not ? yes
+- [x] ux: invert 'chat-list'
 - [x] refactor: reimplement theme-setting by React Context
 
 ### Maybe To-Do List
 
 - [ ] feat: support Azure OpenAI Service
 - [ ] feat: support Azure TTS
-- [ ] feat: support "As keyboard everywhere"
+- [ ] feat: support 'As keyboard everywhere'
 - [ ] feat: support MarkDown preview by inner WebView
-- [ ] feat: support "Big Bang English-Word"
+- [ ] feat: support 'Big Bang English-Word'
 - [ ] optimization: text-recognition-seems-not-stable on Android
 
 ## Development
@@ -147,17 +149,22 @@ yarn run android
 # After the following two command, you can find the apk file in
 cd android
 ./gradlew assembleRelease
+```
 
+```bash
 # Tip 1:
-# - The applicationId of debug-apk will automatically be suffixed with `.dev` from that of the
+# The applicationId of debug-apk will automatically be suffixed with `.dev` from that of the
 # release-apk, so you run both debug-apk and release-apk in a single device.
 # - application name of debug-apk: AIDev
 # - application name of release-apk: AITranslator
 
 # Tip 2:
 # - To install the release-apk into you device, run the following commands:
-# - cd ${your-project-parent-dir-path}/react-native-openai-translator/android/app/build/outputs/apk/release
-# - adb install app-release.apk
+cd ${your-project-parent-dir-path}/react-native-openai-translator/android/app/build/outputs/apk/release
+# suggest installing the 64-bit version unless your device does not support it:
+adb install app-arm64-v8a-release.apk
+# only install 32-bit below when your device unsupport 64-bit above
+adb install app-armeabi-v7a-release.apk
 
 # Tip 3:
 # - If you have experienced slow server-sent-event requests on Android during debugging,

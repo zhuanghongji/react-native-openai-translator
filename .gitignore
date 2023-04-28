@@ -63,3 +63,6 @@ yarn-error.log
 .metro-health-check*
 android/app/release/app-release.apk
 android/app/release/output-metadata.json
+
+# Custom
+*.apk
