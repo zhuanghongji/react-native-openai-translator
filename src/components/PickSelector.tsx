@@ -1,10 +1,9 @@
 import { colors } from '../res/colors'
 import { useThemeDark, useThemeScheme } from '../themes/hooks'
 import { PickSelectorItemView } from './PickSelectorItemView'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import {
   FlatList,
-  Keyboard,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -59,7 +58,7 @@ export type PickSelectorProps<T> = {
     label: string
     anim: Animated.SharedValue<number>
   }) => React.ReactNode
-  onDismiss?: (options: { wasKeyboardVisibleWhenShowing: boolean }) => void
+  onDismiss?: () => void
 }
 
 export function PickSelector<T>(props: PickSelectorProps<T>) {
@@ -81,22 +80,6 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
   const isDark = useThemeDark()
   const selectorBackgroundColor = isDark ? colors.c33 : colors.white
   const { border2: borderColor } = useThemeScheme()
-
-  const wasKeyboardVisibleWhenShowingRef = useRef(false)
-  const isKeyboardVisibleRef = useRef(false)
-  useEffect(() => {
-    // Instead of `Keyborad.isVisible()` which found not work on iOS
-    const subscrition1 = Keyboard.addListener('keyboardDidShow', () => {
-      isKeyboardVisibleRef.current = true
-    })
-    const subscrition2 = Keyboard.addListener('keyboardDidHide', () => {
-      isKeyboardVisibleRef.current = false
-    })
-    return () => {
-      subscrition1.remove()
-      subscrition2.remove()
-    }
-  }, [])
 
   const containerRef = useRef<View>(null)
   const [isVisible, setVisible] = useState(false)
@@ -141,8 +124,6 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
   const show = () => {
     containerRef.current?.measureInWindow((x, y, width, height) => {
       // console.log({ x, y, width, height })
-      wasKeyboardVisibleWhenShowingRef.current = isKeyboardVisibleRef.current
-      Keyboard.dismiss()
       setSize({ x, y, width, height })
       setVisible(true)
       anim.value = withTiming(1, WITH_TIMING_CONFIG)
@@ -153,9 +134,7 @@ export function PickSelector<T>(props: PickSelectorProps<T>) {
       runOnJS(setVisible)(false)
     })
     setTimeout(() => {
-      onDismiss?.({
-        wasKeyboardVisibleWhenShowing: wasKeyboardVisibleWhenShowingRef.current,
-      })
+      onDismiss?.()
     }, WITH_TIMING_CONFIG.duration)
   }
 

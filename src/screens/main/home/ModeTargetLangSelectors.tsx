@@ -5,7 +5,6 @@ import {
   TranslatorMode,
   languageLabelByKey,
 } from '../../../preferences/options'
-import { print } from '../../../printer'
 import { dimensions } from '../../../res/dimensions'
 import { PickView } from './PickView'
 import React from 'react'
@@ -57,10 +56,7 @@ export function ModeTargetLangSelectors(props: ModeTargetLangSelectorsProps) {
                 nextLangs[index] = lang
                 onTargetLangsChange(nextLangs)
               }}
-              onDismiss={({ wasKeyboardVisibleWhenShowing }) => {
-                print('wasKeyboardVisibleWhenShowing', { mode, index })
-                wasKeyboardVisibleWhenShowing && onInputFocusRequest()
-              }}
+              onDismiss={onInputFocusRequest}
             />
           )
         })}

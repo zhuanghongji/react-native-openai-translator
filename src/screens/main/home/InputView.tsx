@@ -61,9 +61,13 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
   const [textInputSelection, setTextInputSelection] = useState<Selection>(undefined)
   useImperativeHandle(ref, () => ({
     focus: () => {
-      textInputRef.current?.focus()
-      const length = textLengthRef.current
-      setTextInputSelection({ start: length })
+      // blur and focus after 100ms, detail in https://github.com/facebook/react-native/issues/19366#issuecomment-400603928
+      textInputRef.current?.blur()
+      setTimeout(() => {
+        textInputRef.current?.focus()
+        const length = textLengthRef.current
+        setTextInputSelection({ start: length })
+      }, 100)
     },
     blur: () => textInputRef.current?.blur(),
   }))
