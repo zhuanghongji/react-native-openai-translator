@@ -1,11 +1,23 @@
 import { SvgIcon } from '../../../components/SvgIcon'
+import { hapticSoft } from '../../../haptic'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
 import { sheets } from '../../../res/sheets'
 import { useThemeScheme, useThemeTextStyle } from '../../../themes/hooks'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { Pressable, StyleSheet, TextInput, TextStyle, View, ViewStyle } from 'react-native'
-import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils'
+import {
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  TextStyle,
+  View,
+  ViewProps,
+  ViewStyle,
+} from 'react-native'
+
+type Selection = TextInputProps['selection']
 
 export interface InputViewProps extends Pick<ViewProps, 'onLayout'> {
   value: string
@@ -20,7 +32,23 @@ export interface InputViewHandle {
 
 export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((props, ref) => {
   const { value, onChangeText, onSubmitEditing } = props
-  const [foucus, setFocus] = useState(false)
+
+  const textInputRef = useRef<TextInput>(null)
+
+  const focusedRef = useRef(false)
+  const [focused, setFocused] = useState(false)
+  useEffect(() => {
+    if (!focused) {
+      return
+    }
+    const subscrition = Keyboard.addListener('keyboardDidHide', () => {
+      if (focusedRef.current === false) {
+        return
+      }
+      textInputRef.current?.blur()
+    })
+    return () => subscrition.remove()
+  }, [focused])
 
   const { tint: tintColor, border: borderColor, backdrop: backdropColor } = useThemeScheme()
   const textStyle = useThemeTextStyle('text')
@@ -30,27 +58,22 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
     textLengthRef.current = value.length
   }, [value])
 
-  const textInputRef = useRef<TextInput>(null)
-  useImperativeHandle(
-    ref,
-    () => ({
-      focus: () => {
-        textInputRef.current?.focus()
-        textInputRef.current?.setNativeProps({
-          selection: { start: textLengthRef.current, end: textLengthRef.current },
-        })
-      },
-      blur: () => textInputRef.current?.blur(),
-    }),
-    []
-  )
+  const [textInputSelection, setTextInputSelection] = useState<Selection>(undefined)
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      textInputRef.current?.focus()
+      const length = textLengthRef.current
+      setTextInputSelection({ start: length })
+    },
+    blur: () => textInputRef.current?.blur(),
+  }))
 
   return (
     <View
       style={[
         styles.container,
         {
-          borderColor: foucus ? borderColor : colors.transparent,
+          borderColor: focused ? borderColor : colors.transparent,
           backgroundColor: backdropColor,
         },
       ]}>
@@ -62,9 +85,20 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
         style={[sheets.contentText, styles.text, textStyle]}
         value={value}
         returnKeyType="send"
+        selection={textInputSelection}
+        onSelectionChange={e => {
+          // print('onSelectionChange', e.nativeEvent.selection)
+          setTextInputSelection(e.nativeEvent.selection)
+        }}
         onChangeText={onChangeText}
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
+        onFocus={() => {
+          focusedRef.current = true
+          setFocused(true)
+        }}
+        onBlur={() => {
+          focusedRef.current = false
+          setFocused(false)
+        }}
         onSubmitEditing={e => {
           const { text } = e.nativeEvent
           if (!text) {
@@ -73,12 +107,21 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
           onSubmitEditing(text)
         }}
       />
-      {foucus ? (
+      {focused ? (
         <Pressable
           style={styles.touchable}
           hitSlop={dimensions.hitSlop}
           onPress={() => {
-            onChangeText(value + '\n')
+            hapticSoft()
+            if (!textInputSelection) {
+              onChangeText(value + '\n')
+              return
+            }
+            const { start, end } = textInputSelection
+            const left = value.substring(0, start)
+            const right = value.substring(end === undefined ? start : end)
+            onChangeText(`${left}\n${right}`)
+            setTextInputSelection({ start: start + 1 })
           }}>
           <SvgIcon size={dimensions.iconSmall} color={tintColor} name="keyborad-return" />
         </Pressable>
