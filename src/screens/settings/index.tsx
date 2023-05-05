@@ -20,6 +20,7 @@ import {
   useDefaultTargetLanguagePref,
   useDefaultTranslatorModePref,
   useEnableClipboardDetectPref,
+  useHideChatAvatarPref,
   useLanguageModePref,
   useServiceProviderPref,
   useThemeModePref,
@@ -60,6 +61,7 @@ export function SettingsScreen(
   const [themeMode, setThemeMode] = useThemeModePref()
   const [langMode, setLangMode] = useLanguageModePref()
   const [enableClipboardDetect, setEnableClipboardDetect] = useEnableClipboardDetectPref()
+  const [hideChatAvatar, setHideChatAvatar] = useHideChatAvatarPref()
 
   const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
 
@@ -208,6 +210,13 @@ export function SettingsScreen(
           title={t('Enable Clipboard Detect')}
           value={enableClipboardDetect}
           onValueChange={setEnableClipboardDetect}
+        />
+
+        {divider}
+        <CheckView
+          title={t('Hide Chat Avatar')}
+          value={hideChatAvatar}
+          onValueChange={setHideChatAvatar}
         />
 
         <RepoLinks />

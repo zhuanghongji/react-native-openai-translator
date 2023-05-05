@@ -6,6 +6,7 @@ import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
+import { useHideChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
@@ -32,6 +33,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const customizedOptions = useOpenAIApiCustomizedOptions()
 
   const { backgroundChat: backgroundColor } = useThemeScheme()
+  const [hideChatAvatar] = useHideChatAvatarPref()
 
   const listContainerHeight = useSharedValue(0)
   const listContentHeight = useSharedValue(0)
@@ -160,18 +162,19 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
                 return (
                   <UserMessageView
                     style={{ marginVertical: dimensions.messageSeparator }}
+                    hideChatAvatar={hideChatAvatar}
                     message={item}
                   />
                 )
               }
               if (item.role === 'assistant') {
-                return <AssistantMessageView message={item} />
+                return <AssistantMessageView hideChatAvatar={hideChatAvatar} message={item} />
               }
               return null
             }}
             // Do not use it because of https://github.com/Shopify/flash-list/issues/638
             // ItemSeparatorComponent={renderItemSeparator}
-            ListHeaderComponent={<SSEMessageView />}
+            ListHeaderComponent={<SSEMessageView hideChatAvatar={hideChatAvatar} />}
             estimatedItemSize={200}
             onScrollBeginDrag={() => Keyboard.dismiss()}
             onContentSizeChange={(_, h) => (listContentHeight.value = h)}

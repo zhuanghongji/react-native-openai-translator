@@ -11,25 +11,30 @@ import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-
 export type AssistantMessageProps = {
   style?: StyleProp<ViewStyle>
   message: ChatMessage
+  hideChatAvatar: boolean
 }
 
 export function AssistantMessageView(props: AssistantMessageProps) {
-  const { style, message } = props
+  const { style, message, hideChatAvatar } = props
   const { content } = message
 
   const { backgroundMessage: backgroundColor } = useThemeScheme()
 
   return (
     <View style={[style, styles.container]}>
-      <View
-        style={{
-          width: 32,
-          height: 32,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Image style={{ width: 18, height: 18, marginTop: 12 }} source={images.logoMini} />
-      </View>
+      {hideChatAvatar ? (
+        <View style={{ width: 5 }} />
+      ) : (
+        <View
+          style={{
+            width: 32,
+            height: 32,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image style={{ width: 18, height: 18, marginTop: 12 }} source={images.logoMini} />
+        </View>
+      )}
 
       <View style={[styles.content, { backgroundColor }]}>
         <TText style={[styles.text, sheets.contentText]} typo="text">

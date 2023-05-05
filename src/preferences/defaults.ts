@@ -18,6 +18,7 @@ export const DEFAULTS: {
   themeMode: ThemeMode
   languageMode: LanguageMode
   enableClipboardDetect: boolean
+  hideChatAvatar: boolean
 } = {
   serviceProvider: 'OpenAI',
   apiKey: '',
@@ -29,4 +30,5 @@ export const DEFAULTS: {
   themeMode: 'system',
   languageMode: 'en',
   enableClipboardDetect: true,
+  hideChatAvatar: false,
 }

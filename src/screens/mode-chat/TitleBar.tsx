@@ -1,5 +1,6 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { TranslatorMode } from '../../preferences/options'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { TText } from '../../themes/TText'
 import { useStatusBarStyle, useThemeScheme } from '../../themes/hooks'
@@ -40,11 +41,11 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const title = useTitle(mode)
 
   const barStyle = useStatusBarStyle()
-  const { tint: tintColor, backgroundChat: backgroundColor } = useThemeScheme()
+  const { tint: tintColor } = useThemeScheme()
 
   return (
     <View style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }]}>
-      <StatusBar translucent barStyle={barStyle} backgroundColor={backgroundColor} />
+      <StatusBar translucent barStyle={barStyle} backgroundColor={colors.transparent} />
       <Pressable style={styles.touchable} hitSlop={{ right: H_EDGE }} onPress={onBackPress}>
         <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
       </Pressable>

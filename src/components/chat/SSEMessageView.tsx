@@ -11,10 +11,11 @@ import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-
 
 export type SSEMessageProps = {
   style?: StyleProp<ViewStyle>
+  hideChatAvatar: boolean
 }
 
 export function SSEMessageView(props: SSEMessageProps) {
-  const { style } = props
+  const { style, hideChatAvatar } = props
 
   const { backgroundMessage: backgroundColor } = useThemeScheme()
 
@@ -25,9 +26,13 @@ export function SSEMessageView(props: SSEMessageProps) {
   }
   return (
     <View style={[style, styles.container]}>
-      <AnimRotateContainer style={styles.imageWrapper} rotating={true}>
-        <Image style={{ width: 18, height: 18 }} source={images.logoMini} />
-      </AnimRotateContainer>
+      {hideChatAvatar ? (
+        <View style={{ width: 5 }} />
+      ) : (
+        <AnimRotateContainer style={styles.imageWrapper} rotating={true}>
+          <Image style={{ width: 18, height: 18 }} source={images.logoMini} />
+        </AnimRotateContainer>
+      )}
 
       <View style={[styles.content, { backgroundColor }]}>
         <TText style={[styles.text, sheets.contentText]} typo="text">

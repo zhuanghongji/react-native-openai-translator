@@ -10,10 +10,11 @@ import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-n
 export type UserMessageProps = {
   style?: StyleProp<ViewStyle>
   message: ChatMessage
+  hideChatAvatar: boolean
 }
 
 export function UserMessageView(props: UserMessageProps) {
-  const { style, message } = props
+  const { style, message, hideChatAvatar } = props
   const { content } = message
 
   return (
@@ -21,14 +22,18 @@ export function UserMessageView(props: UserMessageProps) {
       <View style={styles.content}>
         <Text style={[styles.text, sheets.contentText]}>{trimContent(content)}</Text>
       </View>
-      <View
-        style={{
-          width: 32,
-          paddingTop: 12,
-          alignItems: 'center',
-        }}>
-        <SvgIcon size={23} color={colors.primary} name="account" />
-      </View>
+      {hideChatAvatar ? (
+        <View style={{ width: 5 }} />
+      ) : (
+        <View
+          style={{
+            width: 32,
+            paddingTop: 12,
+            alignItems: 'center',
+          }}>
+          <SvgIcon size={23} color={colors.primary} name="account" />
+        </View>
+      )}
     </View>
   )
 }
