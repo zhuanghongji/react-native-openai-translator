@@ -54,8 +54,8 @@ Not just a translator, and more than chat.
   - [ ] Main
     - [x] Home
     - [ ] Chats
-    - [ ] Explore
-    - [ ] Mine
+    - [ ] Discover
+    - [ ] Me
   - [ ] Scanner
   - [x] Settings
   - [x] ModeChat
@@ -79,6 +79,7 @@ Not just a translator, and more than chat.
 - [ ] docs: how to contribute
 - [ ] docs: how to build iOS app for personal use
 - [ ] docs: support show versionname in Settings screen
+- [ ] dx: rename 'Home' to 'Modes', and 'Main' to 'Home'
 - [x] ux: is it better to remove 'from-lang' from the Home screen or not ? yes
 - [x] ux: invert 'chat-list'
 - [x] refactor: reimplement theme-setting by React Context

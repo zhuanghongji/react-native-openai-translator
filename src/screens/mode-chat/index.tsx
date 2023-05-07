@@ -1,3 +1,4 @@
+import { TitleBar } from '../../components/TitleBar'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
@@ -6,6 +7,7 @@ import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
+import { TranslatorMode } from '../../preferences/options'
 import { useHideChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
@@ -14,10 +16,10 @@ import { toast } from '../../toast'
 import { ChatMessage, Message } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
-import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Keyboard } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
@@ -26,8 +28,26 @@ import EventSource from 'react-native-sse'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ModeChat'>
 
+function useTitle(mode: TranslatorMode) {
+  const { t } = useTranslation()
+  if (mode === 'translate') {
+    return t('Translate Chat')
+  }
+  if (mode === 'polishing') {
+    return t('Polishing Chat')
+  }
+  if (mode === 'summarize') {
+    return t('Summarize Chat')
+  }
+  if (mode === 'analyze') {
+    return t('Analyze Chat')
+  }
+  return t('Bubble Chat')
+}
+
 export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const { translatorMode, systemPrompt, userContent, assistantContent } = route.params
+  const title = useTitle(translatorMode)
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -138,9 +158,12 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
       <TitleBar
-        mode={translatorMode}
-        systemPrompt={systemPrompt}
-        onBackPress={() => navigation.goBack()}
+        title={title}
+        subtitle={systemPrompt}
+        action={{
+          iconName: 'tune',
+          onPress: () => toast('success', 'Teaser', 'Chat fine-tuning will be support later'),
+        }}
       />
       <Animated.View style={[{ flex: 1, overflow: 'hidden' }]}>
         <Animated.View

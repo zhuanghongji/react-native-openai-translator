@@ -1,23 +1,24 @@
 import { SvgIcon, SvgIconName } from '../../../components/SvgIcon'
+import { TitleBar } from '../../../components/TitleBar'
 import { AnimatedPagerView, usePageScrollHandler } from '../../../extensions/pager-view'
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { getDefaultTargetLanguage, getDefaultTranslatorMode } from '../../../preferences/storages'
 import { dimensions } from '../../../res/dimensions'
+import { images } from '../../../res/images'
+import { TText } from '../../../themes/TText'
 import { useThemeScheme } from '../../../themes/hooks'
 import { ScanBlock } from '../../../types'
-import type { RootStackParamList } from '../../screens'
+import type { MainTabScreenProps } from '../../screens'
 import { ModeButton } from './ModeButton'
 import { ModeScene, ModeSceneHandle } from './ModeScene'
 import { ModeTargetLangSelectors } from './ModeTargetLangSelectors'
-import { TitleBar } from './TitleBar'
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Keyboard, StyleSheet, View, ViewStyle } from 'react-native'
+import { Image, ImageStyle, Keyboard, StyleSheet, View, ViewStyle } from 'react-native'
 import PagerView from 'react-native-pager-view'
 import { useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>
+type Props = MainTabScreenProps<'Modes'>
 
 interface ModeItem {
   icon: SvgIconName
@@ -105,11 +106,23 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
-        onScannerPress={() => {
-          Keyboard.dismiss()
-          navigation.push('Scanner', { onScanSuccess })
+        backDisabled
+        titleContainerRow
+        action={{
+          iconName: 'scanner',
+          onPress: () => {
+            Keyboard.dismiss()
+            navigation.push('Scanner', { onScanSuccess })
+          },
         }}
-        onSettingsPress={() => navigation.push('Settings')}
+        renderTitle={({ titleStyle }) => (
+          <>
+            <Image style={styles.logo} source={images.logo} />
+            <TText style={[titleStyle, { marginLeft: 8 }]} typo="text">
+              OpenAI Translator
+            </TText>
+          </>
+        )}
       />
       <View
         style={{
@@ -175,6 +188,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
 
 type Styles = {
   modes: ViewStyle
+  logo: ImageStyle
 }
 
 const styles = StyleSheet.create<Styles>({
@@ -182,5 +196,9 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     gap: dimensions.gap,
     marginRight: dimensions.edge,
+  },
+  logo: {
+    width: 20,
+    height: 20,
   },
 })

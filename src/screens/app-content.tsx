@@ -1,6 +1,6 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
-import { HomeScreen } from './main/home'
+import { MainNavigator } from './main/main-navigator'
 import { ModeChatScreen } from './mode-chat'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
@@ -38,13 +38,13 @@ export function AppContent(): JSX.Element {
   return (
     <AlertNotificationRoot theme={dark ? 'dark' : 'light'} colors={COLORS}>
       <RootStack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Main"
         screenOptions={{
           headerShown: false,
           animationTypeForReplace: 'push',
           animation: 'slide_from_right',
         }}>
-        <RootStack.Screen name="Home" component={HomeScreen} />
+        <RootStack.Screen name="Main" component={MainNavigator} />
         <RootStack.Screen name="Settings" component={SettingsScreen} />
         <RootStack.Screen name="Scanner" component={ScannerScreen} />
         <RootStack.Screen name="ModeChat" component={ModeChatScreen} />
