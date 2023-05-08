@@ -43,9 +43,9 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const DIVIDER_HEIGHT = 20
 
-export function SettingsScreen(
-  props: NativeStackScreenProps<RootStackParamList, 'Settings'>
-): JSX.Element {
+type Props = NativeStackScreenProps<RootStackParamList, 'Settings'>
+
+export function SettingsScreen(props: Props): JSX.Element {
   const { navigation } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()

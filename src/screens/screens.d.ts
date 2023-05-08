@@ -15,6 +15,11 @@ type RootStackParamList = {
     userContent: string
     assistantContent: string
   }
+  CustomChat: {
+    chatName: string
+    systemPrompt: string
+  }
+  CustomChatInit: undefined
 }
 
 type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<

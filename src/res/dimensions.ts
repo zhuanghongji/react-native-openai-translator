@@ -1,4 +1,4 @@
-const edge = 10
+const edge = 14
 
 export const dimensions = {
   edge,

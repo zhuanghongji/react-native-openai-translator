@@ -1,5 +1,7 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
+import { CustomChatScreen } from './custom-chat'
+import { CustomChatInitScreen } from './custom-chat-init'
 import { MainNavigator } from './main/main-navigator'
 import { ModeChatScreen } from './mode-chat'
 import { ScannerScreen } from './scanner'
@@ -48,6 +50,8 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="Settings" component={SettingsScreen} />
         <RootStack.Screen name="Scanner" component={ScannerScreen} />
         <RootStack.Screen name="ModeChat" component={ModeChatScreen} />
+        <RootStack.Screen name="CustomChat" component={CustomChatScreen} />
+        <RootStack.Screen name="CustomChatInit" component={CustomChatInitScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )

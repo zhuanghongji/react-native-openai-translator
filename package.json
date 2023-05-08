@@ -9,7 +9,8 @@
     "start": "npx react-native start --reset-cache",
     "test": "jest",
     "precommit": "node ./pre-commit.js",
-    "format": "prettier --write --list-different './src/'"
+    "format": "prettier --write --list-different './src/'",
+    "parse-prompts": "ts-node ./scripts/parse-prompts/index.ts"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.4.5",
@@ -71,6 +72,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.7",
     "react-test-renderer": "18.2.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
   "pre-commit": [

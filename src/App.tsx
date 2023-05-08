@@ -1,5 +1,5 @@
 import './i18n/config'
-import { AppContent } from './screens/app-content'
+import { AppContent } from './screens/AppContent'
 import { ThemeSchemeProvider } from './themes/ThemeSchemeProvider'
 import { NavigationContainer } from '@react-navigation/native'
 import React from 'react'
