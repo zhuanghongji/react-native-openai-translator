@@ -1,4 +1,6 @@
 export interface ThemeScheme {
+  dark: boolean
+
   // text
   text: string
   text2: string
@@ -26,4 +28,4 @@ export interface ThemeScheme {
   placeholder: string
 }
 
-export type ThemeSchemeTypo = keyof ThemeScheme
+export type ThemeSchemeTypo = keyof Omit<ThemeScheme, 'dark'>

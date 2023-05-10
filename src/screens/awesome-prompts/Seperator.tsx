@@ -1,5 +1,5 @@
-import { dimensions } from '../../../res/dimensions'
-import { useThemeScheme } from '../../../themes/hooks'
+import { dimensions } from '../../res/dimensions'
+import { useThemeScheme } from '../../themes/hooks'
 import React from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 

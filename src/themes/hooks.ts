@@ -6,6 +6,8 @@ import { useContext, useMemo } from 'react'
 import { StatusBarStyle, TextStyle, useColorScheme } from 'react-native'
 
 export const LIGHT_THEME_SCHEME: ThemeScheme = {
+  dark: false,
+
   text: colors.black,
   text2: colors.c33,
   text3: colors.c66,
@@ -30,6 +32,8 @@ export const LIGHT_THEME_SCHEME: ThemeScheme = {
 }
 
 export const DARK_THEME_SCHEME: ThemeScheme = {
+  dark: true,
+
   text: colors.white,
   text2: colors.cCC,
   text3: colors.c99,

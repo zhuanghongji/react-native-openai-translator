@@ -1,5 +1,6 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
+import { AwesomePromptsScreen } from './awesome-prompts'
 import { CustomChatScreen } from './custom-chat'
 import { CustomChatInitScreen } from './custom-chat-init'
 import { MainNavigator } from './main/main-navigator'
@@ -52,6 +53,7 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="ModeChat" component={ModeChatScreen} />
         <RootStack.Screen name="CustomChat" component={CustomChatScreen} />
         <RootStack.Screen name="CustomChatInit" component={CustomChatInitScreen} />
+        <RootStack.Screen name="AwesomePrompts" component={AwesomePromptsScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )

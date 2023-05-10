@@ -20,6 +20,7 @@ type RootStackParamList = {
     systemPrompt: string
   }
   CustomChatInit: undefined
+  AwesomePrompts: undefined
 }
 
 type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
