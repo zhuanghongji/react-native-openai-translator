@@ -1,6 +1,6 @@
-import { SvgIcon, SvgIconName } from '../../../components/SvgIcon'
-import { dimensions } from '../../../res/dimensions'
-import { useThemeScheme } from '../../../themes/hooks'
+import { dimensions } from '../res/dimensions'
+import { useThemeScheme } from '../themes/hooks'
+import { SvgIcon, SvgIconName } from './SvgIcon'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 

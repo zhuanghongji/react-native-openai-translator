@@ -5,6 +5,8 @@ import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { Header } from './Header'
 import { ItemView } from './ItemView'
+import { PromptDetailModal, PromptDetailModalHandle } from './PromptDetailModal'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
 import React, { useMemo, useRef, useState } from 'react'
@@ -21,6 +23,7 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
   const { backgroundChat: backgroundColor } = useThemeScheme()
 
   const { bottom } = useSafeAreaInsets()
+  const promptDetailModalRef = useRef<PromptDetailModalHandle>(null)
 
   const flashListRef = useRef<FlashList<Item>>(null)
   const [filterText, setFilterText] = useState('')
@@ -54,23 +57,46 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
     }))
   }, [prompts, filterText])
 
+  const handlePromptPress = (prompt: AwesomePrompt) => {
+    promptDetailModalRef.current?.show(prompt)
+  }
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
-      <TitleBar title="Awesome Prompts" />
-      <FlashList
-        ref={flashListRef}
-        contentContainerStyle={{ paddingBottom: bottom }}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        data={data}
-        estimatedItemSize={56}
-        keyExtractor={(item, index) => `${index}_${item.titleChunks.raw}`}
-        renderItem={({ item }) => {
-          const { titleChunks, contentChunks } = item
-          return <ItemView titleChunks={titleChunks} contentChunks={contentChunks} />
+    <BottomSheetModalProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
+        <TitleBar title="Awesome Prompts" />
+        <FlashList
+          ref={flashListRef}
+          contentContainerStyle={{ paddingBottom: bottom }}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          data={data}
+          estimatedItemSize={56}
+          keyExtractor={(item, index) => `${index}_${item.titleChunks.raw}`}
+          renderItem={({ item }) => {
+            const { titleChunks, contentChunks } = item
+            return (
+              <ItemView
+                titleChunks={titleChunks}
+                contentChunks={contentChunks}
+                onPress={handlePromptPress}
+              />
+            )
+          }}
+          ListHeaderComponent={
+            <Header filterText={filterText} onFilterTextChange={setFilterText} />
+          }
+        />
+      </SafeAreaView>
+      <PromptDetailModal
+        ref={promptDetailModalRef}
+        onCreateChatPress={prompt => {
+          navigation.push('CustomChat', {
+            chatName: prompt.title,
+            systemPrompt: prompt.content,
+          })
         }}
-        ListHeaderComponent={<Header filterText={filterText} onFilterTextChange={setFilterText} />}
       />
-    </SafeAreaView>
+    </BottomSheetModalProvider>
   )
 }

@@ -65,7 +65,10 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
     }
     return (
       <>
-        <TText style={subtitle ? styles.titleSmaller : styles.title} typo="text">
+        <TText
+          style={subtitle ? styles.titleSmaller : styles.title}
+          typo="text"
+          numberOfLines={subtitle ? 1 : 2}>
           {title}
         </TText>
         {subtitle ? (
@@ -143,10 +146,12 @@ const styles = StyleSheet.create<Styles>({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   titleSmaller: {
     fontSize: 15,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 12,

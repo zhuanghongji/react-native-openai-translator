@@ -1,3 +1,4 @@
+import { AwesomePrompt } from '../../assets/awesome-chatgpt-prompts'
 import { SvgIcon } from '../../components/SvgIcon'
 import { ChunksText } from '../../components/chunks-text/ChunksText'
 import { TextChunks } from '../../components/chunks-text/utils'
@@ -6,16 +7,17 @@ import { dimensions } from '../../res/dimensions'
 import { useThemeDark, useThemeScheme } from '../../themes/hooks'
 import { Seperator } from './Seperator'
 import React from 'react'
-import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
+import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
 export type ItemViewProps = {
   style?: StyleProp<ViewStyle>
   titleChunks: TextChunks
   contentChunks: TextChunks
+  onPress: (prompt: AwesomePrompt) => void
 }
 
 export function ItemView(props: ItemViewProps) {
-  const { style, titleChunks, contentChunks } = props
+  const { style, titleChunks, contentChunks, onPress } = props
 
   const dark = useThemeDark()
   const backgroundColor = dark ? colors.black : colors.white
@@ -23,7 +25,9 @@ export function ItemView(props: ItemViewProps) {
   const { text, text2, tint } = useThemeScheme()
 
   return (
-    <View style={[styles.container, { backgroundColor }, style]}>
+    <Pressable
+      style={[styles.container, { backgroundColor }, style]}
+      onPress={() => onPress({ title: titleChunks.raw, content: contentChunks.raw })}>
       <View style={styles.wrapper}>
         <View style={{ flex: 1, marginRight: dimensions.edgeTwice }}>
           <ChunksText
@@ -40,7 +44,7 @@ export function ItemView(props: ItemViewProps) {
         <SvgIcon size={dimensions.iconMedium} color={tint} name="navigate-next" />
       </View>
       <Seperator />
-    </View>
+    </Pressable>
   )
 }
 

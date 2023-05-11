@@ -2,12 +2,9 @@ import * as fs from 'fs'
 
 const UTF8 = 'utf-8'
 
-function trim(value: string): string {
-  const _value = value.trim()
-  if (_value.length < 2) {
-    return ''
-  }
-  return _value.substring(1, _value.length - 1)
+function trans(value: string): string {
+  // return value.replace(/`/g, '\\`')
+  return value
 }
 
 type Prompt = { title: string; content: string }
@@ -17,13 +14,13 @@ function main() {
   const items = csv.split('\n')
   const prompts: Prompt[] = []
   for (const item of items) {
-    const [title, content] = item.split(',')
+    const [title, content] = item.substring(1, item.length - 1).split('","')
     if (!title || !content) {
       continue
     }
-    // console.log('title = ' + trim(title))
-    // console.log('content = ' + trim(content))
-    prompts.push({ title: trim(title).replace(/`/g, ''), content: trim(content) })
+    // console.log('title = ' + trans(title))
+    // console.log('content = ' + trans(content))
+    prompts.push({ title: trans(title), content: trans(content) })
   }
   console.log(JSON.stringify(prompts))
 }
