@@ -1,5 +1,5 @@
 import { dimensions } from '../../res/dimensions'
-import { sheets } from '../../res/sheets'
+import { stylez } from '../../res/stylez'
 import { ScanBlock } from '../../types'
 import { ScanAreaView } from './ScanAreaView'
 import React from 'react'
@@ -25,7 +25,7 @@ export function ScanOverlay(props: ScanOverlayProps): JSX.Element {
       <View style={[styles.blocksArea, { width: scanWidth }, style]}>
         {scanBlocks.map(({ text, langs }, index) => {
           return (
-            <Text key={`${index}_${text}_${langs}`} style={[sheets.contentText, styles.blockText]}>
+            <Text key={`${index}_${text}_${langs}`} style={[stylez.contentText, styles.blockText]}>
               {text}
             </Text>
           )

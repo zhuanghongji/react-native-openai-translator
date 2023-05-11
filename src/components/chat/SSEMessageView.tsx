@@ -1,6 +1,6 @@
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
-import { sheets } from '../../res/sheets'
+import { stylez } from '../../res/stylez'
 import { TText } from '../../themes/TText'
 import { useThemeScheme } from '../../themes/hooks'
 import { trimContent } from '../../utils'
@@ -27,15 +27,15 @@ export function SSEMessageView(props: SSEMessageProps) {
   return (
     <View style={[style, styles.container]}>
       {hideChatAvatar ? (
-        <View style={{ width: 5 }} />
+        <View style={stylez.chatAvatarContainerHidden} />
       ) : (
-        <AnimRotateContainer style={styles.imageWrapper} rotating={true}>
-          <Image style={{ width: 18, height: 18 }} source={images.logoMini} />
+        <AnimRotateContainer style={stylez.chatAvatarContainer} rotating={true}>
+          <Image style={stylez.chatAvatarLogo} source={images.logoMini} />
         </AnimRotateContainer>
       )}
 
       <View style={[styles.content, { backgroundColor }]}>
-        <TText style={[styles.text, sheets.contentText]} typo="text">
+        <TText style={[styles.text, stylez.contentText]} typo="text">
           {content ? trimContent(content) : '...'}
         </TText>
       </View>
@@ -46,7 +46,6 @@ export function SSEMessageView(props: SSEMessageProps) {
 type Styles = {
   container: ViewStyle
   content: ViewStyle
-  imageWrapper: ViewStyle
   text: TextStyle
 }
 
@@ -55,14 +54,7 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     width: '100%',
     alignItems: 'flex-start',
-    paddingLeft: dimensions.edge,
     marginTop: dimensions.messageSeparator,
-  },
-  imageWrapper: {
-    width: 32,
-    paddingVertical: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   content: {
     maxWidth: '80%',

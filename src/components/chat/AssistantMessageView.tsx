@@ -1,6 +1,6 @@
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
-import { sheets } from '../../res/sheets'
+import { stylez } from '../../res/stylez'
 import { TText } from '../../themes/TText'
 import { useThemeScheme } from '../../themes/hooks'
 import { ChatMessage } from '../../types'
@@ -23,21 +23,15 @@ export function AssistantMessageView(props: AssistantMessageProps) {
   return (
     <View style={[style, styles.container]}>
       {hideChatAvatar ? (
-        <View style={{ width: 5 }} />
+        <View style={stylez.chatAvatarContainerHidden} />
       ) : (
-        <View
-          style={{
-            width: 32,
-            height: 32,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Image style={{ width: 18, height: 18, marginTop: 12 }} source={images.logoMini} />
+        <View style={stylez.chatAvatarContainer}>
+          <Image style={stylez.chatAvatarLogo} source={images.logoMini} />
         </View>
       )}
 
       <View style={[styles.content, { backgroundColor }]}>
-        <TText style={[styles.text, sheets.contentText]} typo="text">
+        <TText style={[styles.text, stylez.contentText]} typo="text">
           {trimContent(content)}
         </TText>
       </View>
@@ -56,7 +50,6 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     width: '100%',
     alignItems: 'flex-start',
-    paddingLeft: dimensions.edge,
   },
   content: {
     maxWidth: '80%',

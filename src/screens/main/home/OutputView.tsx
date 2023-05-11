@@ -1,5 +1,5 @@
 import { dimensions } from '../../../res/dimensions'
-import { sheets } from '../../../res/sheets'
+import { stylez } from '../../../res/stylez'
 import { useThemeScheme } from '../../../themes/hooks'
 import React, { useImperativeHandle, useState } from 'react'
 import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
@@ -29,7 +29,7 @@ export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>((p
   }))
 
   return (
-    <Text selectable style={[sheets.contentText, styles.text, { color: textColor }, style]}>
+    <Text selectable style={[stylez.contentText, styles.text, { color: textColor }, style]}>
       {displayText}
     </Text>
   )

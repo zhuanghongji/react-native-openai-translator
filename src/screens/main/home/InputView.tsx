@@ -2,7 +2,7 @@ import { SvgIcon } from '../../../components/SvgIcon'
 import { hapticSoft } from '../../../haptic'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
-import { sheets } from '../../../res/sheets'
+import { stylez } from '../../../res/stylez'
 import { useThemeScheme, useThemeTextStyle } from '../../../themes/hooks'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import {
@@ -86,7 +86,7 @@ export const InputView = React.forwardRef<InputViewHandle, InputViewProps>((prop
         multiline
         blurOnSubmit
         scrollEnabled
-        style={[sheets.contentText, styles.text, textStyle]}
+        style={[stylez.contentText, styles.text, textStyle]}
         value={value}
         returnKeyType="send"
         selection={textInputSelection}

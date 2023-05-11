@@ -32,13 +32,13 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
     const { style, onCreateChatPress } = props
 
     const { t } = useTranslation()
-    const { text: textColor, text2: text2Color, backdrop } = useThemeScheme()
+    const { text: textColor, text2: text2Color, backgroundChat: backgroundColor } = useThemeScheme()
     const { width: frameWidth } = useSafeAreaFrame()
     const contentWidth = frameWidth - dimensions.edgeTwice
 
     const [currentPrompt, setCurrentPrompt] = useState<AwesomePrompt | null>(null)
 
-    const textStyle = [styles.text, { color: textColor, backgroundColor: backdrop }]
+    const textStyle = [styles.text, { color: textColor, backgroundColor }]
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => ['60%'], [])

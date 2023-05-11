@@ -3,12 +3,10 @@ import { AssistantMessageView } from '../../components/chat/AssistantMessageView
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
-import { workletClamp } from '../../extensions/reanimated'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
-import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -16,11 +14,10 @@ import { ChatMessage, Message } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import type { RootStackParamList } from '../screens'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { FlashList } from '@shopify/flash-list'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Keyboard } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { FlatList, View } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
+import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import EventSource from 'react-native-sse'
 
@@ -35,17 +32,9 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   const { backgroundChat: backgroundColor } = useThemeScheme()
   const [hideChatAvatar] = useHideChatAvatarPref()
 
-  const listContainerHeight = useSharedValue(0)
-  const listContentHeight = useSharedValue(0)
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const transformStyle = useAnimatedStyle(() => {
-    const kbHeight = Math.abs(keyboardHeight.value)
-    const contentHeight = listContentHeight.value
-    const containerHeight = listContainerHeight.value
-    const offset = workletClamp(contentHeight - (containerHeight - kbHeight), 0, kbHeight)
-    return {
-      transform: [{ translateY: -offset }],
-    }
+    return { transform: [{ translateY: keyboardHeight.value }] }
   }, [])
 
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
@@ -56,13 +45,13 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     return [...messages].reverse()
   }, [messages])
 
-  const flashListRef = useRef<FlashList<ChatMessage>>(null)
+  const messageListRef = useRef<FlatList<ChatMessage>>(null)
+  const scrollToTop = useCallback((delay = 200) => {
+    const fn = () => messageListRef.current?.scrollToOffset({ offset: 0, animated: true })
+    delay > 0 ? setTimeout(fn, delay) : fn()
+  }, [])
   useEffect(() => {
-    const show = KeyboardEvents.addListener('keyboardWillShow', () => {
-      if (messages.length > 0) {
-        flashListRef.current?.scrollToOffset({ offset: 0, animated: true })
-      }
-    })
+    const show = KeyboardEvents.addListener('keyboardWillShow', () => scrollToTop(0))
     return () => show.remove()
   }, [messages.length])
 
@@ -76,7 +65,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   const esRef = useRef<EventSource | undefined>(undefined)
   const esRequesting = useRef(false)
   useEffect(() => {
-    print('esRequesting.current = ' + esRequesting.current)
+    // print('esRequesting.current = ' + esRequesting.current)
     if (esRequesting.current) {
       esRef.current?.close()
       setStatus('none')
@@ -97,14 +86,14 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     if (systemPrompt) {
       messagesToSend.push({ role: 'system', content: systemPrompt })
     }
-    setTimeout(() => flashListRef.current?.scrollToOffset({ offset: 0, animated: true }), 200)
+    scrollToTop()
     setStatus('sending')
     esRequesting.current = true
     esRef.current?.close()
     esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
       onNext: content => {
         setContent(content)
-        flashListRef.current?.scrollToOffset({ offset: 0, animated: true })
+        scrollToTop(0)
       },
       onError: (code, message) => {
         setStatus('complete')
@@ -116,13 +105,15 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
         setStatus('complete')
         setContent('')
         hapticSuccess()
-        setTimeout(() => flashListRef.current?.scrollToOffset({ offset: 0, animated: true }), 200)
+        scrollToTop()
       },
       onComplete: () => {
         esRequesting.current = false
       },
     })
   }
+
+  const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
@@ -134,46 +125,35 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
           onPress: () => toast('success', 'Teaser', 'Chat fine-tuning will be support later'),
         }}
       />
-      <Animated.View style={[{ flex: 1, overflow: 'hidden' }]}>
-        <Animated.View
-          style={[{ flex: 1 }, transformStyle]}
-          onLayout={e => {
-            listContainerHeight.value = e.nativeEvent.layout.height
-          }}>
-          <FlashList
-            ref={flashListRef}
-            contentContainerStyle={{
-              paddingTop: dimensions.messageSeparator,
-            }}
+      <View style={[{ flex: 1, overflow: 'hidden' }]}>
+        <Animated.View style={[{ flex: 1 }, transformStyle]}>
+          {/* 
+            The FlashList with an inverted orientation has an incorrect location for the vertical scroll indicator on the left side. 
+            Therefore, it should be replaced by a FlatList. 
+          */}
+          <FlatList
+            ref={messageListRef}
+            contentContainerStyle={{ paddingVertical: dimensions.messageSeparator }}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             inverted={true}
             data={messagesInverted}
-            getItemType={item => item.role}
             keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
             renderItem={({ item }) => {
               if (item.role === 'user') {
-                return (
-                  <UserMessageView
-                    style={{ marginVertical: dimensions.messageSeparator }}
-                    hideChatAvatar={hideChatAvatar}
-                    message={item}
-                  />
-                )
+                return <UserMessageView hideChatAvatar={hideChatAvatar} message={item} />
               }
               if (item.role === 'assistant') {
                 return <AssistantMessageView hideChatAvatar={hideChatAvatar} message={item} />
               }
               return null
             }}
-            // Do not use it because of https://github.com/Shopify/flash-list/issues/638
-            // ItemSeparatorComponent={renderItemSeparator}
+            ItemSeparatorComponent={renderItemSeparator}
             ListHeaderComponent={<SSEMessageView hideChatAvatar={hideChatAvatar} />}
-            estimatedItemSize={200}
-            onScrollBeginDrag={() => Keyboard.dismiss()}
-            onContentSizeChange={(_, h) => (listContentHeight.value = h)}
             onEndReached={() => console.log('onEndReached')}
           />
         </Animated.View>
-      </Animated.View>
+      </View>
       <InputBar
         value={inputText}
         sendDisabled={sendDisabled}

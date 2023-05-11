@@ -1,6 +1,6 @@
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { sheets } from '../../res/sheets'
+import { stylez } from '../../res/stylez'
 import { ChatMessage } from '../../types'
 import { trimContent } from '../../utils'
 import { SvgIcon } from '../SvgIcon'
@@ -20,18 +20,13 @@ export function UserMessageView(props: UserMessageProps) {
   return (
     <View style={[style, styles.container]}>
       <View style={styles.content}>
-        <Text style={[styles.text, sheets.contentText]}>{trimContent(content)}</Text>
+        <Text style={[styles.text, stylez.contentText]}>{trimContent(content)}</Text>
       </View>
       {hideChatAvatar ? (
-        <View style={{ width: 5 }} />
+        <View style={stylez.chatAvatarContainerHidden} />
       ) : (
-        <View
-          style={{
-            width: 32,
-            paddingTop: 12,
-            alignItems: 'center',
-          }}>
-          <SvgIcon size={23} color={colors.primary} name="account" />
+        <View style={stylez.chatAvatarContainer}>
+          <SvgIcon size={dimensions.chatAvatar} color={colors.primary} name="account" />
         </View>
       )}
     </View>
@@ -49,7 +44,6 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'flex-end',
-    paddingRight: dimensions.edge,
   },
   content: {
     maxWidth: '80%',
