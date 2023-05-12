@@ -1,27 +1,50 @@
 import { dimensions } from '../res/dimensions'
-import { useThemeScheme } from '../themes/hooks'
+import { useThemeColor } from '../themes/hooks'
+import { ThemeSchemeTypo } from '../themes/themes'
 import { SvgIcon, SvgIconName } from './SvgIcon'
 import React from 'react'
-import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
+import { Insets, Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
 
 export interface ToolButtonProps {
   style?: StyleProp<ViewStyle>
+  containerSize?: number
+  iconSize?: number
+  tintTypo?: ThemeSchemeTypo
+  hitSlop?: Insets
   disabled?: boolean
   name: SvgIconName
   onPress: () => void
 }
 
 export function ToolButton(props: ToolButtonProps) {
-  const { style, disabled, name, onPress } = props
+  const {
+    style,
+    containerSize = 32,
+    iconSize = dimensions.iconSmall,
+    tintTypo = 'tint2',
+    hitSlop,
+    disabled,
+    name,
+    onPress,
+  } = props
 
-  const { tint2 } = useThemeScheme()
+  const tintColor = useThemeColor(tintTypo)
 
   return (
     <Pressable
-      style={[styles.container, { opacity: disabled ? dimensions.disabledOpacity : 1 }, style]}
+      style={[
+        styles.container,
+        {
+          width: containerSize,
+          height: containerSize,
+          opacity: disabled ? dimensions.disabledOpacity : 1,
+        },
+        style,
+      ]}
+      hitSlop={hitSlop}
       disabled={disabled}
       onPress={onPress}>
-      <SvgIcon size={dimensions.iconSmall} color={tint2} name={name} />
+      <SvgIcon size={iconSize} color={tintColor} name={name} />
     </Pressable>
   )
 }
@@ -34,7 +57,5 @@ const styles = StyleSheet.create<Styles>({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 32,
-    height: 32,
   },
 })

@@ -5,11 +5,20 @@ export type Message<T = MessageRole> = {
   content: string
 }
 
-export type ChatMessage = {
-  role: 'assistant' | 'user'
-  content: string
-  // time: number
-}
+export type ChatMessage =
+  | {
+      role: 'divider'
+      content: 'FOREMOST' | 'NEW DIALOGUE'
+      // time: number
+    }
+  | {
+      role: 'user'
+      content: string
+    }
+  | {
+      role: 'assistant'
+      content: string
+    }
 
 export type ScanBlock = {
   text: string

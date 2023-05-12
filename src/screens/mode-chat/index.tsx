@@ -1,5 +1,6 @@
 import { TitleBar } from '../../components/TitleBar'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
+import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
@@ -63,6 +64,10 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     }
     return [
       {
+        role: 'divider',
+        content: 'FOREMOST',
+      },
+      {
         role: 'user',
         content: userContent,
       },
@@ -110,12 +115,18 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
 
-    const messagesToSend: Message[] = nextMessages.map(({ role, content }) => ({
-      role,
-      content,
-    }))
+    const messagesToSend: Message[] = []
     if (systemPrompt) {
       messagesToSend.push({ role: 'system', content: systemPrompt })
+    }
+    for (const msg of nextMessages) {
+      if (msg.role === 'user') {
+        messagesToSend.push({ role: 'user', content: msg.content })
+      } else if (msg.role === 'assistant') {
+        messagesToSend.push({ role: 'assistant', content: msg.content })
+      } else {
+        // do nothing
+      }
     }
     scrollToTop()
     setStatus('sending')
@@ -143,6 +154,8 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       },
     })
   }
+
+  const handleSavePress = () => {}
 
   const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
@@ -172,6 +185,9 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
             data={messagesInverted}
             keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
             renderItem={({ item }) => {
+              if (item.role === 'divider') {
+                return <AppDividerView message={item} onSavePress={handleSavePress} />
+              }
               if (item.role === 'user') {
                 return <UserMessageView hideChatAvatar={hideChatAvatar} message={item} />
               }
@@ -191,6 +207,9 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         sendDisabled={sendDisabled}
         onChangeText={setInputText}
         onSendPress={onSendPress}
+        onNewDialoguePress={() => {
+          setMessages([...messages, { role: 'divider', content: 'NEW DIALOGUE' }])
+        }}
       />
     </SafeAreaView>
   )

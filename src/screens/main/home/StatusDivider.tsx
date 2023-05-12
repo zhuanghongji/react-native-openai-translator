@@ -128,7 +128,6 @@ const styles = StyleSheet.create<Styles>({
     position: 'absolute',
     width: '100%',
     height: 1,
-    backgroundColor: 'red',
   },
   statusRow: {
     flexDirection: 'row',

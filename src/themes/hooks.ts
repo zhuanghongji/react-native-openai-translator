@@ -11,6 +11,7 @@ export const LIGHT_THEME_SCHEME: ThemeScheme = {
   text: colors.black,
   text2: colors.c33,
   text3: colors.c66,
+  text4: colors.c99,
 
   tint: colors.black,
   tint2: colors.c54,
@@ -37,6 +38,7 @@ export const DARK_THEME_SCHEME: ThemeScheme = {
   text: colors.white,
   text2: colors.cCC,
   text3: colors.c99,
+  text4: colors.c33,
 
   tint: colors.white,
   tint2: colors.cCB,
@@ -70,8 +72,16 @@ export function useStatusBarStyle(): StatusBarStyle {
   return useThemeDark() ? 'light-content' : 'dark-content'
 }
 
+export function useThemeSelector(darkColor: string, lightColor: string) {
+  return useThemeDark() ? darkColor : lightColor
+}
+
 export function useThemeScheme(): ThemeScheme {
   return useContext(ThemeSchemeContext)
+}
+
+export function useThemeColor(typo: ThemeSchemeTypo): string {
+  return useContext(ThemeSchemeContext)[typo]
 }
 
 export function useThemeTextStyle(typo: ThemeSchemeTypo): TextStyle {

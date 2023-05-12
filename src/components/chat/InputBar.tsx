@@ -2,6 +2,7 @@ import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeDark, useThemeScheme } from '../../themes/hooks'
 import { SvgIcon } from '../SvgIcon'
+import { ToolButton } from '../ToolButton'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
@@ -14,12 +15,13 @@ export interface InputBarProps {
   sendDisabled: boolean
   onChangeText: (value: string) => void
   onSendPress: () => void
+  onNewDialoguePress: () => void
 }
 
 const H_EDGE = 8
 
 export function InputBar(props: InputBarProps): JSX.Element {
-  const { value, sendDisabled, onChangeText, onSendPress } = props
+  const { value, sendDisabled, onChangeText, onSendPress, onNewDialoguePress } = props
 
   const isDark = useThemeDark()
   const tintColor = isDark ? colors.white : colors.black
@@ -44,6 +46,9 @@ export function InputBar(props: InputBarProps): JSX.Element {
 
   return (
     <Animated.View style={[styles.container, heightStyle, { backgroundColor }]}>
+      <View style={styles.toolsRow}>
+        <ToolButton containerSize={36} name="chat-new" onPress={onNewDialoguePress} />
+      </View>
       <View style={styles.content}>
         <TextInput
           style={[
@@ -66,7 +71,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
           hitSlop={{
             left: H_EDGE,
             top: H_EDGE,
-            right: H_EDGE,
+            right: dimensions.edge,
             bottom: H_EDGE,
           }}
           onPress={onSendPress}>
@@ -79,6 +84,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
 
 type Styles = {
   container: ViewStyle
+  toolsRow: ViewStyle
   content: ViewStyle
   input: ViewStyle
   touchable: ViewStyle
@@ -88,13 +94,15 @@ const styles = StyleSheet.create<Styles>({
   container: {
     width: '100%',
   },
+  toolsRow: {
+    paddingHorizontal: dimensions.edge,
+  },
   content: {
     flexDirection: 'row',
     width: '100%',
-    minHeight: 48,
     alignItems: 'center',
-    paddingVertical: 6,
     paddingHorizontal: H_EDGE,
+    marginBottom: dimensions.edge,
   },
   input: {
     flex: 1,
@@ -103,12 +111,11 @@ const styles = StyleSheet.create<Styles>({
     paddingHorizontal: dimensions.edge,
     borderRadius: dimensions.borderRadius,
     marginLeft: dimensions.edge,
-    marginRight: dimensions.edge + H_EDGE,
-    padding: 0,
+    marginRight: dimensions.edge,
   },
   touchable: {
     width: 36,
-    height: 56,
+    height: 36,
     justifyContent: 'center',
     alignItems: 'center',
   },
