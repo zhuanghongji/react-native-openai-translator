@@ -1,5 +1,5 @@
 import { useThemeTextStyle } from './hooks'
-import { ThemeSchemeTypo } from './themes'
+import { ThemeSchemeTypo } from './types'
 import React from 'react'
 import { Text, TextProps } from 'react-native'
 

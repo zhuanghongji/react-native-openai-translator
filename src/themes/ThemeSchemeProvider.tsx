@@ -1,7 +1,7 @@
-import { DARK_THEME_SCHEME, LIGHT_THEME_SCHEME, useThemeDark } from './hooks'
-import React, { PropsWithChildren, createContext } from 'react'
-
-export const ThemeSchemeContext = createContext(DARK_THEME_SCHEME)
+import { ThemeSchemeContext } from './ThemeSchemeContext'
+import { useThemeDark } from './hooks'
+import { DARK_THEME_SCHEME, LIGHT_THEME_SCHEME } from './schemes'
+import React, { PropsWithChildren } from 'react'
 
 export type ThemeSchemeProviderProps = PropsWithChildren<{}>
 

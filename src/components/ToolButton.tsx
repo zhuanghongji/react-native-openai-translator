@@ -1,6 +1,6 @@
 import { dimensions } from '../res/dimensions'
 import { useThemeColor } from '../themes/hooks'
-import { ThemeSchemeTypo } from '../themes/themes'
+import { ThemeSchemeTypo } from '../themes/types'
 import { SvgIcon, SvgIconName } from './SvgIcon'
 import React from 'react'
 import { Insets, Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native'
