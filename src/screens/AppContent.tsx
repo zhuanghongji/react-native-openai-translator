@@ -1,8 +1,10 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
+import { TemplateScreen } from './_template'
 import { AwesomePromptsScreen } from './awesome-prompts'
 import { CustomChatScreen } from './custom-chat'
 import { CustomChatInitScreen } from './custom-chat-init'
+import { DevScreen } from './dev'
 import { MainNavigator } from './main/main-navigator'
 import { ModeChatScreen } from './mode-chat'
 import { ScannerScreen } from './scanner'
@@ -48,6 +50,8 @@ export function AppContent(): JSX.Element {
           animation: 'slide_from_right',
         }}>
         <RootStack.Screen name="Main" component={MainNavigator} />
+        <RootStack.Screen name="Dev" component={DevScreen} />
+        <RootStack.Screen name="Template" component={TemplateScreen} />
         <RootStack.Screen name="Settings" component={SettingsScreen} />
         <RootStack.Screen name="Scanner" component={ScannerScreen} />
         <RootStack.Screen name="ModeChat" component={ModeChatScreen} />

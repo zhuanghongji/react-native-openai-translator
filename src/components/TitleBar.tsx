@@ -1,9 +1,10 @@
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
+import { RootStackParamList } from '../screens/screens'
 import { TText } from '../themes/TText'
 import { useStatusBarStyle, useThemeScheme } from '../themes/hooks'
 import { SvgIcon, SvgIconName } from './SvgIcon'
-import { useNavigation } from '@react-navigation/native'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 import React, { useCallback } from 'react'
 import {
   Pressable,
@@ -54,7 +55,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const barStyle = useStatusBarStyle()
   const { tint: tintColor } = useThemeScheme()
 
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
   const goBack = useCallback(() => {
     navigation.canGoBack() && navigation.goBack()
   }, [navigation])
@@ -108,9 +109,12 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
           <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
         )}
       </Pressable>
-      <View style={[styles.center, { flexDirection: titleContainerRow ? 'row' : 'column' }]}>
+      <Pressable
+        style={[styles.center, { flexDirection: titleContainerRow ? 'row' : 'column' }]}
+        disabled={!__DEV__}
+        onLongPress={() => __DEV__ && navigation.navigate('Dev')}>
         {_renderTitle()}
-      </View>
+      </Pressable>
       {_renderAction()}
     </View>
   )

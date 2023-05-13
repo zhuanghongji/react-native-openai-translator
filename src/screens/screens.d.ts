@@ -5,6 +5,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList>
+  Template: undefined
+  Dev: undefined
   Settings: undefined
   Scanner: {
     onScanSuccess: (blocks: ScanBlock[]) => void
