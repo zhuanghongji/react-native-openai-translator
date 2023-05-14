@@ -16,9 +16,13 @@ export function DiscoverScreen({ navigation }: Props): JSX.Element {
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar backDisabled title="Discover" />
       <ScrollView style={{ flex: 1 }}>
-        <CellView title="Awesome Prompts" onPress={() => navigation.navigate('AwesomePrompts')} />
+        <CellView
+          icon="awesome"
+          title="Awesome Prompts"
+          onPress={() => navigation.navigate('AwesomePrompts')}
+        />
         <CellDivider />
-        <CellView title="Prompt Engineering Guide" onPress={() => {}} />
+        <CellView icon="book" title="Prompt Engineering Guide" onPress={() => {}} />
       </ScrollView>
     </SafeAreaView>
   )

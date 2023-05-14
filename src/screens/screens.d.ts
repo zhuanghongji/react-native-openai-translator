@@ -23,6 +23,8 @@ type RootStackParamList = {
   }
   CustomChatInit: undefined
   AwesomePrompts: undefined
+  EnglishWordBook: undefined
+  ModeResultBookmarks: undefined
 }
 
 type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<

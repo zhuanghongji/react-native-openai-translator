@@ -6,8 +6,7 @@ import { dbGenerateInsertStatement } from '../utils'
 const TABLE_NAME = DBTableName.modeMessage
 
 export interface TModeMessage extends TResultBase {
-  mode: string
-  target_lang: string
+  result_id: number
   role: string
   content: string
 }
@@ -16,6 +15,6 @@ export function dbInsertModeMessage(target: Omit<TModeMessage, keyof TResultBase
   return dbExecuteSql<TModeMessage>(dbGenerateInsertStatement(TABLE_NAME, target))
 }
 
-export function dbSelectModeMessage() {
-  return dbExecuteSql<TModeMessage>(`SELECT * FROM ${TABLE_NAME};`)
+export function dbSelectModeMessageOfResultId(result_id: number) {
+  return dbExecuteSql<TModeMessage>(`SELECT * FROM ${TABLE_NAME} WHERE result_id = ${result_id};`)
 }

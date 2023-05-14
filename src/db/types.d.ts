@@ -16,7 +16,13 @@ export type DBResultSetRowList<T> = {
   _array: T[]
 }
 
-export type DBTableColumnType = 'INTEGER' | 'CHAR(1)' | 'VARCHAR(50)' | 'VARCHAR(255)' | 'TEXT'
+export type DBTableColumnType =
+  | 'INTEGER'
+  | 'CHAR(1)'
+  | 'VARCHAR(20)'
+  | 'VARCHAR(50)'
+  | 'VARCHAR(255)'
+  | 'TEXT'
 
 export type DBTableColumn =
   | {

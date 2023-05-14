@@ -1,3 +1,4 @@
+import { print } from '../printer'
 import { DBResultSet } from './types'
 import * as SQLite from 'expo-sqlite'
 
@@ -21,11 +22,13 @@ export function dbExecuteSql<T>(
           sqlStatement,
           args,
           (_, resultSet) => {
+            print('executeSql', { sqlStatement, args, resultSet })
             resolve(resultSet)
           },
           (_, err) => {
+            print('executeSql', { sqlStatement, args, err })
             reject(err)
-            // TODO what is the mean of this return-value ?
+            // What is the mean of this return-value ?
             return true
           }
         )

@@ -46,6 +46,9 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
             dropTableWhenDev(DBTableName.test)
             dropTableWhenDev(DBTableName.modeReulst)
             dropTableWhenDev(DBTableName.modeMessage)
+            dropTableWhenDev(DBTableName.englishWord)
+            dropTableWhenDev(DBTableName.customChat)
+            dropTableWhenDev(DBTableName.customMessage)
           }}
         />
         <Button
@@ -70,7 +73,7 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
               mode: 'translate',
               target_lang: 'zh-hant',
               user_content: 'world',
-              assistnt_content: '世界',
+              assistant_content: '世界',
               collected: '1',
             })
               .then(result => {

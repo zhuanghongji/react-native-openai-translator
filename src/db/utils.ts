@@ -1,13 +1,33 @@
 import { DBTableColumn } from './types'
 
-export function dbGenerateInsertStatement(tableName: string, target: { [key: string]: string }) {
+export function dbGenerateInsertStatement(
+  tableName: string,
+  target: { [key: string]: string | number }
+) {
   const keys: string[] = []
-  const values: string[] = []
+  const values: (string | number)[] = []
   for (const key of Object.keys(target)) {
+    const value = target[key]
     keys.push(key)
-    values.push(`'${target[key]}'`)
+    values.push(typeof value === 'number' ? value : `'${value}'`)
   }
   return `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${values.join(', ')});`
+}
+
+export function dbGenerateSelectWhereStatement(
+  tableName: string,
+  target: { [key: string]: string | number }
+) {
+  const conditions: (string | number)[] = []
+  for (const key of Object.keys(target)) {
+    const value = target[key]
+    if (value === undefined) {
+      continue
+    }
+    const conditionValue = typeof value === 'number' ? value : `'${value}'`
+    conditions.push(`${key} = ${conditionValue}`)
+  }
+  return `SELECT * FROM ${tableName} WHERE ${conditions.join(' AND ')};`
 }
 
 export function dbGenerateCreateTableStatement(
