@@ -3,7 +3,7 @@ import { HeartButton, HeartStatus } from '../../../components/HeartButton'
 import { TTSModal, TTSModalHandle } from '../../../components/TTSModal'
 import { ToolButton } from '../../../components/ToolButton'
 import { dbInsertEnglishWord } from '../../../db/table/t-english-word'
-import { dbInsertModeResult } from '../../../db/table/t-mode-result'
+import { dbFindModeResultWhere, dbInsertModeResult } from '../../../db/table/t-mode-result'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
@@ -75,6 +75,18 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   const outputViewRef = useRef<OutputViewHandle>(null)
   const [outputText, setOutputText] = useState('')
   const isOutputDisabled = outputText ? false : true
+
+  const [isInputOrTargetLangChanged, setIsInputOrTargetLangChanged] = useState(false)
+  const [prevInputText, setPreInputText] = useState(inputText)
+  if (inputText !== prevInputText) {
+    setIsInputOrTargetLangChanged(true)
+    setPreInputText(inputText)
+  }
+  const [prevTargetLang, setPreTargetLang] = useState(targetLang)
+  if (targetLang !== prevTargetLang) {
+    setIsInputOrTargetLangChanged(true)
+    setPreTargetLang(targetLang)
+  }
 
   // English Word
   const isInputEnglishWord = isEnglishWord(inputText)
@@ -182,6 +194,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
       },
       onDone: message => {
         setOutputText(message.content)
+        setIsInputOrTargetLangChanged(false)
         setStatus('success')
         hapticSuccess()
       },
@@ -235,11 +248,15 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
         <OutputView ref={outputViewRef} text={outputText} />
         <View style={styles.toolsRow}>
           {isTranslateMode && isInputEnglishWord ? (
-            <HeartButton status={heartStatus} disabled={isOutputDisabled} onPress={onHeartPress} />
+            <HeartButton
+              status={heartStatus}
+              disabled={isOutputDisabled || isInputOrTargetLangChanged}
+              onPress={onHeartPress}
+            />
           ) : null}
           <BookmarkButton
             status={bookmarkStatus}
-            disabled={isOutputDisabled}
+            disabled={isOutputDisabled || isInputOrTargetLangChanged}
             onPress={onBookmarkPress}
           />
           <ToolButton
@@ -263,15 +280,42 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
           />
           <ToolButton
             name="chat"
-            disabled={isOutputDisabled}
-            onPress={() => {
+            disabled={isOutputDisabled || isInputOrTargetLangChanged}
+            onPress={async () => {
               const { systemPrompt } = prompts
-              navigation.push('ModeChat', {
-                translatorMode,
-                systemPrompt,
-                userContent,
-                assistantContent: outputText,
-              })
+              try {
+                let modeResult = await dbFindModeResultWhere({
+                  mode: translatorMode,
+                  target_lang: targetLang,
+                  user_content: inputText,
+                })
+                if (!modeResult) {
+                  await dbInsertModeResult({
+                    mode: translatorMode,
+                    target_lang: targetLang,
+                    user_content: inputText,
+                    assistant_content: outputText,
+                    collected: '0',
+                  })
+                  modeResult = await dbFindModeResultWhere({
+                    mode: translatorMode,
+                    target_lang: targetLang,
+                    user_content: inputText,
+                  })
+                }
+                if (!modeResult) {
+                  toast('danger', 'Error', 'Create mode result error')
+                  return
+                }
+                navigation.push('ModeChat', {
+                  modeResult,
+                  systemPrompt,
+                  userContent,
+                  assistantContent: outputText,
+                })
+              } catch (e) {
+                print('push ModeChat', e)
+              }
             }}
           />
         </View>

@@ -1,7 +1,7 @@
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
 import { TResultBase } from '../types'
-import { dbGenerateInsertStatement } from '../utils'
+import { dbGenInsertExecution, dbGenSelectExecution, dbGenSelectWhereExecution } from '../utils'
 
 const TABLE_NAME = DBTableName.customChat
 
@@ -28,9 +28,13 @@ export const DEFAULT_CUSTOM_CHAT: Omit<TCustomChat, keyof TResultBase> = {
 }
 
 export function dbInsertCustomChat(target: Omit<TCustomChat, keyof TResultBase>) {
-  return dbExecuteSql<TCustomChat>(dbGenerateInsertStatement(TABLE_NAME, target))
+  return dbExecuteSql<TCustomChat>(dbGenInsertExecution(TABLE_NAME, target))
+}
+
+export function dbFindCustomChatById(id: number) {
+  return dbExecuteSql<TCustomChat>(dbGenSelectWhereExecution(TABLE_NAME, { id }))
 }
 
 export function dbSelectCustomChat() {
-  return dbExecuteSql<TCustomChat>(`SELECT * FROM ${TABLE_NAME};`)
+  return dbExecuteSql<TCustomChat>(dbGenSelectExecution(TABLE_NAME))
 }

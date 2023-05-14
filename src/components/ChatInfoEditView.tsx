@@ -46,7 +46,7 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         value={chatName}
         placeholder="Chat Name ..."
         returnKeyType="next"
-        onChangeText={value => onChatNameChange(value.trim())}
+        onChangeText={onChatNameChange}
         onSubmitEditing={() => presetInputRef.current?.focus()}
       />
       {divider}
@@ -56,7 +56,7 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         value={systemPrompt}
         placeholder="System Prompt ..."
         returnKeyType="done"
-        onChangeText={value => onSystemPromptChange(value.trim())}
+        onChangeText={onSystemPromptChange}
         onSubmitEditing={() => {
           if (!chatName) {
             toast('danger', 'Invaid Chat Name', 'Please input valid chat name')

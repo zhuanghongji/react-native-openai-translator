@@ -16,6 +16,13 @@ export type DBResultSetRowList<T> = {
   _array: T[]
 }
 
+export type DBSqlExcutionArgs = (number | string | null)[]
+
+export type DBSqlExcution = {
+  statement: string
+  args?: DBSqlExcutionArgs
+}
+
 export type DBTableColumnType =
   | 'INTEGER'
   | 'CHAR(1)'

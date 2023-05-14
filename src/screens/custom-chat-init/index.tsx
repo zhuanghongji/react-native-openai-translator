@@ -1,12 +1,17 @@
 import { AvoidKeyboardView } from '../../components/AvoidKeyboardView'
 import { ChatInfoEditView } from '../../components/ChatInfoEditView'
 import { TitleBar } from '../../components/TitleBar'
+import {
+  DEFAULT_CUSTOM_CHAT,
+  dbFindCustomChatById,
+  dbInsertCustomChat,
+} from '../../db/table/t-custom-chat'
 import { hapticSuccess } from '../../haptic'
-import { dimensions } from '../../res/dimensions'
+import { toast } from '../../toast'
 import type { RootStackParamList } from '../screens'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
-import { ScrollView, StyleSheet, ViewStyle } from 'react-native'
+import { ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomChatInit'>
@@ -18,6 +23,26 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
   const title = chatName ? chatName : systemPrompt ? 'Unnamed' : 'Initialize Chat'
   const subtitle = systemPrompt ? systemPrompt : ''
   const confirmDisabled = chatName ? false : true
+
+  const onComfirmPress = async () => {
+    try {
+      hapticSuccess()
+      const { insertId } = await dbInsertCustomChat({
+        ...DEFAULT_CUSTOM_CHAT,
+        title: chatName.trim(),
+        system_prompt: systemPrompt.trim(),
+      })
+      if (insertId === undefined) {
+        toast('danger', 'Error', 'Initialize Chat Error 1')
+        return
+      }
+      const result = await dbFindCustomChatById(insertId)
+      const [insertChat] = result.rows._array
+      navigation.replace('CustomChat', { chat: insertChat })
+    } catch (e) {
+      toast('danger', 'Error', 'Initialize Chat Error 2')
+    }
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
@@ -34,10 +59,7 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
             confirmDisabled={confirmDisabled}
             onChatNameChange={setChatName}
             onSystemPromptChange={setSystemPrompt}
-            onConfirmPress={() => {
-              hapticSuccess()
-              navigation.replace('CustomChat', { chatName, systemPrompt })
-            }}
+            onConfirmPress={onComfirmPress}
             onSkipPress={() => {}}
           />
         </AvoidKeyboardView>
@@ -46,14 +68,14 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
   )
 }
 
-type Styles = {
-  modes: ViewStyle
-}
+// type Styles = {
+//   modes: ViewStyle
+// }
 
-const styles = StyleSheet.create<Styles>({
-  modes: {
-    flexDirection: 'row',
-    gap: dimensions.gap,
-    marginRight: dimensions.edge,
-  },
-})
+// const styles = StyleSheet.create<Styles>({
+//   modes: {
+//     flexDirection: 'row',
+//     gap: dimensions.gap,
+//     marginRight: dimensions.edge,
+//   },
+// })

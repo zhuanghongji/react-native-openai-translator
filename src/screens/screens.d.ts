@@ -1,4 +1,5 @@
-import { TranslatorMode } from '../preferences/options'
+import { TCustomChat } from '../db/table/t-custom-chat'
+import { TModeResult } from '../db/table/t-mode-result'
 import type { ScanBlock } from '../types'
 import type { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -12,14 +13,13 @@ type RootStackParamList = {
     onScanSuccess: (blocks: ScanBlock[]) => void
   }
   ModeChat: {
-    translatorMode: TranslatorMode
+    modeResult: TModeResult
     systemPrompt: string
     userContent: string
     assistantContent: string
   }
   CustomChat: {
-    chatName: string
-    systemPrompt: string
+    chat: TCustomChat
   }
   CustomChatInit: undefined
   AwesomePrompts: undefined

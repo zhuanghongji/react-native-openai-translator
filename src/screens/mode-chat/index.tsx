@@ -4,11 +4,13 @@ import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
+import { dbInsertModeMessage, dbSelectModeMessageOfResultId } from '../../db/table/t-mode-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { TranslatorMode } from '../../preferences/options'
 import { useHideChatAvatarPref } from '../../preferences/storages'
+import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -44,7 +46,9 @@ function useTitle(mode: TranslatorMode) {
 }
 
 export function ModeChatScreen({ route }: Props): JSX.Element {
-  const { translatorMode, systemPrompt, userContent, assistantContent } = route.params
+  const { modeResult, systemPrompt, userContent, assistantContent } = route.params
+  const { id, mode } = modeResult
+  const translatorMode = mode as TranslatorMode
   const title = useTitle(translatorMode)
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
@@ -58,28 +62,39 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     return { transform: [{ translateY: keyboardHeight.value }] }
   }, [])
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    if (!userContent || !assistantContent) {
-      return []
-    }
-    return [
-      {
-        role: 'divider',
-        content: 'FOREMOST',
-      },
-      {
-        role: 'user',
-        content: userContent,
-      },
-      {
-        role: 'assistant',
-        content: assistantContent,
-      },
-    ]
-  })
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesInverted = useMemo(() => {
     return [...messages].reverse()
   }, [messages])
+  useEffect(() => {
+    dbSelectModeMessageOfResultId(id)
+      .then(result => {
+        setMessages([
+          {
+            role: 'divider',
+            content: 'FOREMOST',
+          },
+          {
+            role: 'user',
+            content: userContent,
+          },
+          {
+            role: 'assistant',
+            content: assistantContent,
+          },
+          ...result.rows._array.map(
+            v =>
+              ({
+                role: v.role,
+                content: v.content,
+              } as any)
+          ),
+        ])
+      })
+      .catch(e => {
+        print('dbSelectModeMessageOfResultId', e)
+      })
+  }, [id])
 
   const messageListRef = useRef<FlatList<ChatMessage>>(null)
   const scrollToTop = useCallback((delay = 200) => {
@@ -114,6 +129,17 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     setInputText('')
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
+    dbInsertModeMessage({
+      result_id: id,
+      role: 'user',
+      content: inputText,
+    })
+      .then(result => {
+        print('dbInsertModeMessage, user = ', result)
+      })
+      .catch(e => {
+        print('dbInsertModeMessage, user = ', e)
+      })
 
     const messagesToSend: Message[] = []
     if (systemPrompt) {
@@ -144,6 +170,18 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       },
       onDone: message => {
         setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
+        dbInsertModeMessage({
+          result_id: id,
+          role: 'assistant',
+          content: message.content,
+        })
+          .then(result => {
+            print('dbInsertModeMessage, assistant = ', result)
+          })
+          .catch(e => {
+            print('dbInsertModeMessage, assistant = ', e)
+          })
+
         setStatus('complete')
         setContent('')
         hapticSuccess()

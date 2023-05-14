@@ -4,10 +4,12 @@ import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
+import { dbInsertCustomMessage, dbSelectModeMessageOfChatId } from '../../db/table/t-custom-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
+import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -25,7 +27,8 @@ import EventSource from 'react-native-sse'
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomChat'>
 
 export function CustomChatScreen({ route }: Props): JSX.Element {
-  const { chatName, systemPrompt } = route.params
+  const { chat } = route.params
+  const { id, title, system_prompt } = chat
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -38,13 +41,27 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     return { transform: [{ translateY: keyboardHeight.value }] }
   }, [])
 
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    // TODO Should query before navigate ?
-    return []
-  })
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesInverted = useMemo(() => {
     return [...messages].reverse()
   }, [messages])
+  useEffect(() => {
+    dbSelectModeMessageOfChatId(id)
+      .then(result => {
+        setMessages(
+          result.rows._array.map(
+            v =>
+              ({
+                role: v.role,
+                content: v.content,
+              } as any)
+          )
+        )
+      })
+      .catch(e => {
+        print('dbSelectModeMessageOfChatId', e)
+      })
+  }, [id])
 
   const messageListRef = useRef<FlatList<ChatMessage>>(null)
   const scrollToTop = useCallback((delay = 200) => {
@@ -79,9 +96,21 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     setInputText('')
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
+    dbInsertCustomMessage({
+      chat_id: id,
+      role: 'user',
+      content: inputText,
+    })
+      .then(result => {
+        print('dbInsertCustomMessage, user = ', result)
+      })
+      .catch(e => {
+        print('dbInsertCustomMessage, user = ', e)
+      })
+
     const messagesToSend: Message[] = []
-    if (systemPrompt) {
-      messagesToSend.push({ role: 'system', content: systemPrompt })
+    if (system_prompt) {
+      messagesToSend.push({ role: 'system', content: system_prompt })
     }
     for (const msg of nextMessages) {
       if (msg.role === 'user') {
@@ -108,6 +137,18 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       },
       onDone: message => {
         setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
+        dbInsertCustomMessage({
+          chat_id: id,
+          role: 'assistant',
+          content: message.content,
+        })
+          .then(result => {
+            print('dbInsertCustomMessage, assistant = ', result)
+          })
+          .catch(e => {
+            print('dbInsertCustomMessage, assistant = ', e)
+          })
+
         setStatus('complete')
         setContent('')
         hapticSuccess()
@@ -126,8 +167,8 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
       <TitleBar
-        title={chatName}
-        subtitle={systemPrompt}
+        title={title}
+        subtitle={system_prompt}
         action={{
           iconName: 'tune',
           onPress: () => toast('success', 'Teaser', 'Chat fine-tuning will be support later'),

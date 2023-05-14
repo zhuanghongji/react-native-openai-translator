@@ -1,5 +1,5 @@
 import { print } from '../printer'
-import { DBResultSet } from './types'
+import { DBResultSet, DBSqlExcution } from './types'
 import * as SQLite from 'expo-sqlite'
 
 function openDatabase() {
@@ -10,23 +10,23 @@ function openDatabase() {
 const db = openDatabase()
 
 export function dbExecuteSql<T>(
-  sqlStatement: string,
-  args?: (number | string | null)[],
+  excution: DBSqlExcution,
   transactionErrorCallback?: SQLite.SQLTransactionErrorCallback,
   transactionSuccessCallback?: () => void
 ): Promise<DBResultSet<T>> {
+  const { statement, args } = excution
   return new Promise((resolve, reject) => {
     db.transaction(
       tx => {
         tx.executeSql(
-          sqlStatement,
+          statement,
           args,
           (_, resultSet) => {
-            print('executeSql', { sqlStatement, args, resultSet })
+            print('executeSql', { statement, args, resultSet })
             resolve(resultSet)
           },
           (_, err) => {
-            print('executeSql', { sqlStatement, args, err })
+            print('executeSql', { statement, args, err })
             reject(err)
             // What is the mean of this return-value ?
             return true
@@ -39,9 +39,7 @@ export function dbExecuteSql<T>(
   })
 }
 
-export function dbExecuteSqlList<T>(
-  sqls: { statement: string; args?: (number | string | null)[] }[]
-): Promise<DBResultSet<T>[]> {
+export function dbExecuteSqlList<T>(sqls: DBSqlExcution[]): Promise<DBResultSet<T>[]> {
   const results: DBResultSet<T>[] = []
   return new Promise((resolve, reject) => {
     db.transaction(
