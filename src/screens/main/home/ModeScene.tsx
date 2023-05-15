@@ -70,6 +70,9 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     translatorMode,
     inputText,
   })
+  useEffect(() => {
+    print('emojis', inputText)
+  }, [])
   const isInputDisabled = inputText ? false : true
 
   const outputViewRef = useRef<OutputViewHandle>(null)

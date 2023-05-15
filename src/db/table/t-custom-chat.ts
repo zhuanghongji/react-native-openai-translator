@@ -6,7 +6,7 @@ import { dbGenInsertExecution, dbGenSelectExecution, dbGenSelectWhereExecution }
 const TABLE_NAME = DBTableName.customChat
 
 export interface TCustomChat extends TResultBase {
-  title: string
+  name: string
   system_prompt: string
   avatar: string
   model: string
@@ -17,7 +17,7 @@ export interface TCustomChat extends TResultBase {
 }
 
 export const DEFAULT_CUSTOM_CHAT: Omit<TCustomChat, keyof TResultBase> = {
-  title: '',
+  name: '',
   system_prompt: '',
   avatar: '',
   model: '',

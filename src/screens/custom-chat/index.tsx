@@ -28,7 +28,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CustomChat'>
 
 export function CustomChatScreen({ route }: Props): JSX.Element {
   const { chat } = route.params
-  const { id, title, system_prompt } = chat
+  const { id, name, system_prompt } = chat
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -167,7 +167,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
       <TitleBar
-        title={title}
+        title={name}
         subtitle={system_prompt}
         action={{
           iconName: 'tune',

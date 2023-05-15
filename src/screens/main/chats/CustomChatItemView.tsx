@@ -1,8 +1,9 @@
+import { EmojiAvatar } from '../../../components/EmojiAvatar'
 import { TCustomChat } from '../../../db/table/t-custom-chat'
 import { dimensions } from '../../../res/dimensions'
 import { TText } from '../../../themes/TText'
 import React from 'react'
-import { Pressable, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native'
+import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
 export type CustomChatItemViewProps = {
   style?: StyleProp<ViewStyle>
@@ -12,32 +13,43 @@ export type CustomChatItemViewProps = {
 
 export function CustomChatItemView(props: CustomChatItemViewProps) {
   const { style, item, onPress } = props
-  const { title, system_prompt } = item
+  const { avatar, name, system_prompt } = item
 
   return (
     <Pressable style={[styles.container, style]} onPress={() => onPress(item)}>
-      <TText style={styles.title} typo="text" numberOfLines={1}>
-        {title}
-      </TText>
-      <TText style={styles.subtitle} typo="text3" numberOfLines={1}>
-        {system_prompt.replace(/\n/g, ' ')}
-      </TText>
+      <EmojiAvatar disabled={true} value={avatar} />
+      <View style={styles.content}>
+        <TText style={styles.title} typo="text" numberOfLines={1}>
+          {name}
+        </TText>
+        <TText style={styles.subtitle} typo="text3" numberOfLines={1}>
+          {system_prompt.replace(/\n/g, ' ')}
+        </TText>
+      </View>
     </Pressable>
   )
 }
 
 type Styles = {
   container: ViewStyle
+  content: ViewStyle
   title: TextStyle
   subtitle: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
   container: {
+    flexDirection: 'row',
     width: '100%',
     height: 64,
+    alignItems: 'center',
+    paddingHorizontal: dimensions.edge,
+  },
+  content: {
+    flex: 1,
+    height: '100%',
     justifyContent: 'center',
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: dimensions.edge,
   },
   title: {
@@ -46,6 +58,6 @@ const styles = StyleSheet.create<Styles>({
   },
   subtitle: {
     fontSize: 13,
-    marginTop: 4,
+    marginTop: 1,
   },
 })

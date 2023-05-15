@@ -1,7 +1,14 @@
 import { AWESOME_PROMPTS, AwesomePrompt } from '../../assets/awesome-chatgpt-prompts'
 import { TitleBar } from '../../components/TitleBar'
 import { TextChunks, splitToTextChunks } from '../../components/chunks-text/utils'
+import {
+  DEFAULT_CUSTOM_CHAT,
+  dbFindCustomChatById,
+  dbInsertCustomChat,
+} from '../../db/table/t-custom-chat'
+import { hapticSuccess, hapticWarning } from '../../haptic'
 import { useThemeScheme } from '../../themes/hooks'
+import { toast } from '../../toast'
 import type { RootStackParamList } from '../screens'
 import { Header } from './Header'
 import { ItemView } from './ItemView'
@@ -61,6 +68,28 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
     promptDetailModalRef.current?.show(prompt)
   }
 
+  const onCreateChatPress = async (prompt: AwesomePrompt) => {
+    try {
+      const { insertId } = await dbInsertCustomChat({
+        ...DEFAULT_CUSTOM_CHAT,
+        avatar: '😀',
+        name: prompt.title,
+        system_prompt: prompt.content,
+      })
+      if (insertId === undefined) {
+        toast('danger', 'Error', 'Initialize Chat Error 1')
+        return
+      }
+      const result = await dbFindCustomChatById(insertId)
+      hapticSuccess()
+      const [insertChat] = result.rows._array
+      navigation.replace('CustomChat', { chat: insertChat })
+    } catch (e) {
+      hapticWarning()
+      toast('danger', 'Error', 'Initialize Chat Error 2')
+    }
+  }
+
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
@@ -88,15 +117,7 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
           }
         />
       </SafeAreaView>
-      <PromptDetailModal
-        ref={promptDetailModalRef}
-        onCreateChatPress={prompt => {
-          navigation.push('CustomChat', {
-            chatName: prompt.title,
-            systemPrompt: prompt.content,
-          })
-        }}
-      />
+      <PromptDetailModal ref={promptDetailModalRef} onCreateChatPress={onCreateChatPress} />
     </BottomSheetModalProvider>
   )
 }

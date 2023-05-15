@@ -34,7 +34,7 @@ export async function dbInitTables(): Promise<void> {
       ]),
       // t-custom-chat
       dbGenCreateTableExcution(DBTableName.customChat, [
-        { name: 'title', type: 'VARCHAR(255)', nullable: true },
+        { name: 'name', type: 'VARCHAR(255)', nullable: true },
         { name: 'system_prompt', type: 'TEXT', nullable: true },
         { name: 'avatar', type: 'VARCHAR(255)', nullable: true },
         { name: 'model', type: 'VARCHAR(255)', nullable: true },

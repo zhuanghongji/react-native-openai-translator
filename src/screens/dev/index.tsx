@@ -17,7 +17,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Dev'>
 export function DevScreen({ navigation: _ }: Props): JSX.Element {
   const testDB = async () => {
     try {
-      const result = await dbExecuteSql('select * from test')
+      const result = await dbExecuteSql({ statement: 'select * from t_test' })
       print('testDB', result)
     } catch (e) {
       print('testDB', e)
@@ -36,7 +36,7 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
           style={styles.button}
           text="Add"
           onPress={() => {
-            dbExecuteSql('insert into t_test (done, value) values (0, ?)')
+            dbExecuteSql({ statement: 'insert into t_test (done, value) values (0, ?)' })
           }}
         />
         <Button
@@ -55,7 +55,7 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
           style={styles.button}
           text="PRAGMA TABLE_INFO"
           onPress={() => {
-            dbExecuteSql('PRAGMA table_info(test) where name = value')
+            dbExecuteSql({ statement: 'PRAGMA table_info(test) where name = value' })
               // dbExecuteSql('PRAGMA table_info(test)')
               .then(result => {
                 print('pragma result =', result)

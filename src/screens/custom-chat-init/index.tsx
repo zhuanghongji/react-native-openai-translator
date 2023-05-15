@@ -1,81 +1,105 @@
 import { AvoidKeyboardView } from '../../components/AvoidKeyboardView'
 import { ChatInfoEditView } from '../../components/ChatInfoEditView'
+import { EmojisModal, EmojisModalHandle } from '../../components/EmojisModal'
 import { TitleBar } from '../../components/TitleBar'
 import {
   DEFAULT_CUSTOM_CHAT,
   dbFindCustomChatById,
   dbInsertCustomChat,
 } from '../../db/table/t-custom-chat'
-import { hapticSuccess } from '../../haptic'
+import { hapticSuccess, hapticWarning } from '../../haptic'
 import { toast } from '../../toast'
 import type { RootStackParamList } from '../screens'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { useState } from 'react'
-import { ScrollView } from 'react-native'
+import React, { useRef, useState } from 'react'
+import { Keyboard, ScrollView } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
+const SNAP_HEIGHT = 340
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomChatInit'>
 
 export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
+  const [avatar, setAvatar] = useState('😀')
   const [chatName, setChatName] = useState('')
   const [systemPrompt, setSystemPrompt] = useState('')
 
-  const title = chatName ? chatName : systemPrompt ? 'Unnamed' : 'Initialize Chat'
-  const subtitle = systemPrompt ? systemPrompt : ''
+  const title = (chatName ? chatName : systemPrompt ? 'Unnamed' : 'Initialize Chat').trim()
+  const subtitle = (systemPrompt ? systemPrompt : '').trim()
   const confirmDisabled = chatName ? false : true
+
+  const emojisModalRef = useRef<EmojisModalHandle>(null)
+  const animatedIndex = useSharedValue(-1)
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: -(animatedIndex.value + 1) * SNAP_HEIGHT * 0.5,
+        },
+      ],
+    }
+  })
 
   const onComfirmPress = async () => {
     try {
-      hapticSuccess()
       const { insertId } = await dbInsertCustomChat({
         ...DEFAULT_CUSTOM_CHAT,
-        title: chatName.trim(),
-        system_prompt: systemPrompt.trim(),
+        avatar,
+        name: title,
+        system_prompt: subtitle,
       })
       if (insertId === undefined) {
         toast('danger', 'Error', 'Initialize Chat Error 1')
         return
       }
       const result = await dbFindCustomChatById(insertId)
+      hapticSuccess()
       const [insertChat] = result.rows._array
       navigation.replace('CustomChat', { chat: insertChat })
     } catch (e) {
+      hapticWarning()
       toast('danger', 'Error', 'Initialize Chat Error 2')
     }
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
-      <TitleBar title={title} subtitle={subtitle} />
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled">
-        <AvoidKeyboardView factor={0.5}>
-          <ChatInfoEditView
-            chatName={chatName}
-            systemPrompt={systemPrompt}
-            confirmDisabled={confirmDisabled}
-            onChatNameChange={setChatName}
-            onSystemPromptChange={setSystemPrompt}
-            onConfirmPress={onComfirmPress}
-            onSkipPress={() => {}}
-          />
-        </AvoidKeyboardView>
-      </ScrollView>
-    </SafeAreaView>
+    <BottomSheetModalProvider>
+      <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+        <TitleBar title={title} subtitle={subtitle} />
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled">
+          <Animated.View style={animatedStyle}>
+            <AvoidKeyboardView factor={0.5}>
+              <ChatInfoEditView
+                avatar={avatar}
+                chatName={chatName}
+                systemPrompt={systemPrompt}
+                confirmDisabled={confirmDisabled}
+                onAvatarPress={() => {
+                  emojisModalRef.current?.show()
+                  Keyboard.dismiss()
+                }}
+                onChatNameChange={setChatName}
+                onSystemPromptChange={setSystemPrompt}
+                onConfirmPress={onComfirmPress}
+                onSkipPress={onComfirmPress}
+              />
+            </AvoidKeyboardView>
+          </Animated.View>
+        </ScrollView>
+
+        <EmojisModal
+          ref={emojisModalRef}
+          snapHeight={SNAP_HEIGHT}
+          animatedIndex={animatedIndex}
+          onEmojiPress={setAvatar}
+        />
+      </SafeAreaView>
+    </BottomSheetModalProvider>
   )
 }
-
-// type Styles = {
-//   modes: ViewStyle
-// }
-
-// const styles = StyleSheet.create<Styles>({
-//   modes: {
-//     flexDirection: 'row',
-//     gap: dimensions.gap,
-//     marginRight: dimensions.edge,
-//   },
-// })

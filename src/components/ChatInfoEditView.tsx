@@ -1,6 +1,7 @@
 import { dimensions } from '../res/dimensions'
 import { toast } from '../toast'
 import { Button } from './Button'
+import { EmojiAvatar } from './EmojiAvatar'
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, TextInput, TextStyle, View, ViewStyle } from 'react-native'
@@ -8,9 +9,11 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 export type ChatInfoEditViewProps = {
   style?: StyleProp<ViewStyle>
+  avatar: string
   chatName: string
   systemPrompt: string
   confirmDisabled?: boolean
+  onAvatarPress: () => void
   onChatNameChange: (value: string) => void
   onSystemPromptChange: (value: string) => void
   onConfirmPress: () => void
@@ -20,9 +23,11 @@ export type ChatInfoEditViewProps = {
 export function ChatInfoEditView(props: ChatInfoEditViewProps) {
   const {
     style,
+    avatar,
     chatName,
     systemPrompt,
     confirmDisabled = false,
+    onAvatarPress,
     onChatNameChange,
     onSystemPromptChange,
     onConfirmPress,
@@ -39,6 +44,11 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
 
   return (
     <View style={[styles.container, { width }, style]}>
+      <EmojiAvatar
+        style={{ marginBottom: dimensions.edgeTwice }}
+        value={avatar}
+        onPress={onAvatarPress}
+      />
       <TextInput
         ref={nameInputRef}
         style={styles.input}
@@ -74,7 +84,12 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         text={t('CONFIRM')}
         onPress={onConfirmPress}
       />
-      <Button style={{ width }} plain={true} text={t('SKIP')} onPress={onSkipPress} />
+      <Button
+        style={{ width: 48, marginTop: dimensions.edge }}
+        plain={true}
+        text={t('SKIP')}
+        onPress={onSkipPress}
+      />
     </View>
   )
 }
