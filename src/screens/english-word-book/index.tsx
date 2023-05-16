@@ -1,4 +1,5 @@
 import { Divider } from '../../components/Divider'
+import { EmptyView } from '../../components/EmptyView'
 import { TitleBar } from '../../components/TitleBar'
 import { TEnglishWord, dbSelectEnglishWord } from '../../db/table/t-english-word'
 import { print } from '../../printer'
@@ -30,27 +31,22 @@ export function EnglishWordBookScreen({ navigation: _ }: Props): JSX.Element {
   const renderItemSeparator = () => <Divider />
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: background }} edges={['bottom']}>
-      <TitleBar style={{ backgroundColor: backgroundChat }} title="English Word Book" />
-      <FlashList
-        data={items}
-        estimatedItemSize={96}
-        keyExtractor={(item, index) => `${index}_${item.id}`}
-        renderItem={({ item }) => {
-          return <EnglishWrodItemView item={item} />
-        }}
-        ItemSeparatorComponent={renderItemSeparator}
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
+      <TitleBar title="English Word Book" />
+      {items.length === 0 ? (
+        <EmptyView />
+      ) : (
+        <FlashList
+          contentContainerStyle={{ backgroundColor: background }}
+          data={items}
+          estimatedItemSize={96}
+          keyExtractor={(item, index) => `${index}_${item.id}`}
+          renderItem={({ item }) => {
+            return <EnglishWrodItemView item={item} />
+          }}
+          ItemSeparatorComponent={renderItemSeparator}
+        />
+      )}
     </SafeAreaView>
   )
 }
-
-// type Styles = {
-//   container: ViewStyle
-// }
-
-// const styles = StyleSheet.create<Styles>({
-//   container: {
-//     flex: 1,
-//   },
-// })

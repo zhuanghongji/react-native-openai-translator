@@ -30,9 +30,10 @@ export function ModeResultBookmarksScreen({ navigation: _ }: Props): JSX.Element
   const renderItemSeparator = () => <Divider />
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: background }} edges={['bottom']}>
-      <TitleBar style={{ backgroundColor: backgroundChat }} title="Mode Result Bookmarks" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
+      <TitleBar title="Mode Result Bookmarks" />
       <FlashList
+        contentContainerStyle={{ backgroundColor: background }}
         data={items}
         estimatedItemSize={96}
         keyExtractor={(item, index) => `${index}_${item.id}`}

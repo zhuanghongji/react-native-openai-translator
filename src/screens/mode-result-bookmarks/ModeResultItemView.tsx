@@ -21,7 +21,7 @@ export function ModeResultItemView(props: ModeResultItemViewProps) {
 
   return (
     <View style={[styles.container, style]}>
-      <TText style={styles.userContent} typo="text">
+      <TText style={styles.userContent} typo="text" numberOfLines={1}>
         {user_content}
       </TText>
       <TText style={styles.assistantContent} typo="text3" numberOfLines={1}>

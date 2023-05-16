@@ -15,7 +15,7 @@ export function EnglishWrodItemView(props: EnglishWrodItemViewProps) {
   const { user_content, assistant_content, target_lang, update_time } = item
   return (
     <View style={[styles.container, style]}>
-      <TText style={styles.userContent} typo="text">
+      <TText style={styles.userContent} typo="text" numberOfLines={1}>
         {user_content}
       </TText>
       <TText style={styles.assistantContent} typo="text3" numberOfLines={1}>
