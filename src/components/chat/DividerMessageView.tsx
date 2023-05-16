@@ -40,7 +40,6 @@ export function AppDividerView(props: AppDividerView) {
         {renderLine(false)}
       </View>
       <ToolButton
-        style={{ marginTop: 4 }}
         containerSize={CONTAINER_SIZE}
         tintTypo="tint2"
         name="chat-share"

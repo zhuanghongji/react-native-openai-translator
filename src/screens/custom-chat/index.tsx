@@ -28,7 +28,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CustomChat'>
 
 export function CustomChatScreen({ route }: Props): JSX.Element {
   const { chat } = route.params
-  const { id, name, system_prompt } = chat
+  const { id, name, system_prompt, avatar } = chat
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -196,7 +196,13 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
                 return <UserMessageView hideChatAvatar={hideChatAvatar} message={item} />
               }
               if (item.role === 'assistant') {
-                return <AssistantMessageView hideChatAvatar={hideChatAvatar} message={item} />
+                return (
+                  <AssistantMessageView
+                    avatar={avatar}
+                    hideChatAvatar={hideChatAvatar}
+                    message={item}
+                  />
+                )
               }
               return null
             }}

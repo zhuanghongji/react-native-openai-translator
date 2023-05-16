@@ -1,3 +1,4 @@
+import { SvgIconName } from '../../components/SvgIcon'
 import { TitleBar } from '../../components/TitleBar'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
 import { AppDividerView } from '../../components/chat/DividerMessageView'
@@ -45,11 +46,28 @@ function useTitle(mode: TranslatorMode) {
   return t('Bubble Chat')
 }
 
+function getAssistantIconName(mode: TranslatorMode): SvgIconName {
+  if (mode === 'translate') {
+    return 'language'
+  }
+  if (mode === 'polishing') {
+    return 'palette'
+  }
+  if (mode === 'summarize') {
+    return 'summarize'
+  }
+  if (mode === 'analyze') {
+    return 'analytics'
+  }
+  return 'bubble'
+}
+
 export function ModeChatScreen({ route }: Props): JSX.Element {
   const { modeResult, systemPrompt, userContent, assistantContent } = route.params
   const { id, mode } = modeResult
   const translatorMode = mode as TranslatorMode
   const title = useTitle(translatorMode)
+  const assistantIconName = getAssistantIconName(translatorMode)
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -230,7 +248,13 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
                 return <UserMessageView hideChatAvatar={hideChatAvatar} message={item} />
               }
               if (item.role === 'assistant') {
-                return <AssistantMessageView hideChatAvatar={hideChatAvatar} message={item} />
+                return (
+                  <AssistantMessageView
+                    hideChatAvatar={hideChatAvatar}
+                    svgIconName={assistantIconName}
+                    message={item}
+                  />
+                )
               }
               return null
             }}

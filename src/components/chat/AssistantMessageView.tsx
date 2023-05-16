@@ -1,3 +1,4 @@
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
 import { stylez } from '../../res/stylez'
@@ -5,30 +6,54 @@ import { TText } from '../../themes/TText'
 import { useThemeScheme } from '../../themes/hooks'
 import { ChatMessage } from '../../types'
 import { trimContent } from '../../utils'
+import { SvgIcon, SvgIconName } from '../SvgIcon'
 import React from 'react'
-import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
+import { Image, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
 export type AssistantMessageProps = {
   style?: StyleProp<ViewStyle>
+  avatar?: string
+  svgIconName?: SvgIconName
   message: ChatMessage
   hideChatAvatar: boolean
 }
 
 export function AssistantMessageView(props: AssistantMessageProps) {
-  const { style, message, hideChatAvatar } = props
+  const { style, avatar, svgIconName, message, hideChatAvatar } = props
   const { content } = message
 
-  const { backgroundMessage: backgroundColor } = useThemeScheme()
+  const { tint, backgroundMessage: backgroundColor } = useThemeScheme()
+
+  const renderAvatar = () => {
+    if (hideChatAvatar) {
+      return <View style={stylez.chatAvatarContainerHidden} />
+    }
+    if (avatar) {
+      return (
+        <View style={stylez.chatAvatarContainer}>
+          <Text style={{ fontSize: 18, color: colors.black, includeFontPadding: false }}>
+            {avatar}
+          </Text>
+        </View>
+      )
+    }
+    if (svgIconName) {
+      return (
+        <View style={stylez.chatAvatarContainer}>
+          <SvgIcon size={22} name={svgIconName} color={tint} />
+        </View>
+      )
+    }
+    return (
+      <View style={stylez.chatAvatarContainer}>
+        <Image style={stylez.chatAvatarLogo} source={images.logoMini} />
+      </View>
+    )
+  }
 
   return (
     <View style={[style, styles.container]}>
-      {hideChatAvatar ? (
-        <View style={stylez.chatAvatarContainerHidden} />
-      ) : (
-        <View style={stylez.chatAvatarContainer}>
-          <Image style={stylez.chatAvatarLogo} source={images.logoMini} />
-        </View>
-      )}
+      {renderAvatar()}
 
       <View style={[styles.content, { backgroundColor }]}>
         <TText style={[styles.text, stylez.contentText]} typo="text">

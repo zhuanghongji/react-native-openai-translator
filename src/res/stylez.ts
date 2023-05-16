@@ -22,7 +22,7 @@ export const stylez = StyleSheet.create<Sheets>({
     width: dimensions.chatAvatar,
     height: dimensions.chatAvatar,
     alignItems: 'center',
-    marginTop: 12,
+    marginTop: 16,
     marginHorizontal: 8,
   },
   chatAvatarContainerHidden: {
