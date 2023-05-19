@@ -6,14 +6,15 @@ import { Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from 're
 
 export type ButtonProps = {
   style?: StyleProp<ViewStyle>
+  textStyle?: StyleProp<ViewStyle>
   text: string
   plain?: boolean
   disabled?: boolean
-  onPress: () => void
+  onPress?: () => void
 }
 
 export function Button(props: ButtonProps) {
-  const { style, text, plain = false, disabled = false, onPress } = props
+  const { style, textStyle, text, plain = false, disabled = false, onPress } = props
 
   const dark = useThemeDark()
   const backgroundColor = useMemo(() => {
@@ -43,7 +44,7 @@ export function Button(props: ButtonProps) {
       style={[styles.container, { backgroundColor }, style]}
       disabled={disabled}
       onPress={onPress}>
-      <Text style={[styles.text, { color }]}>{text}</Text>
+      <Text style={[styles.text, textStyle, { color }]}>{text}</Text>
     </Pressable>
   )
 }

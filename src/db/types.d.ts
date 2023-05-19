@@ -55,6 +55,6 @@ export interface DBTableInfoItem {
 
 export interface TResultBase {
   id: number
-  insert_time: number
-  update_time: number
+  insert_time: number | null
+  update_time: number | null
 }

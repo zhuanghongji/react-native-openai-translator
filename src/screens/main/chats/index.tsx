@@ -3,6 +3,7 @@ import { TitleBar } from '../../../components/TitleBar'
 import { TCustomChat, dbSelectCustomChat } from '../../../db/table/t-custom-chat'
 import { print } from '../../../printer'
 import { useThemeScheme } from '../../../themes/hooks'
+import { useCustomChatSettingsStore } from '../../../zustand/stores/custom-chat-settings'
 import type { MainTabScreenProps } from '../../screens'
 import { AddTip } from './AddTip'
 import { CustomChatItemView } from './CustomChatItemView'
@@ -18,15 +19,18 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
   const [chats, setChats] = useState<TCustomChat[]>([])
   const isEmpty = chats.length === 0
 
+  const batchChat = useCustomChatSettingsStore(state => state.batchChat)
+
   useEffect(() => {
     dbSelectCustomChat()
       .then(result => {
         setChats(result.rows._array)
+        batchChat(result.rows._array)
       })
       .catch(e => {
         print('dbSelectModeResult', e)
       })
-  }, [])
+  }, [batchChat])
 
   const handleItemPress = (chat: TCustomChat) => {
     navigation.navigate('CustomChat', { chat })

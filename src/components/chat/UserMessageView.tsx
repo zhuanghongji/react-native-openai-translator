@@ -9,18 +9,19 @@ import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-n
 
 export type UserMessageProps = {
   style?: StyleProp<ViewStyle>
+  fontSize: number
   message: ChatMessage
   hideChatAvatar: boolean
 }
 
 export function UserMessageView(props: UserMessageProps) {
-  const { style, message, hideChatAvatar } = props
+  const { style, fontSize, message, hideChatAvatar } = props
   const { content } = message
 
   return (
     <View style={[style, styles.container]}>
       <View style={styles.content}>
-        <Text style={[styles.text, stylez.contentText]}>{trimContent(content)}</Text>
+        <Text style={[styles.text, stylez.contentText, { fontSize }]}>{trimContent(content)}</Text>
       </View>
       {hideChatAvatar ? (
         <View style={stylez.chatAvatarContainerHidden} />

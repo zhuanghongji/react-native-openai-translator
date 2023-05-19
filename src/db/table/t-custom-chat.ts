@@ -5,26 +5,40 @@ import { dbGenInsertExecution, dbGenSelectExecution, dbGenSelectWhereExecution }
 
 const TABLE_NAME = DBTableName.customChat
 
-export interface TCustomChat extends TResultBase {
-  name: string
-  system_prompt: string
-  avatar: string
-  model: string
-  temperature: string
-  context_num: number
-  tts_voice: string
-  font_size: number
+export type TCustomChatBasic = {
+  avatar: string | null
+  name: string | null
+  system_prompt: string | null
+  model: string | null
+  // TODO must change to number type
+  temperature: string | null
+  // TODO Is it need to change to context_message_num ?
+  context_num: number | null
+  tts_voice: string | null
+  font_size: number | null
 }
 
-export const DEFAULT_CUSTOM_CHAT: Omit<TCustomChat, keyof TResultBase> = {
-  name: '',
-  system_prompt: '',
-  avatar: '',
-  model: '',
-  temperature: '',
+export type TCustomChat = TResultBase & TCustomChatBasic
+
+export const T_CUSTOM_CHAT_BASIC_DEFAULT = {
+  avatar: '😀',
+  model: 'gpt-3.5-turbo',
+  temperature: '1.0',
   context_num: 4,
-  tts_voice: '',
-  font_size: 15,
+  font_size: 16,
+}
+
+export const T_CUSTOM_CHAT_DEFAULT: Omit<TCustomChat, 'id'> = {
+  avatar: null,
+  name: null,
+  system_prompt: null,
+  model: null,
+  temperature: null,
+  context_num: null,
+  tts_voice: null,
+  font_size: null,
+  insert_time: null,
+  update_time: null,
 }
 
 export function dbInsertCustomChat(target: Omit<TCustomChat, keyof TResultBase>) {

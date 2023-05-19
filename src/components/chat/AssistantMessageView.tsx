@@ -12,14 +12,15 @@ import { Image, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from '
 
 export type AssistantMessageProps = {
   style?: StyleProp<ViewStyle>
-  avatar?: string
+  avatar?: string | null
   svgIconName?: SvgIconName
+  fontSize: number
   message: ChatMessage
   hideChatAvatar: boolean
 }
 
 export function AssistantMessageView(props: AssistantMessageProps) {
-  const { style, avatar, svgIconName, message, hideChatAvatar } = props
+  const { style, avatar, svgIconName, fontSize, message, hideChatAvatar } = props
   const { content } = message
 
   const { tint, backgroundMessage: backgroundColor } = useThemeScheme()
@@ -54,9 +55,8 @@ export function AssistantMessageView(props: AssistantMessageProps) {
   return (
     <View style={[style, styles.container]}>
       {renderAvatar()}
-
       <View style={[styles.content, { backgroundColor }]}>
-        <TText style={[styles.text, stylez.contentText]} typo="text">
+        <TText style={[styles.text, stylez.contentText, { fontSize }]} typo="text">
           {trimContent(content)}
         </TText>
       </View>

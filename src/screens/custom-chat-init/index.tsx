@@ -3,12 +3,13 @@ import { ChatInfoEditView } from '../../components/ChatInfoEditView'
 import { EmojisModal, EmojisModalHandle } from '../../components/EmojisModal'
 import { TitleBar } from '../../components/TitleBar'
 import {
-  DEFAULT_CUSTOM_CHAT,
+  T_CUSTOM_CHAT_DEFAULT,
   dbFindCustomChatById,
   dbInsertCustomChat,
 } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
 import { toast } from '../../toast'
+import { useCustomChatSettingsStore } from '../../zustand/stores/custom-chat-settings'
 import type { RootStackParamList } from '../screens'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -42,11 +43,11 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
     }
   })
 
+  const batchChat = useCustomChatSettingsStore(state => state.batchChat)
   const onComfirmPress = async () => {
     try {
       const { insertId } = await dbInsertCustomChat({
-        ...DEFAULT_CUSTOM_CHAT,
-        avatar,
+        ...T_CUSTOM_CHAT_DEFAULT,
         name: title,
         system_prompt: subtitle,
       })
@@ -57,6 +58,7 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
       const result = await dbFindCustomChatById(insertId)
       hapticSuccess()
       const [insertChat] = result.rows._array
+      batchChat([insertChat])
       navigation.replace('CustomChat', { chat: insertChat })
     } catch (e) {
       hapticWarning()

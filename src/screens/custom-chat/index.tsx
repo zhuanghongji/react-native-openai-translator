@@ -1,9 +1,14 @@
 import { TitleBar } from '../../components/TitleBar'
+import {
+  SettingsSelectorModal,
+  SettingsSelectorModalHandle,
+} from '../../components/chat-settings/SettingsSelectorModal'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
 import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
+import { T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../db/table/t-custom-chat'
 import { dbInsertCustomMessage, dbSelectModeMessageOfChatId } from '../../db/table/t-custom-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
@@ -14,8 +19,13 @@ import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
 import { ChatMessage, Message } from '../../types'
+import {
+  updateCustomChatSettings,
+  useCustomChatSettings,
+} from '../../zustand/stores/custom-chat-settings-helper'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import type { RootStackParamList } from '../screens'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, View } from 'react-native'
@@ -28,7 +38,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'CustomChat'>
 
 export function CustomChatScreen({ route }: Props): JSX.Element {
   const { chat } = route.params
-  const { id, name, system_prompt, avatar } = chat
+  const { id } = chat
+
+  const settingsModalRef = useRef<SettingsSelectorModalHandle>(null)
+  const settings = useCustomChatSettings(id)
+  const { name, system_prompt, avatar, font_size } = settings
+  const fontSize = font_size ?? T_CUSTOM_CHAT_BASIC_DEFAULT.font_size
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -165,62 +180,86 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
-      <TitleBar
-        title={name}
-        subtitle={system_prompt}
-        action={{
-          iconName: 'tune',
-          onPress: () => toast('success', 'Teaser', 'Chat fine-tuning will be support later'),
-        }}
-      />
-      <View style={[{ flex: 1, overflow: 'hidden' }]}>
-        <Animated.View style={[{ flex: 1 }, transformStyle]}>
-          {/* 
-            The FlashList with an inverted orientation has an incorrect location for the vertical scroll indicator on the left side. 
-            Therefore, it should be replaced by a FlatList. 
-          */}
-          <FlatList
-            ref={messageListRef}
-            contentContainerStyle={{ paddingVertical: dimensions.messageSeparator }}
-            keyboardDismissMode="on-drag"
-            keyboardShouldPersistTaps="handled"
-            inverted={true}
-            data={messagesInverted}
-            keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
-            renderItem={({ item }) => {
-              if (item.role === 'divider') {
-                return <AppDividerView message={item} onSavePress={handleSavePress} />
+    <BottomSheetModalProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
+        <TitleBar
+          title={name ?? ''}
+          subtitle={system_prompt ?? ''}
+          action={{
+            iconName: 'tune',
+            onPress: () => {
+              // toast('success', 'Teaser', 'Chat fine-tuning will be support later')
+              settingsModalRef.current?.show()
+            },
+          }}
+        />
+        <View style={[{ flex: 1, overflow: 'hidden' }]}>
+          <Animated.View style={[{ flex: 1 }, transformStyle]}>
+            {/*
+             * The FlashList with an inverted orientation has an incorrect location for the vertical scroll indicator on the left side.
+             * Therefore, it should be replaced by a FlatList.
+             */}
+            <FlatList
+              ref={messageListRef}
+              contentContainerStyle={{ paddingVertical: dimensions.messageSeparator }}
+              keyboardDismissMode="on-drag"
+              keyboardShouldPersistTaps="handled"
+              inverted={true}
+              data={messagesInverted}
+              keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
+              renderItem={({ item }) => {
+                if (item.role === 'divider') {
+                  return <AppDividerView message={item} onSavePress={handleSavePress} />
+                }
+                if (item.role === 'user') {
+                  return (
+                    <UserMessageView
+                      hideChatAvatar={hideChatAvatar}
+                      fontSize={fontSize}
+                      message={item}
+                    />
+                  )
+                }
+                if (item.role === 'assistant') {
+                  return (
+                    <AssistantMessageView
+                      avatar={avatar}
+                      hideChatAvatar={hideChatAvatar}
+                      fontSize={fontSize}
+                      message={item}
+                    />
+                  )
+                }
+                return null
+              }}
+              ItemSeparatorComponent={renderItemSeparator}
+              ListHeaderComponent={
+                <SSEMessageView fontSize={fontSize} hideChatAvatar={hideChatAvatar} />
               }
-              if (item.role === 'user') {
-                return <UserMessageView hideChatAvatar={hideChatAvatar} message={item} />
-              }
-              if (item.role === 'assistant') {
-                return (
-                  <AssistantMessageView
-                    avatar={avatar}
-                    hideChatAvatar={hideChatAvatar}
-                    message={item}
-                  />
-                )
-              }
-              return null
-            }}
-            ItemSeparatorComponent={renderItemSeparator}
-            ListHeaderComponent={<SSEMessageView hideChatAvatar={hideChatAvatar} />}
-            onEndReached={() => console.log('onEndReached')}
-          />
-        </Animated.View>
-      </View>
-      <InputBar
-        value={inputText}
-        sendDisabled={sendDisabled}
-        onChangeText={setInputText}
-        onSendPress={onSendPress}
-        onNewDialoguePress={() => {
-          setMessages([...messages, { role: 'divider', content: 'NEW DIALOGUE' }])
-        }}
-      />
-    </SafeAreaView>
+              onEndReached={() => console.log('onEndReached')}
+            />
+          </Animated.View>
+        </View>
+        <InputBar
+          value={inputText}
+          sendDisabled={sendDisabled}
+          onChangeText={setInputText}
+          onSendPress={onSendPress}
+          onNewDialoguePress={() => {
+            setMessages([...messages, { role: 'divider', content: 'NEW DIALOGUE' }])
+          }}
+        />
+        <SettingsSelectorModal
+          ref={settingsModalRef}
+          settings={settings}
+          onSettingsChange={values => {
+            updateCustomChatSettings(id, values)
+          }}
+          onDeleteAllMessageConfirm={() => {
+            setMessages([])
+          }}
+        />
+      </SafeAreaView>
+    </BottomSheetModalProvider>
   )
 }

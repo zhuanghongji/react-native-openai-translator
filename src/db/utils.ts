@@ -46,7 +46,7 @@ export function dbGenPragmaTableInfoExcution(tableName: string): DBSqlExcution {
 
 export function dbGenInsertExecution(
   tableName: string,
-  target: { [key: string]: string | number }
+  target: { [key: string]: string | number | null }
 ): DBSqlExcution {
   const keys: string[] = []
   const values: string[] = []

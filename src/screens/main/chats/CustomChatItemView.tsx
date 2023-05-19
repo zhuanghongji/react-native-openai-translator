@@ -1,7 +1,8 @@
 import { EmojiAvatar } from '../../../components/EmojiAvatar'
-import { TCustomChat } from '../../../db/table/t-custom-chat'
+import { TCustomChat, T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../../db/table/t-custom-chat'
 import { dimensions } from '../../../res/dimensions'
 import { TText } from '../../../themes/TText'
+import { useCustomChatSettings } from '../../../zustand/stores/custom-chat-settings-helper'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
@@ -13,7 +14,11 @@ export type CustomChatItemViewProps = {
 
 export function CustomChatItemView(props: CustomChatItemViewProps) {
   const { style, item, onPress } = props
-  const { avatar, name, system_prompt } = item
+  const { id } = item
+  const settings = useCustomChatSettings(id)
+  const avatar = settings.avatar ?? T_CUSTOM_CHAT_BASIC_DEFAULT.avatar
+  const name = settings.name ? settings.name : 'Unnamed'
+  const system_prompt = settings.system_prompt ? settings.system_prompt : ''
 
   return (
     <Pressable style={[styles.container, style]} onPress={() => onPress(item)}>

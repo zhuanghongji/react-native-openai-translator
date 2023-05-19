@@ -11,11 +11,12 @@ import { Image, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-
 
 export type SSEMessageProps = {
   style?: StyleProp<ViewStyle>
+  fontSize: number
   hideChatAvatar: boolean
 }
 
 export function SSEMessageView(props: SSEMessageProps) {
-  const { style, hideChatAvatar } = props
+  const { style, fontSize, hideChatAvatar } = props
 
   const { backgroundMessage: backgroundColor } = useThemeScheme()
 
@@ -35,7 +36,7 @@ export function SSEMessageView(props: SSEMessageProps) {
       )}
 
       <View style={[styles.content, { backgroundColor }]}>
-        <TText style={[styles.text, stylez.contentText]} typo="text">
+        <TText style={[styles.text, stylez.contentText, { fontSize }]} typo="text">
           {content ? trimContent(content) : '...'}
         </TText>
       </View>

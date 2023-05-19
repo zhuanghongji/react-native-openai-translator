@@ -2,13 +2,14 @@ import { AWESOME_PROMPTS, AwesomePrompt } from '../../assets/awesome-chatgpt-pro
 import { TitleBar } from '../../components/TitleBar'
 import { TextChunks, splitToTextChunks } from '../../components/chunks-text/utils'
 import {
-  DEFAULT_CUSTOM_CHAT,
+  T_CUSTOM_CHAT_DEFAULT,
   dbFindCustomChatById,
   dbInsertCustomChat,
 } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
+import { useCustomChatSettingsStore } from '../../zustand/stores/custom-chat-settings'
 import type { RootStackParamList } from '../screens'
 import { Header } from './Header'
 import { ItemView } from './ItemView'
@@ -68,11 +69,11 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
     promptDetailModalRef.current?.show(prompt)
   }
 
+  const batchChat = useCustomChatSettingsStore(state => state.batchChat)
   const onCreateChatPress = async (prompt: AwesomePrompt) => {
     try {
       const { insertId } = await dbInsertCustomChat({
-        ...DEFAULT_CUSTOM_CHAT,
-        avatar: '😀',
+        ...T_CUSTOM_CHAT_DEFAULT,
         name: prompt.title,
         system_prompt: prompt.content,
       })
@@ -83,6 +84,7 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
       const result = await dbFindCustomChatById(insertId)
       hapticSuccess()
       const [insertChat] = result.rows._array
+      batchChat([insertChat])
       navigation.replace('CustomChat', { chat: insertChat })
     } catch (e) {
       hapticWarning()
