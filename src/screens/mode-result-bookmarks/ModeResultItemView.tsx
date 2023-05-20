@@ -1,4 +1,4 @@
-import { TModeResult } from '../../db/table/t-mode-result'
+import { TModeResult } from '../../db/types'
 import { LanguageKey, languageLabelByKey } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import { TText } from '../../themes/TText'

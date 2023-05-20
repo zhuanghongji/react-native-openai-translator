@@ -1,6 +1,6 @@
 import { SvgIcon } from '../../components/SvgIcon'
 import { ToolButton } from '../../components/ToolButton'
-import { TModeResult } from '../../db/table/t-mode-result'
+import { TModeResult } from '../../db/types'
 import { hapticSoft } from '../../haptic'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'

@@ -1,4 +1,4 @@
-import { T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../db/table/t-custom-chat'
+import { DEFAULTS } from '../../preferences/defaults'
 import { Divider } from '../Divider'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
@@ -9,8 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type EditTemperatureValueDetailViewProps = {
   style?: StyleProp<ViewStyle>
-  value: string | null
-  onValueChange: (value: string) => void
+  value: number
+  onValueChange: (value: number) => void
 }
 
 export function EditTemperatureValueDetailView(props: EditTemperatureValueDetailViewProps) {
@@ -18,13 +18,13 @@ export function EditTemperatureValueDetailView(props: EditTemperatureValueDetail
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
-  const [temperature, setTemperature] = useState(value ?? T_CUSTOM_CHAT_BASIC_DEFAULT.temperature)
+  const [temperature, setTemperature] = useState(value)
   const actionDisabled = value === temperature
 
   const data = useMemo(() => {
-    const result: string[] = []
+    const result: number[] = []
     for (let i = 0; i < 2.2; i += 0.2) {
-      result.push(i.toFixed(1))
+      result.push(i)
     }
     return result
   }, [])
@@ -42,10 +42,10 @@ export function EditTemperatureValueDetailView(props: EditTemperatureValueDetail
         data={data}
         keyExtractor={(item, index) => `${index}_${item}`}
         renderItem={({ item }) => {
-          const subtitle = item === T_CUSTOM_CHAT_BASIC_DEFAULT.temperature ? ' (default)' : ''
+          const subtitle = item === DEFAULTS.apiTemperature ? ' (default)' : ''
           return (
             <EditItemView
-              title={item}
+              title={`${item.toFixed(1)}`}
               subtitle={subtitle}
               selected={item === temperature}
               onPress={() => setTemperature(item)}

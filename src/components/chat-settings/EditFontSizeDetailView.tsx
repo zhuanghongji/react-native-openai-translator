@@ -1,4 +1,4 @@
-import { T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../db/table/t-custom-chat'
+import { DEFAULTS } from '../../preferences/defaults'
 import { Divider } from '../Divider'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type EditFontSizeDetailViewProps = {
   style?: StyleProp<ViewStyle>
-  value: number | null
+  value: number
   onValueChange: (value: number) => void
 }
 
@@ -18,7 +18,7 @@ export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
-  const [fontSize, setFontSize] = useState(value ?? T_CUSTOM_CHAT_BASIC_DEFAULT.font_size)
+  const [fontSize, setFontSize] = useState(value)
   const actionDisabled = value === fontSize
 
   const data = useMemo(() => {
@@ -42,7 +42,7 @@ export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
         data={data}
         keyExtractor={(item, index) => `${index}_${item}`}
         renderItem={({ item }) => {
-          const subtitle = item === T_CUSTOM_CHAT_BASIC_DEFAULT.font_size ? ' (default)' : ''
+          const subtitle = item === DEFAULTS.fontSize ? ' (default)' : ''
           return (
             <EditItemView
               title={`${item}${Platform.OS === 'ios' ? ' pt' : ' dp'}`}

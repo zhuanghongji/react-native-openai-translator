@@ -84,7 +84,7 @@ export const SettingsSelectorModal = React.forwardRef<
         snapPoints={selectorPoints}
         stackBehavior="push"
         backdropComponent={renderBackdrop}>
-        <BottomSheetScrollView style={styles.container}>
+        <BottomSheetScrollView style={[styles.container, style]}>
           <Divider />
           {renderSelectorItem({
             title: '修改头像',

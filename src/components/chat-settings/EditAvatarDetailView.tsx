@@ -1,4 +1,3 @@
-import { T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../db/table/t-custom-chat'
 import { dimensions } from '../../res/dimensions'
 import { Divider } from '../Divider'
 import { EmojiAvatar } from '../EmojiAvatar'
@@ -9,14 +8,14 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 export type EditAvatarDetailViewProps = {
   style?: StyleProp<ViewStyle>
-  value: string | null
+  value: string
   onValueChange: (value: string) => void
 }
 
 export function EditAvatarDetailView(props: EditAvatarDetailViewProps) {
   const { style, value, onValueChange } = props
 
-  const [avatar, setAvatar] = useState(value ?? T_CUSTOM_CHAT_BASIC_DEFAULT.avatar)
+  const [avatar, setAvatar] = useState(value)
   const actionDisabled = avatar === value
 
   return (

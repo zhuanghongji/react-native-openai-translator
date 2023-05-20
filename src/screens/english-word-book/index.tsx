@@ -1,7 +1,8 @@
 import { Divider } from '../../components/Divider'
 import { EmptyView } from '../../components/EmptyView'
 import { TitleBar } from '../../components/TitleBar'
-import { TEnglishWord, dbSelectEnglishWord } from '../../db/table/t-english-word'
+import { dbSelectModeWord } from '../../db/table/t-mode-word'
+import { TModeWord } from '../../db/types'
 import { print } from '../../printer'
 import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
@@ -16,15 +17,15 @@ type Props = NativeStackScreenProps<RootStackParamList, 'EnglishWordBook'>
 export function EnglishWordBookScreen({ navigation: _ }: Props): JSX.Element {
   const { background, backgroundChat } = useThemeScheme()
 
-  const [items, setItems] = useState<TEnglishWord[]>([])
+  const [items, setItems] = useState<TModeWord[]>([])
 
   useEffect(() => {
-    dbSelectEnglishWord()
+    dbSelectModeWord()
       .then(result => {
         setItems(result.rows._array)
       })
       .catch(e => {
-        print('dbSelectEnglishWord', e)
+        print('dbSelectModeWord', e)
       })
   }, [])
 

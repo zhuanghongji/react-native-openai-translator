@@ -1,4 +1,4 @@
-import { TEnglishWord } from '../../db/table/t-english-word'
+import { TModeWord } from '../../db/types'
 import { LanguageKey, languageLabelByKey } from '../../preferences/options'
 import { dimensions } from '../../res/dimensions'
 import { TText } from '../../themes/TText'
@@ -7,7 +7,7 @@ import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 're
 
 export type EnglishWrodItemViewProps = {
   style?: StyleProp<ViewStyle>
-  item: TEnglishWord
+  item: TModeWord
 }
 
 export function EnglishWrodItemView(props: EnglishWrodItemViewProps) {

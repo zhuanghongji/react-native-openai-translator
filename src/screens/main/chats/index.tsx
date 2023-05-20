@@ -1,6 +1,7 @@
 import { Divider } from '../../../components/Divider'
 import { TitleBar } from '../../../components/TitleBar'
-import { TCustomChat, dbSelectCustomChat } from '../../../db/table/t-custom-chat'
+import { dbSelectCustomChat } from '../../../db/table/t-custom-chat'
+import { TCustomChat } from '../../../db/types'
 import { print } from '../../../printer'
 import { useThemeScheme } from '../../../themes/hooks'
 import { useCustomChatSettingsStore } from '../../../zustand/stores/custom-chat-settings'

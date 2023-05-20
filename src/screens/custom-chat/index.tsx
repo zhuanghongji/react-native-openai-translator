@@ -8,8 +8,11 @@ import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
-import { T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../db/table/t-custom-chat'
-import { dbInsertCustomMessage, dbSelectModeMessageOfChatId } from '../../db/table/t-custom-message'
+import { DEFAULT_T_RESULT_EXTRA, fillTCustomChatWithDefaults } from '../../db/helper'
+import {
+  dbInsertCustomMessage,
+  dbSelecTModeChatMessageOfChatId,
+} from '../../db/table/t-custom-chat-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
@@ -41,9 +44,8 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   const { id } = chat
 
   const settingsModalRef = useRef<SettingsSelectorModalHandle>(null)
-  const settings = useCustomChatSettings(id)
-  const { name, system_prompt, avatar, font_size } = settings
-  const fontSize = font_size ?? T_CUSTOM_CHAT_BASIC_DEFAULT.font_size
+  const settings = fillTCustomChatWithDefaults(id, useCustomChatSettings(id))
+  const { chat_name, system_prompt, avatar, font_size } = settings
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -61,7 +63,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     return [...messages].reverse()
   }, [messages])
   useEffect(() => {
-    dbSelectModeMessageOfChatId(id)
+    dbSelecTModeChatMessageOfChatId(id)
       .then(result => {
         setMessages(
           result.rows._array.map(
@@ -74,7 +76,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
         )
       })
       .catch(e => {
-        print('dbSelectModeMessageOfChatId', e)
+        print('dbSelecTModeChatMessageOfChatId', e)
       })
   }, [id])
 
@@ -112,9 +114,11 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
     dbInsertCustomMessage({
+      ...DEFAULT_T_RESULT_EXTRA,
       chat_id: id,
       role: 'user',
       content: inputText,
+      status: null,
     })
       .then(result => {
         print('dbInsertCustomMessage, user = ', result)
@@ -153,9 +157,11 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       onDone: message => {
         setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
         dbInsertCustomMessage({
+          ...DEFAULT_T_RESULT_EXTRA,
           chat_id: id,
           role: 'assistant',
           content: message.content,
+          status: null,
         })
           .then(result => {
             print('dbInsertCustomMessage, assistant = ', result)
@@ -183,7 +189,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
         <TitleBar
-          title={name ?? ''}
+          title={chat_name ?? ''}
           subtitle={system_prompt ?? ''}
           action={{
             iconName: 'tune',
@@ -212,7 +218,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
                   return (
                     <UserMessageView
                       hideChatAvatar={hideChatAvatar}
-                      fontSize={fontSize}
+                      fontSize={font_size}
                       message={item}
                     />
                   )
@@ -222,7 +228,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
                     <AssistantMessageView
                       avatar={avatar}
                       hideChatAvatar={hideChatAvatar}
-                      fontSize={fontSize}
+                      fontSize={font_size}
                       message={item}
                     />
                   )
@@ -231,7 +237,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
               }}
               ItemSeparatorComponent={renderItemSeparator}
               ListHeaderComponent={
-                <SSEMessageView fontSize={fontSize} hideChatAvatar={hideChatAvatar} />
+                <SSEMessageView fontSize={font_size} hideChatAvatar={hideChatAvatar} />
               }
               onEndReached={() => console.log('onEndReached')}
             />

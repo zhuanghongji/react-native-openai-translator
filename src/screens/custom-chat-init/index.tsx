@@ -2,11 +2,8 @@ import { AvoidKeyboardView } from '../../components/AvoidKeyboardView'
 import { ChatInfoEditView } from '../../components/ChatInfoEditView'
 import { EmojisModal, EmojisModalHandle } from '../../components/EmojisModal'
 import { TitleBar } from '../../components/TitleBar'
-import {
-  T_CUSTOM_CHAT_DEFAULT,
-  dbFindCustomChatById,
-  dbInsertCustomChat,
-} from '../../db/table/t-custom-chat'
+import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/helper'
+import { dbFindCustomChatById, dbInsertCustomChat } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
 import { toast } from '../../toast'
 import { useCustomChatSettingsStore } from '../../zustand/stores/custom-chat-settings'
@@ -47,8 +44,8 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
   const onComfirmPress = async () => {
     try {
       const { insertId } = await dbInsertCustomChat({
-        ...T_CUSTOM_CHAT_DEFAULT,
-        name: title,
+        ...DEFAULT_T_CUSTOM_CHAT_BASIC,
+        chat_name: title,
         system_prompt: subtitle,
       })
       if (insertId === undefined) {

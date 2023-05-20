@@ -1,4 +1,5 @@
-import { TEnglishWord, dbFindEnglishWordWhere } from '../db/table/t-english-word'
+import { dbFindModeWordWhere } from '../db/table/t-mode-word'
+import { TModeWord } from '../db/types'
 import { print } from '../printer'
 import { isEnglishWord } from '../utils'
 import { useCallback, useEffect, useState } from 'react'
@@ -8,10 +9,10 @@ export function useTEnglishWord(
   target_lang: string,
   user_content: string
 ): {
-  tEnglishWord: TEnglishWord | null | undefined
+  tEnglishWord: TModeWord | null | undefined
   refreshTEnglishWord: () => void
 } {
-  const [wordMap, setWordMap] = useState<{ [key: string]: TEnglishWord | null }>({})
+  const [wordMap, setWordMap] = useState<{ [key: string]: TModeWord | null }>({})
 
   const targetKey = `${mode}_${target_lang}_${user_content}`
   const isTargetValid = user_content && isEnglishWord(user_content) ? true : false
@@ -20,12 +21,12 @@ export function useTEnglishWord(
     if (!isTargetValid) {
       return
     }
-    dbFindEnglishWordWhere({ mode, target_lang, user_content })
+    dbFindModeWordWhere({ mode, target_lang, user_content })
       .then(value => {
         setWordMap(prev => ({ ...prev, [targetKey]: value }))
       })
       .catch(e => {
-        print('dbFindEnglishWordWhere error', e)
+        print('dbFindModeWordWhere error', e)
       })
   }, [mode, target_lang, user_content, targetKey, isTargetValid])
 

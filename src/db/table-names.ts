@@ -1,8 +1,8 @@
 export enum DBTableName {
   test = 't_test',
+  modeWord = 't_mode_word',
   modeReulst = 't_mode_result',
-  modeMessage = 't_mode_message',
-  englishWord = 't_english_word',
+  modeChatMessage = 't_mode_chat_message',
   customChat = 't_custom_chat',
-  customMessage = 't_custom_message',
+  customChatMessage = 't_custom_chat_message',
 }

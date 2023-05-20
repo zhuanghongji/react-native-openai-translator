@@ -2,8 +2,9 @@ import { BookmarkButton, BookmarkStatus } from '../../../components/BookmarkButt
 import { HeartButton, HeartStatus } from '../../../components/HeartButton'
 import { TTSModal, TTSModalHandle } from '../../../components/TTSModal'
 import { ToolButton } from '../../../components/ToolButton'
-import { dbInsertEnglishWord } from '../../../db/table/t-english-word'
+import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
 import { dbFindModeResultWhere, dbInsertModeResult } from '../../../db/table/t-mode-result'
+import { dbInsertModeWord } from '../../../db/table/t-mode-word'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
@@ -104,19 +105,24 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
         return
       }
       if (tEnglishWord === null) {
-        print('dbInsertEnglishWord')
-        await dbInsertEnglishWord({
+        print('dbInsertModeWord')
+        await dbInsertModeWord({
+          ...DEFAULT_T_RESULT_EXTRA,
           mode: translatorMode,
           target_lang: targetLang,
           user_content: inputText,
           assistant_content: outputText,
           collected: '0',
+          system_prompt: prompts.systemPrompt,
+          user_prompt_prefix: prompts.userPromptPrefix ?? '',
+          user_prompt_suffix: prompts.userPromptSuffix ?? '',
+          status: null,
         })
         refreshTEnglishWord()
       }
       // navigate to detail ?
     } catch (e) {
-      print('dbInsertEnglishWord error', e)
+      print('dbInsertModeWord error', e)
     }
   }, [tEnglishWord, refreshTEnglishWord, translatorMode, targetLang, inputText, outputText])
   const heartStatus = useMemo<HeartStatus>(() => {
@@ -139,11 +145,16 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
       if (tModeResult === null) {
         print('dbInsertModeResult')
         await dbInsertModeResult({
+          ...DEFAULT_T_RESULT_EXTRA,
           mode: translatorMode,
           target_lang: targetLang,
           user_content: inputText,
           assistant_content: outputText,
           collected: '0',
+          system_prompt: prompts.systemPrompt,
+          user_prompt_prefix: prompts.userPromptPrefix ?? '',
+          user_prompt_suffix: prompts.userPromptSuffix ?? '',
+          status: null,
         })
         refreshTModeResult()
       }
@@ -294,11 +305,16 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
                 })
                 if (!modeResult) {
                   await dbInsertModeResult({
+                    ...DEFAULT_T_RESULT_EXTRA,
                     mode: translatorMode,
                     target_lang: targetLang,
                     user_content: inputText,
                     assistant_content: outputText,
                     collected: '0',
+                    user_prompt_prefix: '',
+                    system_prompt: '',
+                    user_prompt_suffix: '',
+                    status: null,
                   })
                   modeResult = await dbFindModeResultWhere({
                     mode: translatorMode,

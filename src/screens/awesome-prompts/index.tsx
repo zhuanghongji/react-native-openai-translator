@@ -1,11 +1,8 @@
 import { AWESOME_PROMPTS, AwesomePrompt } from '../../assets/awesome-chatgpt-prompts'
 import { TitleBar } from '../../components/TitleBar'
 import { TextChunks, splitToTextChunks } from '../../components/chunks-text/utils'
-import {
-  T_CUSTOM_CHAT_DEFAULT,
-  dbFindCustomChatById,
-  dbInsertCustomChat,
-} from '../../db/table/t-custom-chat'
+import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/helper'
+import { dbFindCustomChatById, dbInsertCustomChat } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -74,8 +71,8 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
   const onCreateChatPress = async (prompt: AwesomePrompt) => {
     try {
       const { insertId } = await dbInsertCustomChat({
-        ...T_CUSTOM_CHAT_DEFAULT,
-        name: prompt.title,
+        ...DEFAULT_T_CUSTOM_CHAT_BASIC,
+        chat_name: prompt.title,
         system_prompt: prompt.content,
       })
       if (insertId === undefined) {

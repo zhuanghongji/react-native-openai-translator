@@ -1,7 +1,7 @@
 import { TranslatorMode } from '../../preferences/options'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
-import { TResultBase } from '../types'
+import { TModeResult, TResultBase } from '../types'
 import {
   dbGenDeleteExecution,
   dbGenInsertExecution,
@@ -11,14 +11,6 @@ import {
 } from '../utils'
 
 const TABLE_NAME = DBTableName.modeReulst
-
-export interface TModeResult extends TResultBase {
-  mode: string
-  target_lang: string
-  user_content: string
-  assistant_content: string
-  collected: string
-}
 
 export async function dbFindModeResultWhere(
   target: Pick<TModeResult, 'mode' | 'target_lang' | 'user_content'>
@@ -38,7 +30,7 @@ export function dbInsertModeResult(target: Omit<TModeResult, keyof TResultBase>)
   return dbExecuteSql<TModeResult>(dbGenInsertExecution(TABLE_NAME, target))
 }
 
-export function dbUpdateEnglishWordCollected(id: number, toCollected: boolean) {
+export function dbUpdateModeWordCollected(id: number, toCollected: boolean) {
   return dbExecuteSql<TModeResult>(
     dbGenUpdateWhereExecution(TABLE_NAME, { collected: toCollected ? '1' : '0' }, { id })
   )

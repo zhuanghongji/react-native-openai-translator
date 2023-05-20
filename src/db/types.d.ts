@@ -16,6 +16,103 @@ export type DBResultSetRowList<T> = {
   _array: T[]
 }
 
+/**
+ * Standby column
+ */
+export interface TResultExtra {
+  extra1: string | null
+  extra2: string | null
+  extra3: string | null
+}
+
+// MARK: TCustomChat
+export type TCustomChatBasic = TResultExtra & {
+  avatar: string | null
+  chat_name: string | null
+  system_prompt: string | null
+  model: string | null
+  temperature: number | null
+  top_p: number | null
+  max_tokens: number | null
+  context_messages_num: number | null
+  tts_voice: string | null
+  font_size: number | null
+  status: string | null
+}
+
+export type TCustomChat = TResultBase & TCustomChatBasic
+
+export type TCustomChatDefault = RemoveNullByKey<
+  TCustomChat,
+  'id' | 'avatar' | 'model' | 'temperature' | 'context_messages_num' | 'font_size'
+>
+
+// MARK: TCustomChatMessage
+
+export type TCustomChatMessageBasic = TResultExtra & {
+  chat_id: number
+  role: string
+  content: string
+  status: string | null
+}
+
+export type TCustomChatMessage = TResultBase & TCustomChatMessageBasic
+
+// MARK: TModeWord
+
+export type TModeWordBasic = TResultExtra & {
+  mode: string
+  target_lang: string
+  system_prompt: string
+  user_prompt_prefix: string
+  user_prompt_suffix: string
+  user_content: string
+  assistant_content: string
+  collected: string
+  status: string | null
+}
+
+export type TModeWord = TResultBase & TModeWordBasic
+
+// MARK: TModeChatMessage
+
+export type TModeChatMessageBasic = TResultExtra & {
+  result_id: number
+  role: string
+  content: string
+  status: string | null
+}
+
+export type TModeChatMessage = TResultBase & TModeChatMessageBasic
+
+// MARK: TModeResult
+
+export type TModeResultBasic = TResultExtra & {
+  mode: string
+  target_lang: string
+  system_prompt: string
+  user_prompt_prefix: string
+  user_prompt_suffix: string
+  user_content: string
+  assistant_content: string
+  collected: string
+  status: string | null
+}
+
+export type TModeResult = TResultBase & TModeResultBasic
+
+// MARK: Utility
+
+export type RemoveNull<T> = {
+  [K in keyof T]: Exclude<T[K], null>
+}
+
+export type RemoveNullByKey<T, K extends keyof T> = {
+  [P in keyof T]: P extends K ? Exclude<T[P], null> : T[P]
+}
+
+// MARK: SQL
+
 export type DBSqlExcutionArgs = (number | string | null)[]
 
 export type DBSqlExcution = {

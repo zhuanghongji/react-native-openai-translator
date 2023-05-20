@@ -1,4 +1,3 @@
-import { T_CUSTOM_CHAT_BASIC_DEFAULT } from '../../db/table/t-custom-chat'
 import { API_MODELS } from '../../preferences/options'
 import { Divider } from '../Divider'
 import { EditItemView } from './EditItemView'
@@ -10,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type EditModelDetailViewProps = {
   style?: StyleProp<ViewStyle>
-  value: string | null
+  value: string
   onValueChange: (value: string) => void
 }
 
@@ -19,7 +18,7 @@ export function EditModelDetailView(props: EditModelDetailViewProps) {
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
-  const [model, setModel] = useState(value ?? T_CUSTOM_CHAT_BASIC_DEFAULT.model)
+  const [model, setModel] = useState(value)
   const actionDisabled = value === model
 
   return (

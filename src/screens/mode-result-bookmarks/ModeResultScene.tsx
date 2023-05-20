@@ -1,5 +1,6 @@
 import { Divider } from '../../components/Divider'
-import { TModeResult, dbSelectModeResultWhereMode } from '../../db/table/t-mode-result'
+import { dbSelectModeResultWhereMode } from '../../db/table/t-mode-result'
+import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
 import { print } from '../../printer'
 import { useThemeScheme } from '../../themes/hooks'

@@ -1,4 +1,4 @@
-import { TCustomChat, TCustomChatBasic } from '../../db/table/t-custom-chat'
+import { TCustomChatBasic, TCustomChatDefault } from '../../db/types'
 import { Divider } from '../Divider'
 import { DeleteAllMessagesDetailView } from './DeleteAllMessagesDetailView'
 import { EditAvatarDetailView } from './EditAvatarDetailView'
@@ -29,7 +29,7 @@ type Item = {
 
 export type SettingsSelectorModalProps = {
   style?: StyleProp<ViewStyle>
-  settings: TCustomChat
+  settings: TCustomChatDefault
   onSettingsChange: (values: Partial<TCustomChatBasic>) => void
   onDeleteAllMessageConfirm: () => void
 }
@@ -43,7 +43,8 @@ export const SettingsSelectorModal = React.forwardRef<
   SettingsSelectorModalProps
 >((props, ref) => {
   const { style, settings, onSettingsChange, onDeleteAllMessageConfirm } = props
-  const { avatar, name, system_prompt, model, temperature, context_num, font_size } = settings
+  const { avatar, chat_name, system_prompt, model, temperature, context_messages_num, font_size } =
+    settings
 
   const { width: frameWidth } = useSafeAreaFrame()
 
@@ -108,8 +109,8 @@ export const SettingsSelectorModal = React.forwardRef<
 
           <SettingsDetailContainer index={1}>
             <EditChatNameDetialView
-              value={name}
-              onValueChange={value => onSettingsChange({ name: value })}
+              value={chat_name}
+              onValueChange={value => onSettingsChange({ chat_name: value })}
             />
           </SettingsDetailContainer>
 
@@ -143,8 +144,8 @@ export const SettingsSelectorModal = React.forwardRef<
 
           <SettingsDetailContainer index={6}>
             <EditContextMessageNumDetailView
-              value={context_num}
-              onValueChange={value => onSettingsChange({ context_num: value })}
+              value={context_messages_num}
+              onValueChange={value => onSettingsChange({ context_messages_num: value })}
             />
           </SettingsDetailContainer>
 

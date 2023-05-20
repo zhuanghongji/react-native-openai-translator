@@ -1,6 +1,7 @@
 import { Button } from '../../components/Button'
 import { TitleBar } from '../../components/TitleBar'
 import { dropTableWhenDev } from '../../db/funcs'
+import { DEFAULT_T_RESULT_EXTRA } from '../../db/helper'
 import { dbExecuteSql } from '../../db/manager'
 import { DBTableName } from '../../db/table-names'
 import { dbInsertModeResult, dbSelectModeResult } from '../../db/table/t-mode-result'
@@ -44,11 +45,11 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
           text="DROP TABLE"
           onPress={() => {
             dropTableWhenDev(DBTableName.test)
+            dropTableWhenDev(DBTableName.modeWord)
             dropTableWhenDev(DBTableName.modeReulst)
-            dropTableWhenDev(DBTableName.modeMessage)
-            dropTableWhenDev(DBTableName.englishWord)
+            dropTableWhenDev(DBTableName.modeChatMessage)
             dropTableWhenDev(DBTableName.customChat)
-            dropTableWhenDev(DBTableName.customMessage)
+            dropTableWhenDev(DBTableName.customChatMessage)
           }}
         />
         <Button
@@ -70,11 +71,16 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
           text="INSERT MODE_RESULT"
           onPress={() => {
             dbInsertModeResult({
+              ...DEFAULT_T_RESULT_EXTRA,
               mode: 'translate',
               target_lang: 'zh-hant',
+              system_prompt: 'aaa',
+              user_prompt_prefix: 'bbb',
+              user_prompt_suffix: 'ccc',
               user_content: 'world',
               assistant_content: '世界',
               collected: '1',
+              status: null,
             })
               .then(result => {
                 print('dbInsertModeResult result = ', result)

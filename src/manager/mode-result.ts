@@ -1,4 +1,5 @@
-import { TModeResult, dbFindModeResultWhere } from '../db/table/t-mode-result'
+import { dbFindModeResultWhere } from '../db/table/t-mode-result'
+import { TModeResult } from '../db/types'
 import { print } from '../printer'
 import { useCallback, useEffect, useState } from 'react'
 

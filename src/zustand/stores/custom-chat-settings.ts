@@ -1,4 +1,4 @@
-import { TCustomChat } from '../../db/table/t-custom-chat'
+import { TCustomChat } from '../../db/types'
 import { create } from 'zustand'
 
 type CustomChatById = { [id: string]: TCustomChat }

@@ -1,5 +1,4 @@
-import { TCustomChat } from '../db/table/t-custom-chat'
-import { TModeResult } from '../db/table/t-mode-result'
+import { TCustomChat, TModeResult } from '../db/types'
 import type { ScanBlock } from '../types'
 import type { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
