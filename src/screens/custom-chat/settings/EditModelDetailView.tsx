@@ -1,57 +1,43 @@
-import { DEFAULTS } from '../../preferences/defaults'
-import { Divider } from '../Divider'
+import { Divider } from '../../../components/Divider'
+import { API_MODELS } from '../../../preferences/options'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import { BottomSheetFlatList } from '@gorhom/bottom-sheet'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-export type EditTemperatureValueDetailViewProps = {
+export type EditModelDetailViewProps = {
   style?: StyleProp<ViewStyle>
-  value: number
-  onValueChange: (value: number) => void
+  value: string
+  onValueChange: (value: string) => void
   onBackNotify: () => void
 }
 
-export function EditTemperatureValueDetailView(props: EditTemperatureValueDetailViewProps) {
+export function EditModelDetailView(props: EditModelDetailViewProps) {
   const { style, value, onValueChange, onBackNotify } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
-  const [temperature, setTemperature] = useState(value)
-  const actionDisabled = value === temperature
-
-  const data = useMemo(() => {
-    const result: number[] = []
-    for (let i = 0; i < 2.2; i += 0.2) {
-      result.push(i)
-    }
-    return result
-  }, [])
+  const [model, setModel] = useState(value)
+  const actionDisabled = value === model
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit Temperature Value"
+        title="Edit Model"
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
-        onActionPress={() => onValueChange(temperature)}
+        onActionPress={() => onValueChange(model)}
       />
       <BottomSheetFlatList
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: bottomInset }}
-        data={data}
+        data={API_MODELS}
         keyExtractor={(item, index) => `${index}_${item}`}
         renderItem={({ item }) => {
-          const subtitle = item === DEFAULTS.apiTemperature ? ' (default)' : ''
           return (
-            <EditItemView
-              title={`${item.toFixed(1)}`}
-              subtitle={subtitle}
-              selected={item === temperature}
-              onPress={() => setTemperature(item)}
-            />
+            <EditItemView title={item} selected={item === model} onPress={() => setModel(item)} />
           )
         }}
         ListHeaderComponent={Divider}

@@ -1,4 +1,4 @@
-import { useThemeScheme } from '../../themes/hooks'
+import { useThemeScheme } from '../../../themes/hooks'
 import { useSettingsSelectorContext } from './SettingsSelectorProvider'
 import React, { PropsWithChildren } from 'react'
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native'

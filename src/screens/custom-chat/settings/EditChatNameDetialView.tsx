@@ -1,10 +1,10 @@
-import { dimensions } from '../../res/dimensions'
-import { Input } from '../Input'
+import { Input } from '../../../components/Input'
+import { dimensions } from '../../../res/dimensions'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import React, { useState } from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
-export type EditSystemPromptDetailViewProps = {
+export type EditChatNameDetialViewProps = {
   style?: StyleProp<ViewStyle>
   value: string | null
   fontSize: number
@@ -12,29 +12,28 @@ export type EditSystemPromptDetailViewProps = {
   onBackNotify: () => void
 }
 
-export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProps) {
+export function EditChatNameDetialView(props: EditChatNameDetialViewProps) {
   const { style, value, fontSize, onValueChange, onBackNotify } = props
 
-  const [systemPrompt, setSystemPrompt] = useState(value ?? '')
-  const actionDisabled = value === systemPrompt
+  const [chatName, setChatName] = useState(value ?? '')
+  const actionDisabled = value === chatName
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit System Prompt"
+        title="Edit Chat Name"
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
-        onActionPress={() => onValueChange(systemPrompt.trim())}
+        onActionPress={() => onValueChange(chatName.trim())}
       />
       <Input
         style={styles.text}
         textStyle={{ fontSize }}
-        multiline={true}
         autoFocus={true}
-        placeholder="System Prompt ..."
+        placeholder="Chat Name ..."
         returnKeyType="done"
-        value={systemPrompt}
-        onChangeText={setSystemPrompt}
+        value={chatName}
+        onChangeText={setChatName}
       />
     </View>
   )
@@ -52,6 +51,5 @@ const styles = StyleSheet.create<Styles>({
   text: {
     marginTop: dimensions.edge,
     marginHorizontal: dimensions.edgeTwice,
-    maxHeight: 240,
   },
 })

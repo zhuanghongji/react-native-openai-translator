@@ -1,8 +1,4 @@
 import { TitleBar } from '../../components/TitleBar'
-import {
-  SettingsSelectorModal,
-  SettingsSelectorModalHandle,
-} from '../../components/chat-settings/SettingsSelectorModal'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
 import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
@@ -30,6 +26,10 @@ import {
 } from '../../zustand/stores/custom-chat-settings-helper'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import type { RootStackParamList } from '../screens'
+import {
+  SettingsSelectorModal,
+  SettingsSelectorModalHandle,
+} from './settings/SettingsSelectorModal'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'

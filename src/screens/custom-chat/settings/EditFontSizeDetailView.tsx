@@ -1,5 +1,5 @@
-import { DEFAULTS } from '../../preferences/defaults'
-import { Divider } from '../Divider'
+import { Divider } from '../../../components/Divider'
+import { DEFAULTS } from '../../../preferences/defaults'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import React, { useMemo, useState } from 'react'

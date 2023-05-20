@@ -1,5 +1,5 @@
-import { TCustomChatBasic, TCustomChatDefault } from '../../db/types'
-import { Divider } from '../Divider'
+import { Divider } from '../../../components/Divider'
+import { TCustomChatBasic, TCustomChatDefault } from '../../../db/types'
 import { DeleteAllMessagesDetailView } from './DeleteAllMessagesDetailView'
 import { EditAvatarDetailView } from './EditAvatarDetailView'
 import { EditChatNameDetialView } from './EditChatNameDetialView'

@@ -1,10 +1,10 @@
-import { dimensions } from '../../res/dimensions'
-import { Input } from '../Input'
+import { Input } from '../../../components/Input'
+import { dimensions } from '../../../res/dimensions'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import React, { useState } from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
-export type EditChatNameDetialViewProps = {
+export type EditSystemPromptDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: string | null
   fontSize: number
@@ -12,28 +12,29 @@ export type EditChatNameDetialViewProps = {
   onBackNotify: () => void
 }
 
-export function EditChatNameDetialView(props: EditChatNameDetialViewProps) {
+export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProps) {
   const { style, value, fontSize, onValueChange, onBackNotify } = props
 
-  const [chatName, setChatName] = useState(value ?? '')
-  const actionDisabled = value === chatName
+  const [systemPrompt, setSystemPrompt] = useState(value ?? '')
+  const actionDisabled = value === systemPrompt
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit Chat Name"
+        title="Edit System Prompt"
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
-        onActionPress={() => onValueChange(chatName.trim())}
+        onActionPress={() => onValueChange(systemPrompt.trim())}
       />
       <Input
         style={styles.text}
         textStyle={{ fontSize }}
+        multiline={true}
         autoFocus={true}
-        placeholder="Chat Name ..."
+        placeholder="System Prompt ..."
         returnKeyType="done"
-        value={chatName}
-        onChangeText={setChatName}
+        value={systemPrompt}
+        onChangeText={setSystemPrompt}
       />
     </View>
   )
@@ -51,5 +52,6 @@ const styles = StyleSheet.create<Styles>({
   text: {
     marginTop: dimensions.edge,
     marginHorizontal: dimensions.edgeTwice,
+    maxHeight: 240,
   },
 })
