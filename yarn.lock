@@ -2423,6 +2423,47 @@
   dependencies:
     "@sinonjs/commons" "^2.0.0"
 
+"@tanstack/query-async-storage-persister@4.29.7":
+  version "4.29.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@tanstack/query-async-storage-persister/-/query-async-storage-persister-4.29.7.tgz#d855ae92d24a99c229eff4f637b5eafb8dff5108"
+  integrity sha512-W144qVR3+Tu6iPrRtMMBReKGCzpOHS6+nFMOwAS/f/V6BaUeYCuOuYzjEVP7UtF8uR2LHEME7ojOIc0sE76xwA==
+  dependencies:
+    "@tanstack/query-persist-client-core" "4.29.7"
+
+"@tanstack/query-core@4.29.7":
+  version "4.29.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@tanstack/query-core/-/query-core-4.29.7.tgz#9fe4587e23cb9566b937c518ffa44226041d388d"
+  integrity sha512-GXG4b5hV2Loir+h2G+RXhJdoZhJLnrBWsuLB2r0qBRyhWuXq9w/dWxzvpP89H0UARlH6Mr9DiVj4SMtpkF/aUA==
+
+"@tanstack/query-persist-client-core@4.29.7":
+  version "4.29.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@tanstack/query-persist-client-core/-/query-persist-client-core-4.29.7.tgz#f617e27979fc44e306bffda4e869d6725bff03ab"
+  integrity sha512-/QahvSq9/f8hetCsCd9MaOy6fAoPn0YDGDcl6TTobqdr9kHMgrM9laP9yKJFg2hm5/jIsrCMDO/iCnxBiUhrqw==
+  dependencies:
+    "@tanstack/query-core" "4.29.7"
+
+"@tanstack/query-sync-storage-persister@4.29.7":
+  version "4.29.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-4.29.7.tgz#d64df26f38d0466dc387406ef57677f03b014cb6"
+  integrity sha512-XWys8hez8eFIb9+oYNs0Jumfjz8afEwN52VSrHJEWg7gZO/Y/8ziI80cNlaDNB+60t7s3TaspKXT5z8DNFsCkQ==
+  dependencies:
+    "@tanstack/query-persist-client-core" "4.29.7"
+
+"@tanstack/react-query-persist-client@4.29.7":
+  version "4.29.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@tanstack/react-query-persist-client/-/react-query-persist-client-4.29.7.tgz#b62f4aca83d6c89ed78acd524a376b3892b7347f"
+  integrity sha512-KYUeESnthjjcfakpAei9Cz5gsIm1uDAVHrKcIAoARQwksk4j0KAo9ieExoIhL9v4mpTOlE9GsuZ/y06ANmaVaQ==
+  dependencies:
+    "@tanstack/query-persist-client-core" "4.29.7"
+
+"@tanstack/react-query@4.29.7":
+  version "4.29.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@tanstack/react-query/-/react-query-4.29.7.tgz#772996905a81ca64172582891c5a82e88dbafccd"
+  integrity sha512-ijBWEzAIo09fB1yd22slRZzprrZ5zMdWYzBnCg5qiXuFbH78uGN1qtGz8+Ed4MuhaPaYSD+hykn+QEKtQviEtg==
+  dependencies:
+    "@tanstack/query-core" "4.29.7"
+    use-sync-external-store "^1.2.0"
+
 "@trivago/prettier-plugin-sort-imports@^4.1.1":
   version "4.1.1"
   resolved "https://mirrors.cloud.tencent.com/npm/@trivago/prettier-plugin-sort-imports/-/prettier-plugin-sort-imports-4.1.1.tgz#71c3c1ae770c3738b6fc85710714844477574ffd"
@@ -3874,14 +3915,9 @@ dag-map@~1.0.0:
   resolved "https://mirrors.cloud.tencent.com/npm/dag-map/-/dag-map-1.0.2.tgz#e8379f041000ed561fc515475c1ed2c85eece8d7"
   integrity sha1-6DefBBAA7VYfxRVHXB7SyF7s6Nc=
 
-dayjs@^1.11.7:
+dayjs@^1.11.7, dayjs@^1.8.15:
   version "1.11.7"
   resolved "https://mirrors.cloud.tencent.com/npm/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
-  integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
-
-dayjs@^1.8.15:
-  version "1.11.7"
-  resolved "https://mirrors.cloud.tencent.com/npm/dayjs/-/dayjs-1.11.7.tgz"
   integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
@@ -9487,9 +9523,9 @@ use-latest-callback@^0.1.5:
   resolved "https://mirrors.cloud.tencent.com/npm/use-latest-callback/-/use-latest-callback-0.1.5.tgz"
   integrity sha512-HtHatS2U4/h32NlkhupDsPlrbiD27gSH5swBdtXbCAlc6pfOFzaj0FehW/FO12rx8j2Vy4/lJScCiJyM01E+bQ==
 
-use-sync-external-store@1.2.0, use-sync-external-store@^1.0.0:
+use-sync-external-store@1.2.0, use-sync-external-store@^1.0.0, use-sync-external-store@^1.2.0:
   version "1.2.0"
-  resolved "https://mirrors.cloud.tencent.com/npm/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
+  resolved "https://mirrors.cloud.tencent.com/npm/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
 use@^3.1.0:
