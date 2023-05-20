@@ -4,14 +4,15 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 export type ShareDetailViewProps = {
   style?: StyleProp<ViewStyle>
+  onBackNotify: () => void
 }
 
 export function ShareDetailView(props: ShareDetailViewProps) {
-  const { style } = props
+  const { style, onBackNotify } = props
 
   return (
     <View style={[styles.container, style]}>
-      <SettingsTitleBar title="Share" />
+      <SettingsTitleBar title="Share" onBackNotify={onBackNotify} />
       {/* TODO */}
     </View>
   )

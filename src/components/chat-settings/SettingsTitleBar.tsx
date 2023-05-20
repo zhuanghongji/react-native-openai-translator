@@ -11,20 +11,26 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 export type SettingsTitleBarProps = {
   style?: StyleProp<ViewStyle>
+  actionStyle?: StyleProp<ViewStyle>
   title?: string
   backHidden?: boolean
   actionDisabled?: boolean
   actionHidden?: boolean
+  actionText?: string
+  onBackNotify?: () => void
   onActionPress?: () => void
 }
 
 export function SettingsTitleBar(props: SettingsTitleBarProps) {
   const {
     style,
+    actionStyle,
     title,
     backHidden = false,
     actionDisabled = false,
     actionHidden = false,
+    actionText,
+    onBackNotify,
     onActionPress,
   } = props
 
@@ -39,7 +45,10 @@ export function SettingsTitleBar(props: SettingsTitleBarProps) {
         <TouchableWithoutFeedback
           style={styles.back}
           disabled={backHidden}
-          onPress={handleBackPress}>
+          onPress={() => {
+            onBackNotify?.()
+            handleBackPress()
+          }}>
           {backHidden ? null : (
             <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
           )}
@@ -53,11 +62,12 @@ export function SettingsTitleBar(props: SettingsTitleBarProps) {
       <View style={[styles.wrapper, { justifyContent: 'flex-end', paddingRight: dimensions.edge }]}>
         {actionHidden ? null : (
           <Button
-            style={styles.action}
+            style={[styles.action, actionStyle]}
             textStyle={styles.actionText}
             disabled={actionDisabled}
-            text={t('CONFIRM')}
+            text={actionText ?? t('CONFIRM')}
             onPress={() => {
+              onBackNotify?.()
               onActionPress?.()
               handleBackPress()
             }}

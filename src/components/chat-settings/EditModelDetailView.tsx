@@ -11,10 +11,11 @@ export type EditModelDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: string
   onValueChange: (value: string) => void
+  onBackNotify: () => void
 }
 
 export function EditModelDetailView(props: EditModelDetailViewProps) {
-  const { style, value, onValueChange } = props
+  const { style, value, onValueChange, onBackNotify } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
@@ -26,6 +27,7 @@ export function EditModelDetailView(props: EditModelDetailViewProps) {
       <SettingsTitleBar
         title="Edit Model"
         actionDisabled={actionDisabled}
+        onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(model)}
       />
       <BottomSheetFlatList

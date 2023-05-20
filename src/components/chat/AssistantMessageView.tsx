@@ -56,7 +56,9 @@ export function AssistantMessageView(props: AssistantMessageProps) {
     <View style={[style, styles.container]}>
       {renderAvatar()}
       <View style={[styles.content, { backgroundColor }]}>
-        <TText style={[styles.text, stylez.contentText, { fontSize }]} typo="text">
+        <TText
+          style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}
+          typo="text">
           {trimContent(content)}
         </TText>
       </View>

@@ -11,10 +11,11 @@ export type EditTemperatureValueDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: number
   onValueChange: (value: number) => void
+  onBackNotify: () => void
 }
 
 export function EditTemperatureValueDetailView(props: EditTemperatureValueDetailViewProps) {
-  const { style, value, onValueChange } = props
+  const { style, value, onValueChange, onBackNotify } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
@@ -34,6 +35,7 @@ export function EditTemperatureValueDetailView(props: EditTemperatureValueDetail
       <SettingsTitleBar
         title="Edit Temperature Value"
         actionDisabled={actionDisabled}
+        onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(temperature)}
       />
       <BottomSheetFlatList

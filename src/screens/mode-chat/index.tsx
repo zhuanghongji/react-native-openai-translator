@@ -8,8 +8,8 @@ import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { DEFAULT_T_RESULT_EXTRA } from '../../db/helper'
 import {
-  dbInserTModeChatMessage,
-  dbSelecTModeChatMessageOfResultId,
+  dbInsertModeChatMessage,
+  dbSelectModeChatMessageOfResultId,
 } from '../../db/table/t-mode-chat-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
@@ -112,7 +112,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     return [...resultMessages, ...messages].reverse()
   }, [resultMessages, messages])
   useEffect(() => {
-    dbSelecTModeChatMessageOfResultId(id)
+    dbSelectModeChatMessageOfResultId(id)
       .then(result => {
         setMessages(
           result.rows._array.map(
@@ -125,7 +125,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         )
       })
       .catch(e => {
-        print('dbSelecTModeChatMessageOfResultId', e)
+        print('dbSelectModeChatMessageOfResultId', e)
       })
   }, [id])
 
@@ -162,7 +162,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     setInputText('')
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
-    dbInserTModeChatMessage({
+    dbInsertModeChatMessage({
       ...DEFAULT_T_RESULT_EXTRA,
       result_id: id,
       role: 'user',
@@ -170,10 +170,10 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       status: null,
     })
       .then(result => {
-        print('dbInserTModeChatMessage, user = ', result)
+        print('dbInsertModeChatMessage, user = ', result)
       })
       .catch(e => {
-        print('dbInserTModeChatMessage, user = ', e)
+        print('dbInsertModeChatMessage, user = ', e)
       })
 
     const messagesToSend: Message[] = []
@@ -205,7 +205,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       },
       onDone: message => {
         setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
-        dbInserTModeChatMessage({
+        dbInsertModeChatMessage({
           ...DEFAULT_T_RESULT_EXTRA,
           result_id: id,
           role: 'assistant',
@@ -213,10 +213,10 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
           status: null,
         })
           .then(result => {
-            print('dbInserTModeChatMessage, assistant = ', result)
+            print('dbInsertModeChatMessage, assistant = ', result)
           })
           .catch(e => {
-            print('dbInserTModeChatMessage, assistant = ', e)
+            print('dbInsertModeChatMessage, assistant = ', e)
           })
 
         setStatus('complete')

@@ -10,10 +10,11 @@ export type EditAvatarDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: string
   onValueChange: (value: string) => void
+  onBackNotify: () => void
 }
 
 export function EditAvatarDetailView(props: EditAvatarDetailViewProps) {
-  const { style, value, onValueChange } = props
+  const { style, value, onValueChange, onBackNotify } = props
 
   const [avatar, setAvatar] = useState(value)
   const actionDisabled = avatar === value
@@ -23,6 +24,7 @@ export function EditAvatarDetailView(props: EditAvatarDetailViewProps) {
       <SettingsTitleBar
         title="Edit Avatar"
         actionDisabled={actionDisabled}
+        onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(avatar)}
       />
       <View style={styles.avatarContainer}>

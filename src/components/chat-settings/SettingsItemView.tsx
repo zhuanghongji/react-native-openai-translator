@@ -9,17 +9,23 @@ export type SettingsItemViewProps = {
   style?: StyleProp<ViewStyle>
   index: number
   title: string
+  onSelectedNotify: (index: number) => void
 }
 
 export function SettingsItemView(props: SettingsItemViewProps) {
-  const { style, index, title } = props
+  const { style, index, title, onSelectedNotify } = props
 
   const { handleItemPress } = useSettingsSelectorContext()
 
   const color = useThemeSelector(colors.white, colors.black)
 
   return (
-    <Pressable style={[styles.container, style]} onPress={() => handleItemPress(index)}>
+    <Pressable
+      style={[styles.container, style]}
+      onPress={() => {
+        onSelectedNotify(index)
+        handleItemPress(index)
+      }}>
       <Text style={[styles.title, { color }]}>{title}</Text>
     </Pressable>
   )

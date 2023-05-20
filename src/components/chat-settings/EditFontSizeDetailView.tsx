@@ -2,19 +2,19 @@ import { DEFAULTS } from '../../preferences/defaults'
 import { Divider } from '../Divider'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet'
 import React, { useMemo, useState } from 'react'
-import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { FlatList, Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type EditFontSizeDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: number
   onValueChange: (value: number) => void
+  onBackNotify: () => void
 }
 
 export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
-  const { style, value, onValueChange } = props
+  const { style, value, onValueChange, onBackNotify } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
@@ -34,9 +34,10 @@ export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
       <SettingsTitleBar
         title="Edit Font Size"
         actionDisabled={actionDisabled}
+        onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(fontSize)}
       />
-      <BottomSheetFlatList
+      <FlatList
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: bottomInset }}
         data={data}

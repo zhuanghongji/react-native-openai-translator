@@ -15,7 +15,7 @@ import {
 
 export type InputProps = {
   style?: StyleProp<ViewStyle>
-  textStyle?: StyleProp<ViewStyle>
+  textStyle?: StyleProp<TextStyle>
 } & Omit<TextInputProps, 'style'>
 
 export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {

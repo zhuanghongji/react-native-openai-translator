@@ -1,4 +1,59 @@
-import { DBSqlExcution, DBSqlExcutionArgs, DBTableColumn } from './types'
+import {
+  DBSqlExcution,
+  DBSqlExcutionArgs,
+  DBSqlExcutionConditions,
+  DBSqlExcutionValues,
+  DBTableColumn,
+} from './types'
+
+function genInsertKeyValueListStr(
+  args: DBSqlExcutionArgs,
+  values: DBSqlExcutionValues
+): {
+  keyListStr: string
+  valueListStr: string
+} {
+  const keyList: string[] = []
+  const valueList: (string | number | null)[] = []
+  for (const key of Object.keys(values)) {
+    const value = values[key]
+    args.push(value)
+    keyList.push(key)
+    valueList.push('?')
+  }
+  const keyListStr = keyList.join(', ')
+  const valueListStr = valueList.join(', ')
+  return { keyListStr, valueListStr }
+}
+
+function genSetValueListStr(args: DBSqlExcutionArgs, values: DBSqlExcutionValues): string {
+  const valueList: string[] = []
+  for (const key of Object.keys(values)) {
+    const value = values[key]
+    if (value === undefined) {
+      continue
+    }
+    valueList.push(`${key} = ?`)
+    args.push(value)
+  }
+  return valueList.join(', ')
+}
+
+function genWhereConditionListStr(
+  args: DBSqlExcutionArgs,
+  conditions: DBSqlExcutionConditions
+): string {
+  const conditionList: (string | number)[] = []
+  for (const key of Object.keys(conditions)) {
+    const condition = conditions[key]
+    if (condition === undefined) {
+      continue
+    }
+    conditionList.push(`${key} = ?`)
+    args.push(condition)
+  }
+  return conditionList.join(' AND ')
+}
 
 // MARK: create
 
@@ -46,19 +101,12 @@ export function dbGenPragmaTableInfoExcution(tableName: string): DBSqlExcution {
 
 export function dbGenInsertExecution(
   tableName: string,
-  target: { [key: string]: string | number | null }
+  values: DBSqlExcutionValues
 ): DBSqlExcution {
-  const keys: string[] = []
-  const values: string[] = []
   const args: DBSqlExcutionArgs = []
-  for (const key of Object.keys(target)) {
-    const value = target[key]
-    keys.push(key)
-    values.push('?')
-    args.push(value)
-  }
+  const { keyListStr, valueListStr } = genInsertKeyValueListStr(args, values)
   return {
-    statement: `INSERT INTO ${tableName} (${keys.join(', ')}) VALUES (${values.join(', ')});`,
+    statement: `INSERT INTO ${tableName} (${keyListStr}) VALUES (${valueListStr});`,
     args,
   }
 }
@@ -71,20 +119,12 @@ export function dbGenSelectExecution(tableName: string): DBSqlExcution {
 
 export function dbGenSelectWhereExecution(
   tableName: string,
-  target: { [key: string]: string | number }
+  conditions: DBSqlExcutionConditions
 ): DBSqlExcution {
-  const conditions: (string | number)[] = []
   const args: DBSqlExcutionArgs = []
-  for (const key of Object.keys(target)) {
-    const value = target[key]
-    if (value === undefined) {
-      continue
-    }
-    conditions.push(`${key} = ?`)
-    args.push(value)
-  }
+  const conditionListStr = genWhereConditionListStr(args, conditions)
   return {
-    statement: `SELECT * FROM ${tableName} WHERE ${conditions.join(' AND ')};`,
+    statement: `SELECT * FROM ${tableName} WHERE ${conditionListStr};`,
     args,
   }
 }
@@ -93,33 +133,12 @@ export function dbGenSelectWhereExecution(
 
 export function dbGenUpdateWhereExecution(
   tableName: string,
-  values: { [key: string]: string | number },
-  conditions: { [key: string]: string | number }
+  values: DBSqlExcutionValues,
+  conditions: DBSqlExcutionConditions
 ): DBSqlExcution {
   const args: DBSqlExcutionArgs = []
-  // values
-  const valuesList: string[] = []
-  for (const key of Object.keys(values)) {
-    const value = values[key]
-    if (value === undefined) {
-      continue
-    }
-    valuesList.push(`${key} = ?`)
-    args.push(value)
-  }
-  const valuesListStr = valuesList.join(', ')
-  // conditions
-  const conditionList: (string | number)[] = []
-  for (const key of Object.keys(conditions)) {
-    const condition = conditions[key]
-    if (condition === undefined) {
-      continue
-    }
-    conditionList.push(`${key} = ?`)
-    args.push(condition)
-  }
-  const conditionListStr = conditionList.join(' AND ')
-  // excution
+  const valuesListStr = genSetValueListStr(args, values)
+  const conditionListStr = genWhereConditionListStr(args, conditions)
   return {
     statement: `UPDATE ${tableName} SET ${valuesListStr} WHERE ${conditionListStr};`,
     args,
@@ -130,4 +149,13 @@ export function dbGenUpdateWhereExecution(
 
 export function dbGenDeleteExecution(tableName: string): DBSqlExcution {
   return { statement: `DELETE FROM ${tableName};` }
+}
+
+export function dbGenDeleteWhereExecution(
+  tableName: string,
+  conditions: DBSqlExcutionConditions
+): DBSqlExcution {
+  const args: DBSqlExcutionArgs = []
+  const conditionListStr = genWhereConditionListStr(args, conditions)
+  return { statement: `DELETE FROM ${tableName} WHERE ${conditionListStr};`, args }
 }

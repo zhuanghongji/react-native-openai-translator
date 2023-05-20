@@ -19,7 +19,7 @@ import {
   BottomSheetFlatList,
   BottomSheetModal,
 } from '@gorhom/bottom-sheet'
-import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
+import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
@@ -32,6 +32,8 @@ export type SettingsSelectorModalProps = {
   settings: TCustomChatDefault
   onSettingsChange: (values: Partial<TCustomChatBasic>) => void
   onDeleteAllMessageConfirm: () => void
+  onShow: () => void
+  onDismiss: () => void
 }
 
 export type SettingsSelectorModalHandle = {
@@ -42,7 +44,7 @@ export const SettingsSelectorModal = React.forwardRef<
   SettingsSelectorModalHandle,
   SettingsSelectorModalProps
 >((props, ref) => {
-  const { style, settings, onSettingsChange, onDeleteAllMessageConfirm } = props
+  const { style, settings, onSettingsChange, onDeleteAllMessageConfirm, onShow, onDismiss } = props
   const { avatar, chat_name, system_prompt, model, temperature, context_messages_num, font_size } =
     settings
 
@@ -50,7 +52,20 @@ export const SettingsSelectorModal = React.forwardRef<
 
   const selectorModalRef = useRef<BottomSheetModal>(null)
 
-  const selectorPoints = useMemo(() => ['60%'], [])
+  const selectorPoints = useMemo(() => ['60%', '80%'], [])
+  const [snapIndex, setSnapIndex] = useState<0 | 1>(0)
+  const [isInSelector, setIsInSelector] = useState(true)
+  const onBackNotify = useCallback(() => {
+    setSnapIndex(0)
+    setIsInSelector(true)
+  }, [])
+  const onSelectedNotify = useCallback((index: number) => {
+    if (index === 2) {
+      setSnapIndex(1)
+    }
+    setIsInSelector(false)
+  }, [])
+
   const items: Item[] = [
     { title: '修改头像' },
     { title: '修改对话名称' },
@@ -70,20 +85,30 @@ export const SettingsSelectorModal = React.forwardRef<
 
   const renderBackdrop = useCallback(
     (os: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop {...os} disappearsOnIndex={-1} appearsOnIndex={0} />
+      <BottomSheetBackdrop
+        {...os}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior={isInSelector ? 'close' : 'none'}
+      />
     ),
-    []
+    [isInSelector]
   )
 
   return (
     <BottomSheetModal
       ref={selectorModalRef}
       style={style}
-      index={0}
+      index={snapIndex}
       snapPoints={selectorPoints}
       stackBehavior="push"
       handleComponent={null}
-      backdropComponent={renderBackdrop}>
+      enableContentPanningGesture={isInSelector}
+      backdropComponent={renderBackdrop}
+      onChange={index => {
+        // print('onChange', { index })
+        index === -1 ? onDismiss() : onShow()
+      }}>
       <SettingsSelectorProvider>
         <View style={[styles.content, { width: frameWidth }]}>
           <SettingsTitleBar backHidden actionHidden title="Chat Settings" />
@@ -93,7 +118,9 @@ export const SettingsSelectorModal = React.forwardRef<
             keyExtractor={(item, index) => `${index}_${item.title}`}
             renderItem={({ item, index }) => {
               const { title } = item
-              return <SettingsItemView index={index} title={title} />
+              return (
+                <SettingsItemView index={index} title={title} onSelectedNotify={onSelectedNotify} />
+              )
             }}
             ListHeaderComponent={Divider}
             ItemSeparatorComponent={Divider}
@@ -104,20 +131,25 @@ export const SettingsSelectorModal = React.forwardRef<
             <EditAvatarDetailView
               value={avatar}
               onValueChange={value => onSettingsChange({ avatar: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
           <SettingsDetailContainer index={1}>
             <EditChatNameDetialView
               value={chat_name}
+              fontSize={font_size}
               onValueChange={value => onSettingsChange({ chat_name: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
           <SettingsDetailContainer index={2}>
             <EditSystemPromptDetailView
               value={system_prompt}
+              fontSize={font_size}
               onValueChange={value => onSettingsChange({ system_prompt: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
@@ -125,6 +157,7 @@ export const SettingsSelectorModal = React.forwardRef<
             <EditFontSizeDetailView
               value={font_size}
               onValueChange={value => onSettingsChange({ font_size: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
@@ -132,6 +165,7 @@ export const SettingsSelectorModal = React.forwardRef<
             <EditModelDetailView
               value={model}
               onValueChange={value => onSettingsChange({ model: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
@@ -139,6 +173,7 @@ export const SettingsSelectorModal = React.forwardRef<
             <EditTemperatureValueDetailView
               value={temperature}
               onValueChange={value => onSettingsChange({ temperature: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
@@ -146,15 +181,19 @@ export const SettingsSelectorModal = React.forwardRef<
             <EditContextMessageNumDetailView
               value={context_messages_num}
               onValueChange={value => onSettingsChange({ context_messages_num: value })}
+              onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
           <SettingsDetailContainer index={7}>
-            <DeleteAllMessagesDetailView onConfirmPress={onDeleteAllMessageConfirm} />
+            <DeleteAllMessagesDetailView
+              onConfirmPress={onDeleteAllMessageConfirm}
+              onBackNotify={onBackNotify}
+            />
           </SettingsDetailContainer>
 
           <SettingsDetailContainer index={8}>
-            <ShareDetailView />
+            <ShareDetailView onBackNotify={onBackNotify} />
           </SettingsDetailContainer>
         </View>
       </SettingsSelectorProvider>

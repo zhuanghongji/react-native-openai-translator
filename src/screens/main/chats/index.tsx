@@ -9,7 +9,8 @@ import type { MainTabScreenProps } from '../../screens'
 import { AddTip } from './AddTip'
 import { CustomChatItemView } from './CustomChatItemView'
 import { FlashList } from '@shopify/flash-list'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = MainTabScreenProps<'Chats'>
@@ -17,12 +18,14 @@ type Props = MainTabScreenProps<'Chats'>
 export function ChatsScreen({ navigation }: Props): JSX.Element {
   const { background, backgroundChat } = useThemeScheme()
 
+  const [refreshing, setRefreshing] = useState(false)
   const [chats, setChats] = useState<TCustomChat[]>([])
   const isEmpty = chats.length === 0
 
   const batchChat = useCustomChatSettingsStore(state => state.batchChat)
 
-  useEffect(() => {
+  const onLoad = useCallback(() => {
+    setRefreshing(true)
     dbSelectCustomChat()
       .then(result => {
         setChats(result.rows._array)
@@ -31,7 +34,14 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
       .catch(e => {
         print('dbSelectModeResult', e)
       })
+      .finally(() => {
+        setRefreshing(false)
+      })
   }, [batchChat])
+
+  useEffect(() => {
+    onLoad()
+  }, [])
 
   const handleItemPress = (chat: TCustomChat) => {
     navigation.navigate('CustomChat', { chat })
@@ -54,6 +64,7 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
       ) : (
         <FlashList
           contentContainerStyle={{ backgroundColor: background }}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onLoad} />}
           data={chats}
           estimatedItemSize={96}
           keyExtractor={(item, index) => `${index}_${item.id}`}

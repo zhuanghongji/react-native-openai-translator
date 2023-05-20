@@ -36,7 +36,9 @@ export function SSEMessageView(props: SSEMessageProps) {
       )}
 
       <View style={[styles.content, { backgroundColor }]}>
-        <TText style={[styles.text, stylez.contentText, { fontSize }]} typo="text">
+        <TText
+          style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}
+          typo="text">
           {content ? trimContent(content) : '...'}
         </TText>
       </View>

@@ -9,9 +9,11 @@ import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { DEFAULT_T_RESULT_EXTRA, fillTCustomChatWithDefaults } from '../../db/helper'
+import { dbUpdateCustomChatWhere } from '../../db/table/t-custom-chat'
 import {
+  dbDeleteCustomChatMessageOfChatId,
   dbInsertCustomMessage,
-  dbSelecTModeChatMessageOfChatId,
+  dbSelectCustomChatMessageOfChatId,
 } from '../../db/table/t-custom-chat-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
@@ -33,7 +35,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, View } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
-import Animated, { useAnimatedStyle } from 'react-native-reanimated'
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import EventSource from 'react-native-sse'
 
@@ -54,8 +56,9 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   const [hideChatAvatar] = useHideChatAvatarPref()
 
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
+  const enablekeyboardAvoid = useSharedValue(true)
   const transformStyle = useAnimatedStyle(() => {
-    return { transform: [{ translateY: keyboardHeight.value }] }
+    return { transform: [{ translateY: enablekeyboardAvoid.value ? keyboardHeight.value : 0 }] }
   }, [])
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -63,7 +66,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     return [...messages].reverse()
   }, [messages])
   useEffect(() => {
-    dbSelecTModeChatMessageOfChatId(id)
+    dbSelectCustomChatMessageOfChatId(id)
       .then(result => {
         setMessages(
           result.rows._array.map(
@@ -76,7 +79,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
         )
       })
       .catch(e => {
-        print('dbSelecTModeChatMessageOfChatId', e)
+        print('dbSelectCustomChatMessageOfChatId', e)
       })
   }, [id])
 
@@ -257,10 +260,16 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
           settings={settings}
           onSettingsChange={values => {
             updateCustomChatSettings(id, values)
+            dbUpdateCustomChatWhere(id, values)
+            hapticSuccess()
           }}
           onDeleteAllMessageConfirm={() => {
             setMessages([])
+            dbDeleteCustomChatMessageOfChatId(id)
+            hapticSuccess()
           }}
+          onShow={() => (enablekeyboardAvoid.value = false)}
+          onDismiss={() => (enablekeyboardAvoid.value = true)}
         />
       </SafeAreaView>
     </BottomSheetModalProvider>

@@ -7,13 +7,15 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 export type EditSystemPromptDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: string | null
+  fontSize: number
   onValueChange: (value: string) => void
+  onBackNotify: () => void
 }
 
 export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProps) {
-  const { style, value, onValueChange } = props
+  const { style, value, fontSize, onValueChange, onBackNotify } = props
 
-  const [systemPrompt, setSystemPrompt] = useState('')
+  const [systemPrompt, setSystemPrompt] = useState(value ?? '')
   const actionDisabled = value === systemPrompt
 
   return (
@@ -21,10 +23,13 @@ export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProp
       <SettingsTitleBar
         title="Edit System Prompt"
         actionDisabled={actionDisabled}
+        onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(systemPrompt.trim())}
       />
       <Input
-        style={{ marginTop: dimensions.edge, marginHorizontal: dimensions.edgeTwice }}
+        style={styles.text}
+        textStyle={{ fontSize }}
+        multiline={true}
         autoFocus={true}
         placeholder="System Prompt ..."
         returnKeyType="done"
@@ -37,10 +42,16 @@ export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProp
 
 type Styles = {
   container: ViewStyle
+  text: ViewStyle
 }
 
 const styles = StyleSheet.create<Styles>({
   container: {
     flex: 1,
+  },
+  text: {
+    marginTop: dimensions.edge,
+    marginHorizontal: dimensions.edgeTwice,
+    maxHeight: 240,
   },
 })

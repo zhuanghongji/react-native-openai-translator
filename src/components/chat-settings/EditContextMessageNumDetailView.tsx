@@ -11,10 +11,11 @@ export type EditContextMessageNumDetailViewProps = {
   style?: StyleProp<ViewStyle>
   value: number
   onValueChange: (value: number) => void
+  onBackNotify: () => void
 }
 
 export function EditContextMessageNumDetailView(props: EditContextMessageNumDetailViewProps) {
-  const { style, value, onValueChange } = props
+  const { style, value, onValueChange, onBackNotify } = props
 
   const { bottom: bottomInset } = useSafeAreaInsets()
 
@@ -35,6 +36,7 @@ export function EditContextMessageNumDetailView(props: EditContextMessageNumDeta
       <SettingsTitleBar
         title="Edit Context Message Num"
         actionDisabled={actionDisabled}
+        onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(contextMessagesNum)}
       />
       <BottomSheetFlatList

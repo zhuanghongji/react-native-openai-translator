@@ -114,6 +114,8 @@ export type RemoveNullByKey<T, K extends keyof T> = {
 // MARK: SQL
 
 export type DBSqlExcutionArgs = (number | string | null)[]
+export type DBSqlExcutionValues = { [key: string]: string | number | null }
+export type DBSqlExcutionConditions = { [key: string]: string | number | null }
 
 export type DBSqlExcution = {
   statement: string

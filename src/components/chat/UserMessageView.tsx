@@ -21,7 +21,9 @@ export function UserMessageView(props: UserMessageProps) {
   return (
     <View style={[style, styles.container]}>
       <View style={styles.content}>
-        <Text style={[styles.text, stylez.contentText, { fontSize }]}>{trimContent(content)}</Text>
+        <Text style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}>
+          {trimContent(content)}
+        </Text>
       </View>
       {hideChatAvatar ? (
         <View style={stylez.chatAvatarContainerHidden} />
