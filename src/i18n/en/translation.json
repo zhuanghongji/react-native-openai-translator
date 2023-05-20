@@ -88,5 +88,13 @@
   "symbols": "symbols",
   "flags": "flags",
   "Create New Chat": "Create New Chat",
-  "Unnamed": "Unnamed"
+  "Unnamed": "Unnamed",
+  "Modes": "Modes",
+  "Chats": "Chats",
+  "Discover": "Discover",
+  "Me": "Me",
+  "Awesome Prompts": "Awesome Prompts",
+  "Prompt Engineering Guide": "Prompt Engineering Guide",
+  "English Word Book": "English Word Book",
+  "Mode Result Bookmarks": "Mode Result Bookmarks"
 }

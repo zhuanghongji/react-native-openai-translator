@@ -1,8 +1,10 @@
 import { Divider } from '../../components/Divider'
+import { EmptyView } from '../../components/EmptyView'
 import { dbSelectModeResultWhereMode } from '../../db/table/t-mode-result'
 import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
 import { print } from '../../printer'
+import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { RootStackParamList } from '../screens'
 import { ModeResultDetailModal, ModeResultDetailModalHandle } from './ModeResultDetailModal'
@@ -46,7 +48,9 @@ export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
 
   const renderItemSeparator = () => <Divider />
 
-  return (
+  return items.length === 0 ? (
+    <EmptyView style={{ justifyContent: 'flex-start', paddingTop: dimensions.edgeTwice }} />
+  ) : (
     <>
       <FlashList
         contentContainerStyle={{ backgroundColor: background }}

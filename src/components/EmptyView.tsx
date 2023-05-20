@@ -48,8 +48,7 @@ const styles = StyleSheet.create<Styles>({
     marginTop: dimensions.edge,
   },
   subtitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 14,
     marginTop: dimensions.edge,
   },
 })

@@ -10,12 +10,14 @@ import { AddTip } from './AddTip'
 import { CustomChatItemView } from './CustomChatItemView'
 import { FlashList } from '@shopify/flash-list'
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { RefreshControl } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = MainTabScreenProps<'Chats'>
 
 export function ChatsScreen({ navigation }: Props): JSX.Element {
+  const { t } = useTranslation()
   const { background, backgroundChat } = useThemeScheme()
 
   const [refreshing, setRefreshing] = useState(false)
@@ -53,7 +55,7 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
       <TitleBar
         backDisabled
-        title="Chats"
+        title={t('Chats')}
         action={{
           iconName: 'add-circle',
           onPress: () => navigation.push('CustomChatInit'),

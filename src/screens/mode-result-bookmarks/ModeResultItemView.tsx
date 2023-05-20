@@ -64,7 +64,7 @@ const styles = StyleSheet.create<Styles>({
   },
   t1: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   t2: {

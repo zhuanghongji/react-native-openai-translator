@@ -9,6 +9,7 @@ import { ModeResultScene } from './ModeResultScene'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, ViewStyle } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Route, TabBar, TabView } from 'react-native-tab-view'
@@ -22,6 +23,7 @@ type ResultRoute = Route & {
 }
 
 export function ModeResultBookmarksScreen({ navigation: _ }: Props): JSX.Element {
+  const { t } = useTranslation()
   const { backgroundChat } = useThemeScheme()
 
   const [tabIndex, setTabIndex] = useState(0)
@@ -36,7 +38,7 @@ export function ModeResultBookmarksScreen({ navigation: _ }: Props): JSX.Element
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
-        <TitleBar title="Mode Result Bookmarks" />
+        <TitleBar title={t('Mode Result Bookmarks')} />
         <TabView
           style={styles.content}
           lazy={true}

@@ -8,12 +8,13 @@ import { Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from 're
 export type CellViewProps = {
   style?: StyleProp<ViewStyle>
   icon?: SvgIconName
+  iconColor?: string
   title: string
   onPress: () => void
 }
 
 export function CellView(props: CellViewProps) {
-  const { style, icon, title, onPress } = props
+  const { style, icon, iconColor, title, onPress } = props
 
   const { text, tint } = useThemeScheme()
 
@@ -26,7 +27,7 @@ export function CellView(props: CellViewProps) {
         <SvgIcon
           style={{ marginRight: dimensions.edge }}
           size={dimensions.iconMedium}
-          color={tint}
+          color={iconColor ?? tint}
           name={icon}
         />
       ) : null}
@@ -47,7 +48,7 @@ const styles = StyleSheet.create<Styles>({
   container: {
     flexDirection: 'row',
     width: '100%',
-    height: 48,
+    height: dimensions.cellHeight,
     alignItems: 'center',
     paddingHorizontal: dimensions.edge,
   },

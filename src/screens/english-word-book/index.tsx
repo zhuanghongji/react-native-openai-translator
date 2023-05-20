@@ -10,11 +10,13 @@ import { EnglishWrodItemView } from './EnglishWrodItemView'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList } from '@shopify/flash-list'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'EnglishWordBook'>
 
 export function EnglishWordBookScreen({ navigation: _ }: Props): JSX.Element {
+  const { t } = useTranslation()
   const { background, backgroundChat } = useThemeScheme()
 
   const [items, setItems] = useState<TModeWord[]>([])
@@ -33,7 +35,7 @@ export function EnglishWordBookScreen({ navigation: _ }: Props): JSX.Element {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
-      <TitleBar title="English Word Book" />
+      <TitleBar title={t('English Word Book')} />
       {items.length === 0 ? (
         <EmptyView />
       ) : (
