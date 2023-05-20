@@ -21,7 +21,7 @@ export function DeleteAllMessagesDetailView(props: DeleteAllMessagesDetailViewPr
       <SettingsTitleBar
         actionStyle={{ backgroundColor: colors.warning }}
         actionText={t('CLEAR')}
-        title="Delete All Messages"
+        title={t('Delete All Messages')}
         onBackNotify={onBackNotify}
         onActionPress={onConfirmPress}
       />

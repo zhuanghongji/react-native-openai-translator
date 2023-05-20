@@ -2,7 +2,8 @@ import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { emojis } from '../res/emojis'
 import { EmojisModalScene } from './EmojisModalScene'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 import { TabBar, TabView } from 'react-native-tab-view'
@@ -11,33 +12,38 @@ const NUM_COLUMNS = 8
 
 export type EmojisTabViewProps = {
   style?: StyleProp<ViewStyle>
+  tabBarPosition?: 'top' | 'bottom'
   onEmojiPress: (value: string) => void
 }
 
 export function EmojisTabView(props: EmojisTabViewProps) {
-  const { style, onEmojiPress } = props
+  const { style, tabBarPosition, onEmojiPress } = props
 
   const { width: frameWidth } = useSafeAreaFrame()
   const itemWidth = (frameWidth - dimensions.edgeTwice) / NUM_COLUMNS
 
+  const { t } = useTranslation()
   const [tabIndex, setTabIndex] = useState(0)
-  const [routes] = useState([
-    { key: 'smileys', title: 'smileys', index: 0, emojiList: emojis.smileys },
-    { key: 'peoples', title: 'peoples', index: 1, emojiList: emojis.peoples },
-    { key: 'natures', title: 'natures', index: 1, emojiList: emojis.natures },
-    { key: 'foods', title: 'foods', index: 1, emojiList: emojis.foods },
-    { key: 'activities', title: 'activities', index: 1, emojiList: emojis.activities },
-    { key: 'places', title: 'places', index: 1, emojiList: emojis.places },
-    { key: 'symbols', title: 'symbols', index: 1, emojiList: emojis.symbols },
-    { key: 'flags', title: 'flags', index: 1, emojiList: emojis.flags },
-  ])
+
+  const routes = useMemo(() => {
+    return [
+      { key: 'smileys', title: t('smileys'), index: 0, emojiList: emojis.smileys },
+      { key: 'peoples', title: t('peoples'), index: 1, emojiList: emojis.peoples },
+      { key: 'natures', title: t('natures'), index: 1, emojiList: emojis.natures },
+      { key: 'foods', title: t('foods'), index: 1, emojiList: emojis.foods },
+      { key: 'activities', title: t('activities'), index: 1, emojiList: emojis.activities },
+      { key: 'places', title: t('places'), index: 1, emojiList: emojis.places },
+      { key: 'symbols', title: t('symbols'), index: 1, emojiList: emojis.symbols },
+      { key: 'flags', title: t('flags'), index: 1, emojiList: emojis.flags },
+    ]
+  }, [t])
 
   return (
     <TabView
-      style={style}
+      style={[{ flex: 1 }, style]}
       lazy={true}
       lazyPreloadDistance={1}
-      tabBarPosition="bottom"
+      tabBarPosition={tabBarPosition}
       navigationState={{ index: tabIndex, routes }}
       renderTabBar={options => {
         return (
@@ -46,7 +52,7 @@ export function EmojisTabView(props: EmojisTabViewProps) {
             style={{ backgroundColor: colors.white }}
             tabStyle={{ width: frameWidth / 3.5 }}
             labelStyle={{ fontWeight: 'bold' }}
-            indicatorStyle={{ backgroundColor: colors.black, height: 4, borderRadius: 2 }}
+            indicatorStyle={{ backgroundColor: colors.black, height: 2, borderRadius: 1 }}
             scrollEnabled={true}
             activeColor={colors.black}
             inactiveColor={colors.c99}

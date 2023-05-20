@@ -1,4 +1,5 @@
 import { Divider } from '../../../components/Divider'
+import { SvgIconName } from '../../../components/SvgIcon'
 import { TCustomChatBasic, TCustomChatDefault } from '../../../db/types'
 import { DeleteAllMessagesDetailView } from './DeleteAllMessagesDetailView'
 import { EditAvatarDetailView } from './EditAvatarDetailView'
@@ -20,11 +21,14 @@ import {
   BottomSheetModal,
 } from '@gorhom/bottom-sheet'
 import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 type Item = {
   title: string
+  subtitle?: string
+  iconName?: SvgIconName
 }
 
 export type SettingsSelectorModalProps = {
@@ -52,30 +56,35 @@ export const SettingsSelectorModal = React.forwardRef<
 
   const selectorModalRef = useRef<BottomSheetModal>(null)
 
-  const selectorPoints = useMemo(() => ['60%', '80%'], [])
-  const [snapIndex, setSnapIndex] = useState<0 | 1>(0)
+  const selectorPoints = useMemo(() => ['60%'], [])
   const [isInSelector, setIsInSelector] = useState(true)
   const onBackNotify = useCallback(() => {
-    setSnapIndex(0)
     setIsInSelector(true)
   }, [])
-  const onSelectedNotify = useCallback((index: number) => {
-    if (index === 2) {
-      setSnapIndex(1)
-    }
+  const onSelectedNotify = useCallback(() => {
     setIsInSelector(false)
   }, [])
 
+  const { t } = useTranslation()
+
   const items: Item[] = [
-    { title: '修改头像' },
-    { title: '修改对话名称' },
-    { title: '修改系统提示' },
-    { title: '字号' },
-    { title: '模型' },
-    { title: '温度值' },
-    { title: '上下文消息个数' },
-    { title: '删除全部消息' },
-    { title: '分享' },
+    { title: t('Avatar'), subtitle: avatar },
+    { title: t('Chat Name') },
+    { title: t('System Prompt') },
+    {
+      title: t('Font Size'),
+      subtitle: `${font_size} ${Platform.OS === 'ios' ? 'pt' : 'dp'}`,
+      iconName: 'font-size',
+    },
+    { title: t('Model'), subtitle: model, iconName: 'model' },
+    { title: t('Temperature Value'), subtitle: `${temperature}`, iconName: 'thermostat' },
+    {
+      title: t('Context Messages Number'),
+      subtitle: `${context_messages_num}`,
+      iconName: 'history',
+    },
+    { title: t('Delete All Messages'), iconName: 'delete' },
+    { title: t('Share'), iconName: 'share' },
   ]
   useImperativeHandle(ref, () => ({
     show: () => {
@@ -99,10 +108,11 @@ export const SettingsSelectorModal = React.forwardRef<
     <BottomSheetModal
       ref={selectorModalRef}
       style={style}
-      index={snapIndex}
+      index={0}
       snapPoints={selectorPoints}
       stackBehavior="push"
       handleComponent={null}
+      keyboardBehavior="extend"
       enableContentPanningGesture={isInSelector}
       backdropComponent={renderBackdrop}
       onChange={index => {
@@ -117,9 +127,15 @@ export const SettingsSelectorModal = React.forwardRef<
             data={items}
             keyExtractor={(item, index) => `${index}_${item.title}`}
             renderItem={({ item, index }) => {
-              const { title } = item
+              const { title, subtitle, iconName } = item
               return (
-                <SettingsItemView index={index} title={title} onSelectedNotify={onSelectedNotify} />
+                <SettingsItemView
+                  index={index}
+                  title={title}
+                  subtitle={subtitle}
+                  iconName={iconName}
+                  onSelectedNotify={onSelectedNotify}
+                />
               )
             }}
             ListHeaderComponent={Divider}

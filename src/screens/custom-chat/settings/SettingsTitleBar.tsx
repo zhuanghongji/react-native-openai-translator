@@ -114,7 +114,7 @@ const styles = StyleSheet.create<Styles>({
     alignItems: 'center',
   },
   actionText: {
-    fontSize: 13,
+    fontSize: 12,
   },
   center: {
     flex: 1,

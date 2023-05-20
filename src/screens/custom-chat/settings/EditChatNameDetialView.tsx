@@ -2,6 +2,7 @@ import { Input } from '../../../components/Input'
 import { dimensions } from '../../../res/dimensions'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 export type EditChatNameDetialViewProps = {
@@ -15,13 +16,15 @@ export type EditChatNameDetialViewProps = {
 export function EditChatNameDetialView(props: EditChatNameDetialViewProps) {
   const { style, value, fontSize, onValueChange, onBackNotify } = props
 
+  const { t } = useTranslation()
+
   const [chatName, setChatName] = useState(value ?? '')
   const actionDisabled = value === chatName
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit Chat Name"
+        title={t('Chat Name')}
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(chatName.trim())}
@@ -30,7 +33,7 @@ export function EditChatNameDetialView(props: EditChatNameDetialViewProps) {
         style={styles.text}
         textStyle={{ fontSize }}
         autoFocus={true}
-        placeholder="Chat Name ..."
+        placeholder={`${t('Chat Name')} ...`}
         returnKeyType="done"
         value={chatName}
         onChangeText={setChatName}

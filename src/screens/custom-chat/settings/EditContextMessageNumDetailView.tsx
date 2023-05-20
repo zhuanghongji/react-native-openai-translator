@@ -2,9 +2,9 @@ import { Divider } from '../../../components/Divider'
 import { DEFAULTS } from '../../../preferences/defaults'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet'
 import React, { useMemo, useState } from 'react'
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type EditContextMessageNumDetailViewProps = {
@@ -17,6 +17,7 @@ export type EditContextMessageNumDetailViewProps = {
 export function EditContextMessageNumDetailView(props: EditContextMessageNumDetailViewProps) {
   const { style, value, onValueChange, onBackNotify } = props
 
+  const { t } = useTranslation()
   const { bottom: bottomInset } = useSafeAreaInsets()
 
   const [contextMessagesNum, setContextMessagesNum] = useState(value)
@@ -34,18 +35,18 @@ export function EditContextMessageNumDetailView(props: EditContextMessageNumDeta
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit Context Message Num"
+        title={t('Context Messages Number')}
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(contextMessagesNum)}
       />
-      <BottomSheetFlatList
+      <FlatList
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: bottomInset }}
         data={data}
         keyExtractor={(item, index) => `${index}_${item}`}
         renderItem={({ item }) => {
-          const subtitle = item === DEFAULTS.contextMessagesNum ? ' (default)' : ''
+          const subtitle = item === DEFAULTS.contextMessagesNum ? ` (${t('default')})` : ''
           return (
             <EditItemView
               title={`${item}`}

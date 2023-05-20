@@ -5,27 +5,31 @@ import { TitleBar } from '../../components/TitleBar'
 import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/helper'
 import { dbFindCustomChatById, dbInsertCustomChat } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
+import { DEFAULTS } from '../../preferences/defaults'
 import { toast } from '../../toast'
 import { useCustomChatSettingsStore } from '../../zustand/stores/custom-chat-settings'
 import type { RootStackParamList } from '../screens'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Keyboard, ScrollView } from 'react-native'
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const SNAP_HEIGHT = 340
+const SNAP_HEIGHT = 420
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomChatInit'>
 
 export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
-  const [avatar, setAvatar] = useState('😀')
+  const [avatar, setAvatar] = useState(DEFAULTS.avatar)
   const [chatName, setChatName] = useState('')
   const [systemPrompt, setSystemPrompt] = useState('')
 
-  const title = (chatName ? chatName : systemPrompt ? 'Unnamed' : 'Initialize Chat').trim()
-  const subtitle = (systemPrompt ? systemPrompt : '').trim()
+  const { t } = useTranslation()
+
+  // const title = (chatName ? chatName : systemPrompt ? 'Unnamed' : 'Initialize Chat').trim()
+  // const subtitle = (systemPrompt ? systemPrompt : '').trim()
   const confirmDisabled = chatName ? false : true
 
   const emojisModalRef = useRef<EmojisModalHandle>(null)
@@ -34,7 +38,7 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
     return {
       transform: [
         {
-          translateY: -(animatedIndex.value + 1) * SNAP_HEIGHT * 0.5,
+          translateY: -(animatedIndex.value + 1) * SNAP_HEIGHT * 0.45,
         },
       ],
     }
@@ -45,8 +49,8 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
     try {
       const { insertId } = await dbInsertCustomChat({
         ...DEFAULT_T_CUSTOM_CHAT_BASIC,
-        chat_name: title,
-        system_prompt: subtitle,
+        chat_name: chatName.trim(),
+        system_prompt: systemPrompt.trim(),
       })
       if (insertId === undefined) {
         toast('danger', 'Error', 'Initialize Chat Error 1')
@@ -66,14 +70,14 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
-        <TitleBar title={title} subtitle={subtitle} />
+        <TitleBar title={t('Create New Chat')} />
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled">
           <Animated.View style={animatedStyle}>
-            <AvoidKeyboardView factor={0.5}>
+            <AvoidKeyboardView factor={0.4}>
               <ChatInfoEditView
                 avatar={avatar}
                 chatName={chatName}

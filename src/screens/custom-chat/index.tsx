@@ -33,6 +33,7 @@ import {
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FlatList, View } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
@@ -48,6 +49,8 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   const settingsModalRef = useRef<SettingsSelectorModalHandle>(null)
   const settings = fillTCustomChatWithDefaults(id, useCustomChatSettings(id))
   const { chat_name, system_prompt, avatar, font_size } = settings
+
+  const { t } = useTranslation()
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -192,7 +195,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
         <TitleBar
-          title={chat_name ?? ''}
+          title={chat_name ? chat_name : t('Unnamed')}
           subtitle={system_prompt ?? ''}
           action={{
             iconName: 'tune',

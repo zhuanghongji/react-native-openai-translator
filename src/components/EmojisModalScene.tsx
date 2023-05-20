@@ -41,6 +41,7 @@ type Styles = {
 const styles = StyleSheet.create<Styles>({
   container: {
     width: '100%',
+    marginTop: dimensions.edgeTwice,
   },
   item: {
     aspectRatio: 1,

@@ -54,7 +54,7 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         style={styles.input}
         autoFocus={true}
         value={chatName}
-        placeholder="Chat Name ..."
+        placeholder={`${t('Chat Name')} ...`}
         returnKeyType="next"
         onChangeText={onChatNameChange}
         onSubmitEditing={() => presetInputRef.current?.focus()}
@@ -64,7 +64,7 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         ref={presetInputRef}
         style={styles.input}
         value={systemPrompt}
-        placeholder="System Prompt ..."
+        placeholder={`${t('System Prompt')} ...`}
         returnKeyType="done"
         onChangeText={onSystemPromptChange}
         onSubmitEditing={() => {
@@ -108,7 +108,7 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
     borderColor: 'black',
     borderWidth: 1,
-    paddingHorizontal: dimensions.edgeTwice,
+    paddingHorizontal: dimensions.edge,
     borderRadius: dimensions.borderRadius,
     paddingVertical: 8,
   },

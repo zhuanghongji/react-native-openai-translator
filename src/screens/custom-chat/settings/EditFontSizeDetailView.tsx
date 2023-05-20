@@ -3,6 +3,7 @@ import { DEFAULTS } from '../../../preferences/defaults'
 import { EditItemView } from './EditItemView'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import React, { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FlatList, Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -16,6 +17,7 @@ export type EditFontSizeDetailViewProps = {
 export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
   const { style, value, onValueChange, onBackNotify } = props
 
+  const { t } = useTranslation()
   const { bottom: bottomInset } = useSafeAreaInsets()
 
   const [fontSize, setFontSize] = useState(value)
@@ -32,7 +34,7 @@ export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit Font Size"
+        title={t('Font Size')}
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(fontSize)}
@@ -43,7 +45,7 @@ export function EditFontSizeDetailView(props: EditFontSizeDetailViewProps) {
         data={data}
         keyExtractor={(item, index) => `${index}_${item}`}
         renderItem={({ item }) => {
-          const subtitle = item === DEFAULTS.fontSize ? ' (default)' : ''
+          const subtitle = item === DEFAULTS.fontSize ? ` (${t('default')})` : ''
           return (
             <EditItemView
               title={`${item}${Platform.OS === 'ios' ? ' pt' : ' dp'}`}

@@ -8,10 +8,8 @@ import {
   BottomSheetModal,
 } from '@gorhom/bottom-sheet'
 import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
-import { StyleProp, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { SharedValue } from 'react-native-reanimated'
-
-const NUM_COLUMNS = 8
 
 export type EmojisModalProps = {
   style?: StyleProp<ViewStyle>
@@ -53,7 +51,7 @@ export const EmojisModal = React.forwardRef<EmojisModalHandle, EmojisModalProps>
   return (
     <BottomSheetModal
       ref={bottomSheetRef}
-      style={style}
+      style={[styles.container, style]}
       index={0}
       enablePanDownToClose={true}
       enableContentPanningGesture={false}
@@ -66,7 +64,26 @@ export const EmojisModal = React.forwardRef<EmojisModalHandle, EmojisModalProps>
         borderTopRightRadius: dimensions.borderRadius,
       }}
       backdropComponent={renderBackdrop}>
-      <EmojisTabView onEmojiPress={onEmojiPress} />
+      <View style={styles.content}>
+        <EmojisTabView onEmojiPress={onEmojiPress} />
+      </View>
     </BottomSheetModal>
   )
+})
+
+type Styles = {
+  container: ViewStyle
+  content: ViewStyle
+}
+
+const styles = StyleSheet.create<Styles>({
+  container: {
+    flex: 1,
+    borderTopLeftRadius: dimensions.modalRadius,
+    borderTopRightRadius: dimensions.modalRadius,
+    overflow: 'hidden',
+  },
+  content: {
+    flex: 1,
+  },
 })

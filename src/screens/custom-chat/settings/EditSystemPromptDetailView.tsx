@@ -2,6 +2,7 @@ import { Input } from '../../../components/Input'
 import { dimensions } from '../../../res/dimensions'
 import { SettingsTitleBar } from './SettingsTitleBar'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
 export type EditSystemPromptDetailViewProps = {
@@ -15,13 +16,15 @@ export type EditSystemPromptDetailViewProps = {
 export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProps) {
   const { style, value, fontSize, onValueChange, onBackNotify } = props
 
+  const { t } = useTranslation()
+
   const [systemPrompt, setSystemPrompt] = useState(value ?? '')
   const actionDisabled = value === systemPrompt
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
-        title="Edit System Prompt"
+        title={t('System Prompt')}
         actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(systemPrompt.trim())}
@@ -31,7 +34,7 @@ export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProp
         textStyle={{ fontSize }}
         multiline={true}
         autoFocus={true}
-        placeholder="System Prompt ..."
+        placeholder={`${t('System Prompt')} ...`}
         returnKeyType="done"
         value={systemPrompt}
         onChangeText={setSystemPrompt}
@@ -52,6 +55,6 @@ const styles = StyleSheet.create<Styles>({
   text: {
     marginTop: dimensions.edge,
     marginHorizontal: dimensions.edgeTwice,
-    maxHeight: 240,
+    maxHeight: 96,
   },
 })
