@@ -3874,6 +3874,11 @@ dag-map@~1.0.0:
   resolved "https://mirrors.cloud.tencent.com/npm/dag-map/-/dag-map-1.0.2.tgz#e8379f041000ed561fc515475c1ed2c85eece8d7"
   integrity sha1-6DefBBAA7VYfxRVHXB7SyF7s6Nc=
 
+dayjs@^1.11.7:
+  version "1.11.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
+  integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
+
 dayjs@^1.8.15:
   version "1.11.7"
   resolved "https://mirrors.cloud.tencent.com/npm/dayjs/-/dayjs-1.11.7.tgz"

@@ -18,6 +18,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TitleBarAction {
+  disabled?: boolean
   iconSize?: number
   iconColor?: string
   iconName: SvgIconName
@@ -88,9 +89,19 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
     if (!action) {
       return <View style={styles.touchable} />
     }
-    const { iconSize = dimensions.iconMedium, iconColor = tintColor, iconName, onPress } = action
+    const {
+      disabled = false,
+      iconSize = dimensions.iconMedium,
+      iconColor = tintColor,
+      iconName,
+      onPress,
+    } = action
     return (
-      <Pressable style={styles.touchable} hitSlop={{ right: H_EDGE }} onPress={onPress}>
+      <Pressable
+        style={styles.touchable}
+        hitSlop={{ right: H_EDGE }}
+        disabled={disabled}
+        onPress={onPress}>
         <SvgIcon size={iconSize} color={iconColor} name={iconName} />
       </Pressable>
     )

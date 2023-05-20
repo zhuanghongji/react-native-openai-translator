@@ -38,7 +38,8 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
 
   const prompts = useMemo<AwesomePrompt[]>(() => {
     const items: AwesomePrompt[] = AWESOME_PROMPTS.map(v => ({
-      title: `Act as a ${v.title}`,
+      // title: `Act as a ${v.title}`,
+      title: v.title,
       content: v.content,
     }))
     if (!filterText) {

@@ -8,6 +8,7 @@ export const dimensions = {
   space: 8,
   spaceBottom: 24,
   barHeight: 48,
+  itemHeight: 64,
   borderRadius: 8,
   iconSmall: 16,
   iconMedium: 20,

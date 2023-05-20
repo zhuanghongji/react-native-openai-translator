@@ -9,6 +9,7 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 export interface ConfirmModalProps {
   style?: StyleProp<ViewStyle>
+  rightTextStyle?: StyleProp<TextStyle>
   visible: boolean
   title?: string
   message: string
@@ -22,6 +23,7 @@ export interface ConfirmModalProps {
 export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
   const {
     style,
+    rightTextStyle,
     visible,
     title,
     message,
@@ -38,7 +40,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
 
   const dissmiss = () => onDismissRequest(false)
 
-  const renderButton = (txtStyle: TextStyle | undefined, txt: string, onPress?: () => void) => {
+  const renderButton = (txtStyle: StyleProp<TextStyle>, txt: string, onPress?: () => void) => {
     return (
       <Pressable
         style={styles.buttonContainer}
@@ -82,7 +84,7 @@ export const ConfirmModal = React.memo((props: ConfirmModalProps) => {
         <View style={[styles.buttonRow, { borderTopColor: borderColor }]}>
           {renderButton(undefined, leftText, onLeftPress)}
           <View style={[styles.buttonDivider, { backgroundColor: borderColor }]} />
-          {renderButton({ color: colors.accent }, rightText, onRightPress)}
+          {renderButton([{ color: colors.accent }, rightTextStyle], rightText, onRightPress)}
         </View>
       </View>
     </Modal>

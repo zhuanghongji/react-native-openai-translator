@@ -187,10 +187,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
           subtitle={system_prompt ?? ''}
           action={{
             iconName: 'tune',
-            onPress: () => {
-              // toast('success', 'Teaser', 'Chat fine-tuning will be support later')
-              settingsModalRef.current?.show()
-            },
+            onPress: () => settingsModalRef.current?.show(),
           }}
         />
         <View style={[{ flex: 1, overflow: 'hidden' }]}>

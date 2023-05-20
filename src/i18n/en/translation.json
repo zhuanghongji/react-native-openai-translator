@@ -15,6 +15,7 @@
   "CONFIRM": "CONFIRM",
   "SKIP": "SKIP",
   "RESET": "RESET",
+  "CLEAR": "CLEAR",
   "Settings": "Settings",
   "Send a message...": "Send a message...",
   "Clipboard": "Clipboard",
@@ -66,5 +67,6 @@
   "Enter API URL Path first": "Please enter the API URL Path first",
   "Enter API Key first": "Please enter the API Key first",
   "Warning": "Warning",
-  "Text recognition seems not stable on Android": "Text recognition seems not stable on Android"
+  "Text recognition seems not stable on Android": "Text recognition seems not stable on Android",
+  "ChatMessageClearWarning": "The messages in this chat will be permanently deleted and cannot be recovered, are you sure to clear them ?"
 }

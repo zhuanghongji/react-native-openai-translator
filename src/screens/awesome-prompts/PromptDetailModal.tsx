@@ -41,7 +41,7 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
     const textStyle = [styles.text, { color: textColor, backgroundColor }]
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null)
-    const snapPoints = useMemo(() => ['60%'], [])
+    const snapPoints = useMemo(() => ['70%'], [])
     const handlePresentModalPress = useCallback(() => {
       bottomSheetModalRef.current?.present()
     }, [])

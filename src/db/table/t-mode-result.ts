@@ -1,3 +1,4 @@
+import { TranslatorMode } from '../../preferences/options'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
 import { TResultBase } from '../types'
@@ -45,6 +46,10 @@ export function dbUpdateEnglishWordCollected(id: number, toCollected: boolean) {
 
 export function dbSelectModeResult() {
   return dbExecuteSql<TModeResult>(dbGenSelectExecution(TABLE_NAME))
+}
+
+export function dbSelectModeResultWhereMode(mode: TranslatorMode) {
+  return dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, { mode }))
 }
 
 export function dbDeleteAllModeResult() {

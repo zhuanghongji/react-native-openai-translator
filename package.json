@@ -23,6 +23,7 @@
     "@react-navigation/native-stack": "^6.9.12",
     "@shopify/flash-list": "^1.4.3",
     "add": "^2.0.6",
+    "dayjs": "^1.11.7",
     "expo": "^48.0.16",
     "expo-asset": "^8.9.1",
     "expo-file-system": "^15.2.2",

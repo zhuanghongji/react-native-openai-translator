@@ -1,3 +1,4 @@
+import { ConfirmModal } from '../../components/ConfirmModal'
 import { SvgIconName } from '../../components/SvgIcon'
 import { TitleBar } from '../../components/TitleBar'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
@@ -9,9 +10,11 @@ import { dbInsertModeMessage, dbSelectModeMessageOfResultId } from '../../db/tab
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
+import { DEFAULTS } from '../../preferences/defaults'
 import { TranslatorMode } from '../../preferences/options'
 import { useHideChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -69,6 +72,10 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
   const title = useTitle(translatorMode)
   const assistantIconName = getAssistantIconName(translatorMode)
 
+  const { t } = useTranslation()
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+  const fontSize = DEFAULTS.fontSize
+
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
 
@@ -80,34 +87,38 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     return { transform: [{ translateY: keyboardHeight.value }] }
   }, [])
 
+  const resultMessages = useMemo<ChatMessage[]>(() => {
+    return [
+      {
+        role: 'divider',
+        content: 'FOREMOST',
+      },
+      {
+        role: 'user',
+        content: userContent,
+      },
+      {
+        role: 'assistant',
+        content: assistantContent,
+      },
+    ]
+  }, [userContent, assistantContent])
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesInverted = useMemo(() => {
-    return [...messages].reverse()
-  }, [messages])
+    return [...resultMessages, ...messages].reverse()
+  }, [resultMessages, messages])
   useEffect(() => {
     dbSelectModeMessageOfResultId(id)
       .then(result => {
-        setMessages([
-          {
-            role: 'divider',
-            content: 'FOREMOST',
-          },
-          {
-            role: 'user',
-            content: userContent,
-          },
-          {
-            role: 'assistant',
-            content: assistantContent,
-          },
-          ...result.rows._array.map(
+        setMessages(
+          result.rows._array.map(
             v =>
               ({
                 role: v.role,
                 content: v.content,
               } as any)
-          ),
-        ])
+          )
+        )
       })
       .catch(e => {
         print('dbSelectModeMessageOfResultId', e)
@@ -220,10 +231,14 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       <TitleBar
         title={title}
         subtitle={systemPrompt}
-        action={{
-          iconName: 'tune',
-          onPress: () => toast('success', 'Teaser', 'Chat fine-tuning will be support later'),
-        }}
+        action={
+          messages.length > 0
+            ? {
+                iconName: 'delete',
+                onPress: () => setDeleteModalVisible(true),
+              }
+            : undefined
+        }
       />
       <View style={[{ flex: 1, overflow: 'hidden' }]}>
         <Animated.View style={[{ flex: 1 }, transformStyle]}>
@@ -245,13 +260,20 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
                 return <AppDividerView message={item} onSavePress={handleSavePress} />
               }
               if (item.role === 'user') {
-                return <UserMessageView hideChatAvatar={hideChatAvatar} message={item} />
+                return (
+                  <UserMessageView
+                    fontSize={fontSize}
+                    hideChatAvatar={hideChatAvatar}
+                    message={item}
+                  />
+                )
               }
               if (item.role === 'assistant') {
                 return (
                   <AssistantMessageView
                     hideChatAvatar={hideChatAvatar}
                     svgIconName={assistantIconName}
+                    fontSize={fontSize}
                     message={item}
                   />
                 )
@@ -259,7 +281,9 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
               return null
             }}
             ItemSeparatorComponent={renderItemSeparator}
-            ListHeaderComponent={<SSEMessageView hideChatAvatar={hideChatAvatar} />}
+            ListHeaderComponent={
+              <SSEMessageView hideChatAvatar={hideChatAvatar} fontSize={fontSize} />
+            }
             onEndReached={() => console.log('onEndReached')}
           />
         </Animated.View>
@@ -272,6 +296,18 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         onNewDialoguePress={() => {
           setMessages([...messages, { role: 'divider', content: 'NEW DIALOGUE' }])
         }}
+      />
+      <ConfirmModal
+        rightTextStyle={{ color: colors.warning }}
+        visible={deleteModalVisible}
+        message={t('ChatMessageClearWarning')}
+        leftText={t('CANCEL')}
+        rightText={t('CLEAR')}
+        onRightPress={() => {
+          setMessages([])
+          // TODO SQLite
+        }}
+        onDismissRequest={setDeleteModalVisible}
       />
     </SafeAreaView>
   )
