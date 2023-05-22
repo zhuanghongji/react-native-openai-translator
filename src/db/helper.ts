@@ -1,5 +1,15 @@
 import { DEFAULTS } from '../preferences/defaults'
-import { TCustomChat, TCustomChatBasic, TCustomChatDefault, TResultExtra } from './types'
+import { dbExecuteSql } from './manager'
+import {
+  DBSqlExcutionConditions,
+  TCustomChat,
+  TCustomChatBasic,
+  TCustomChatDefault,
+  TPageData,
+  TPageParams,
+  TResultExtra,
+} from './types'
+import { dbGenSelectNextCursorWhereLimitExecution } from './utils'
 
 export const DEFAULT_T_RESULT_EXTRA: TResultExtra = {
   extra1: null,
@@ -40,5 +50,26 @@ export function fillTCustomChatWithDefaults(
     temperature: _chat.temperature ?? DEFAULTS.apiTemperature,
     context_messages_num: _chat.context_messages_num ?? DEFAULTS.contextMessagesNum,
     font_size: _chat.font_size ?? DEFAULTS.fontSize,
+  }
+}
+
+export async function dbExecuteSelectPageable<ItemT extends { id: number }>(
+  tableName: string,
+  params: TPageParams,
+  conditions: DBSqlExcutionConditions
+): Promise<TPageData<ItemT>> {
+  const { nextCursor, pageSize } = params
+  try {
+    const itemsResult = await dbExecuteSql<ItemT>(
+      dbGenSelectNextCursorWhereLimitExecution(tableName, nextCursor, conditions, pageSize)
+    )
+    const items = itemsResult.rows._array
+    let _nextCursor: number | null = null
+    if (items.length === pageSize) {
+      _nextCursor = items[items.length - 1].id
+    }
+    return { items, nextCursor: _nextCursor }
+  } catch (e) {
+    return Promise.reject(e)
   }
 }

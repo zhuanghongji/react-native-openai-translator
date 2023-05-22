@@ -1,5 +1,5 @@
 import { PickModalHandle } from '../components/PickModal'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppState, AppStateStatus } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
 
@@ -28,4 +28,19 @@ export const useIsForeground = (): boolean => {
   }, [setIsForeground])
 
   return isForeground
+}
+
+export function useOnRefresh<T>(refresh: () => Promise<T>) {
+  const [refreshing, setRefreshing] = useState(false)
+  const onRefresh = useCallback(async () => {
+    try {
+      setRefreshing(true)
+      await refresh()
+    } catch (e) {
+      // do nothing
+    } finally {
+      setRefreshing(false)
+    }
+  }, [refresh])
+  return { refreshing, setRefreshing, onRefresh }
 }

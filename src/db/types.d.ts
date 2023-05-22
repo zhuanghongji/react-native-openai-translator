@@ -157,3 +157,15 @@ export interface TResultBase {
   insert_time: number | null
   update_time: number | null
 }
+
+export interface TPageParams {
+  /** null: first page  */
+  nextCursor: number | null
+  pageSize: number
+}
+
+export interface TPageData<ItemT> {
+  /** null: no more page  */
+  nextCursor: number | null
+  items: ItemT[]
+}

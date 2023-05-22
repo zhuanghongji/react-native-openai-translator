@@ -4,14 +4,15 @@ import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
+import { useInfinitePageDataLoader } from '../../components/query/infinite-hooks'
 import { DEFAULT_T_RESULT_EXTRA, fillTCustomChatWithDefaults } from '../../db/helper'
 import { dbUpdateCustomChatWhere } from '../../db/table/t-custom-chat'
 import {
   dbDeleteCustomChatMessageOfChatId,
   dbInsertCustomMessage,
-  dbSelectCustomChatMessageOfChatId,
+  useInfiniteQueryCustomChatMessagePageable,
 } from '../../db/table/t-custom-chat-message'
-import { hapticError, hapticSuccess } from '../../haptic'
+import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
@@ -19,13 +20,14 @@ import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
-import { ChatMessage, Message } from '../../types'
+import { ChatMessage } from '../../types'
 import {
   updateCustomChatSettings,
   useCustomChatSettings,
 } from '../../zustand/stores/custom-chat-settings-helper'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import type { RootStackParamList } from '../screens'
+import { generateMessagesToSend } from './helper'
 import {
   SettingsSelectorModal,
   SettingsSelectorModalHandle,
@@ -48,9 +50,25 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
 
   const settingsModalRef = useRef<SettingsSelectorModalHandle>(null)
   const settings = fillTCustomChatWithDefaults(id, useCustomChatSettings(id))
-  const { chat_name, system_prompt, avatar, font_size } = settings
+  const { chat_name, system_prompt, avatar, font_size, context_messages_num } = settings
 
   const { t } = useTranslation()
+
+  const [freshMessages, setFreshMessages] = useState<ChatMessage[]>([])
+  const legacyPageSize = context_messages_num > 20 ? 100 : 20
+  const legacyResult = useInfiniteQueryCustomChatMessagePageable(id, legacyPageSize)
+  const { items: legacyMessages, onFetchNextPage: onEndReached } =
+    useInfinitePageDataLoader(legacyResult)
+
+  const finalMessages = useMemo<ChatMessage[]>(() => {
+    const legacyItems: ChatMessage[] = legacyMessages.map(v => {
+      return {
+        role: v.role,
+        content: v.content,
+      } as ChatMessage
+    })
+    return [...freshMessages, ...legacyItems]
+  }, [freshMessages, legacyMessages])
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -64,28 +82,6 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     return { transform: [{ translateY: enablekeyboardAvoid.value ? keyboardHeight.value : 0 }] }
   }, [])
 
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const messagesInverted = useMemo(() => {
-    return [...messages].reverse()
-  }, [messages])
-  useEffect(() => {
-    dbSelectCustomChatMessageOfChatId(id)
-      .then(result => {
-        setMessages(
-          result.rows._array.map(
-            v =>
-              ({
-                role: v.role,
-                content: v.content,
-              } as any)
-          )
-        )
-      })
-      .catch(e => {
-        print('dbSelectCustomChatMessageOfChatId', e)
-      })
-  }, [id])
-
   const messageListRef = useRef<FlatList<ChatMessage>>(null)
   const scrollToTop = useCallback((delay = 200) => {
     const fn = () => messageListRef.current?.scrollToOffset({ offset: 0, animated: true })
@@ -94,7 +90,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
   useEffect(() => {
     const show = KeyboardEvents.addListener('keyboardWillShow', () => scrollToTop(0))
     return () => show.remove()
-  }, [messages.length])
+  }, [freshMessages.length])
 
   const [inputText, setInputText] = useState('')
 
@@ -117,8 +113,9 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       return
     }
     setInputText('')
-    const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
-    setMessages(nextMessages)
+    const userMessage: ChatMessage = { role: 'user', content: inputText }
+    const nextMessages: ChatMessage[] = [userMessage, ...freshMessages]
+    setFreshMessages(nextMessages)
     dbInsertCustomMessage({
       ...DEFAULT_T_RESULT_EXTRA,
       chat_id: id,
@@ -132,25 +129,17 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       .catch(e => {
         print('dbInsertCustomMessage, user = ', e)
       })
-
-    const messagesToSend: Message[] = []
-    if (system_prompt) {
-      messagesToSend.push({ role: 'system', content: system_prompt })
-    }
-    for (const msg of nextMessages) {
-      if (msg.role === 'user') {
-        messagesToSend.push({ role: 'user', content: msg.content })
-      } else if (msg.role === 'assistant') {
-        messagesToSend.push({ role: 'assistant', content: msg.content })
-      } else {
-        // do nothing
-      }
-    }
+    const messages = generateMessagesToSend({
+      systemPrompt: system_prompt,
+      contextMessagesNum: context_messages_num,
+      currentMessages: finalMessages,
+      newMessage: userMessage,
+    })
     scrollToTop()
     setStatus('sending')
     esRequesting.current = true
     esRef.current?.close()
-    esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
+    esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
       onNext: content => {
         setContent(content)
         scrollToTop(0)
@@ -161,7 +150,8 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
         toast('warning', code, message)
       },
       onDone: message => {
-        setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
+        const assistantMessage: ChatMessage = { role: 'assistant', content: message.content }
+        setFreshMessages(prev => [assistantMessage, ...prev])
         dbInsertCustomMessage({
           ...DEFAULT_T_RESULT_EXTRA,
           chat_id: id,
@@ -214,7 +204,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
               keyboardDismissMode="on-drag"
               keyboardShouldPersistTaps="handled"
               inverted={true}
-              data={messagesInverted}
+              data={finalMessages}
               keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
               renderItem={({ item }) => {
                 if (item.role === 'divider') {
@@ -245,7 +235,10 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
               ListHeaderComponent={
                 <SSEMessageView fontSize={font_size} hideChatAvatar={hideChatAvatar} />
               }
-              onEndReached={() => console.log('onEndReached')}
+              onEndReached={() => {
+                console.log('onEndReached')
+                onEndReached()
+              }}
             />
           </Animated.View>
         </View>
@@ -255,7 +248,8 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
           onChangeText={setInputText}
           onSendPress={onSendPress}
           onNewDialoguePress={() => {
-            setMessages([...messages, { role: 'divider', content: 'NEW DIALOGUE' }])
+            const dividerMessage: ChatMessage = { role: 'divider', content: 'NEW DIALOGUE' }
+            setFreshMessages([dividerMessage, ...freshMessages])
           }}
         />
         <SettingsSelectorModal
@@ -266,10 +260,15 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
             dbUpdateCustomChatWhere(id, values)
             hapticSuccess()
           }}
-          onDeleteAllMessageConfirm={() => {
-            setMessages([])
-            dbDeleteCustomChatMessageOfChatId(id)
-            hapticSuccess()
+          onDeleteAllMessageConfirm={async () => {
+            try {
+              await dbDeleteCustomChatMessageOfChatId(id)
+              legacyResult.refetch()
+              setFreshMessages([])
+              hapticSuccess()
+            } catch (e) {
+              hapticWarning()
+            }
           }}
           onShow={() => (enablekeyboardAvoid.value = false)}
           onDismiss={() => (enablekeyboardAvoid.value = true)}

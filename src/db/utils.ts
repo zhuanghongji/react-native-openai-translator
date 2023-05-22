@@ -129,6 +129,50 @@ export function dbGenSelectWhereExecution(
   }
 }
 
+export function dbGenSelectCountWhereExecution(
+  tableName: string,
+  conditions: DBSqlExcutionConditions
+): DBSqlExcution {
+  const args: DBSqlExcutionArgs = []
+  const conditionListStr = genWhereConditionListStr(args, conditions)
+  return {
+    statement: `SELECT COUNT(*) FROM ${tableName} WHERE ${conditionListStr};`,
+    args,
+  }
+}
+
+export function dbGenSelectWhereLimitExecution(
+  tableName: string,
+  conditions: DBSqlExcutionConditions,
+  limit: number
+): DBSqlExcution {
+  const args: DBSqlExcutionArgs = []
+  const conditionListStr = genWhereConditionListStr(args, conditions)
+  return {
+    statement: `SELECT * FROM ${tableName} WHERE ${conditionListStr} LIMIT ${limit};`,
+    args,
+  }
+}
+
+export function dbGenSelectNextCursorWhereLimitExecution(
+  tableName: string,
+  nextCursor: number | null,
+  conditions: DBSqlExcutionConditions,
+  limit: number
+): DBSqlExcution {
+  const args: DBSqlExcutionArgs = []
+  let nextCursorStr = ''
+  if (nextCursor !== null) {
+    nextCursorStr = 'id < ? AND'
+    args.push(nextCursor)
+  }
+  const conditionListStr = genWhereConditionListStr(args, conditions)
+  return {
+    statement: `SELECT * FROM ${tableName} WHERE ${nextCursorStr} ${conditionListStr} ORDER BY id DESC LIMIT ${limit};`,
+    args,
+  }
+}
+
 // MARK: update
 
 export function dbGenUpdateWhereExecution(
