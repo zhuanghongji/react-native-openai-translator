@@ -19,6 +19,7 @@ export function sseRequest(
   }
 ) {
   const { method, apiKey, data } = options
+  print('sseRequest', { url, options })
   const es = new EventSource(url, {
     method,
     headers: {
@@ -51,16 +52,16 @@ export function sseRequest(
       return
     }
     if (event.type === 'error') {
-      print('sseRequest - error')
+      print('sseRequest - error', event)
       onError?.(event.message)
       return
     }
     if (event.type === 'exception') {
-      print('sseRequest - exception')
+      print('sseRequest - exception', event)
       onException?.(event.message, event.error)
       return
     }
-    print('sseRequest - unknown error')
+    print('sseRequest - unknown error', event)
   })
 
   es.addEventListener('close', () => {

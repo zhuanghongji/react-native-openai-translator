@@ -1,15 +1,10 @@
-import { BookmarkButton, BookmarkStatus } from '../../../components/BookmarkButton'
-import { HeartButton, HeartStatus } from '../../../components/HeartButton'
 import { TTSModal, TTSModalHandle } from '../../../components/TTSModal'
 import { ToolButton } from '../../../components/ToolButton'
 import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
 import { dbFindModeResultWhere, dbInsertModeResult } from '../../../db/table/t-mode-result'
-import { dbInsertModeWord } from '../../../db/table/t-mode-word'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
-import { useTEnglishWord } from '../../../manager/english-word'
-import { useTModeResult } from '../../../manager/mode-result'
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { print } from '../../../printer'
 import { dimensions } from '../../../res/dimensions'
@@ -19,6 +14,8 @@ import { isEnglishWord } from '../../../utils'
 import { RootStackParamList } from '../../screens'
 import { ClipboardDetectedModal } from './ClipboardDetectedModal'
 import { InputView, InputViewHandle } from './InputView'
+import { ModeSceneResultButton } from './ModeSceneResultButton'
+import { ModeSceneWordButton } from './ModeSceneWordButton'
 import { OutputView, OutputViewHandle } from './OutputView'
 import { StatusDivider } from './StatusDivider'
 import { UnsupportTip } from './UnsupportTip'
@@ -26,14 +23,7 @@ import { useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
@@ -53,6 +43,8 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   const { style, focused, targetLang, translatorMode } = props
   const isTranslateMode = translatorMode === 'translate'
 
+  const ttsModalRef = useRef<TTSModalHandle>(null)
+
   const { t } = useTranslation()
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
@@ -60,6 +52,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   const customizedOptions = useOpenAIApiCustomizedOptions()
   const [status, setStatus] = useState<TranslatorStatus>('none')
 
+  // input
   const inputViewRef = useRef<InputViewHandle>(null)
   const [inputText, setInputText] = useState('')
   const {
@@ -71,15 +64,15 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     translatorMode,
     inputText,
   })
-  useEffect(() => {
-    print('emojis', inputText)
-  }, [])
   const isInputDisabled = inputText ? false : true
+  const isInputEnglishWord = isEnglishWord(inputText)
 
+  // output
   const outputViewRef = useRef<OutputViewHandle>(null)
   const [outputText, setOutputText] = useState('')
   const isOutputDisabled = outputText ? false : true
 
+  // observe
   const [isInputOrTargetLangChanged, setIsInputOrTargetLangChanged] = useState(false)
   const [prevInputText, setPreInputText] = useState(inputText)
   if (inputText !== prevInputText) {
@@ -91,89 +84,6 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     setIsInputOrTargetLangChanged(true)
     setPreTargetLang(targetLang)
   }
-
-  // English Word
-  const isInputEnglishWord = isEnglishWord(inputText)
-  const { tEnglishWord, refreshTEnglishWord } = useTEnglishWord(
-    translatorMode,
-    targetLang,
-    inputText
-  )
-  const onHeartPress = useCallback(async () => {
-    try {
-      if (tEnglishWord === undefined) {
-        return
-      }
-      if (tEnglishWord === null) {
-        print('dbInsertModeWord')
-        await dbInsertModeWord({
-          ...DEFAULT_T_RESULT_EXTRA,
-          mode: translatorMode,
-          target_lang: targetLang,
-          user_content: inputText,
-          assistant_content: outputText,
-          collected: '0',
-          system_prompt: prompts.systemPrompt,
-          user_prompt_prefix: prompts.userPromptPrefix ?? '',
-          user_prompt_suffix: prompts.userPromptSuffix ?? '',
-          status: null,
-        })
-        refreshTEnglishWord()
-      }
-      // navigate to detail ?
-    } catch (e) {
-      print('dbInsertModeWord error', e)
-    }
-  }, [tEnglishWord, refreshTEnglishWord, translatorMode, targetLang, inputText, outputText])
-  const heartStatus = useMemo<HeartStatus>(() => {
-    if (tEnglishWord === undefined) {
-      return 'none'
-    }
-    if (tEnglishWord === null) {
-      return 'plus'
-    }
-    return 'checked'
-  }, [tEnglishWord])
-
-  // Mode Result
-  const { tModeResult, refreshTModeResult } = useTModeResult(translatorMode, targetLang, inputText)
-  const onBookmarkPress = useCallback(async () => {
-    try {
-      if (tModeResult === undefined) {
-        return
-      }
-      if (tModeResult === null) {
-        print('dbInsertModeResult')
-        await dbInsertModeResult({
-          ...DEFAULT_T_RESULT_EXTRA,
-          mode: translatorMode,
-          target_lang: targetLang,
-          user_content: inputText,
-          assistant_content: outputText,
-          collected: '0',
-          system_prompt: prompts.systemPrompt,
-          user_prompt_prefix: prompts.userPromptPrefix ?? '',
-          user_prompt_suffix: prompts.userPromptSuffix ?? '',
-          status: null,
-        })
-        refreshTModeResult()
-      }
-      // navigate to detail ?
-    } catch (e) {
-      print('dbInsertModeResult error', e)
-    }
-  }, [tModeResult, refreshTModeResult, translatorMode, targetLang, inputText, outputText])
-  const bookmarkStatus = useMemo<BookmarkStatus>(() => {
-    if (tModeResult === undefined) {
-      return 'none'
-    }
-    if (tModeResult === null) {
-      return 'add'
-    }
-    return 'added'
-  }, [tModeResult])
-
-  const ttsModalRef = useRef<TTSModalHandle>(null)
 
   // auto focus after clipboard confirmed
   const clipboardConfirmedRef = useRef(false)
@@ -262,17 +172,26 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
         <OutputView ref={outputViewRef} text={outputText} />
         <View style={styles.toolsRow}>
           {isTranslateMode && isInputEnglishWord ? (
-            <HeartButton
-              status={heartStatus}
-              disabled={isOutputDisabled || isInputOrTargetLangChanged}
-              onPress={onHeartPress}
+            <ModeSceneWordButton
+              mode={translatorMode}
+              targetLang={targetLang}
+              inputText={inputText}
+              outputText={outputText}
+              prompts={prompts}
+              isOutputDisabled={isOutputDisabled}
+              isInputOrTargetLangChanged={isInputOrTargetLangChanged}
             />
-          ) : null}
-          <BookmarkButton
-            status={bookmarkStatus}
-            disabled={isOutputDisabled || isInputOrTargetLangChanged}
-            onPress={onBookmarkPress}
-          />
+          ) : (
+            <ModeSceneResultButton
+              mode={translatorMode}
+              targetLang={targetLang}
+              inputText={inputText}
+              outputText={outputText}
+              prompts={prompts}
+              isOutputDisabled={isOutputDisabled}
+              isInputOrTargetLangChanged={isInputOrTargetLangChanged}
+            />
+          )}
           <ToolButton
             name="compaign"
             disabled={isOutputDisabled}

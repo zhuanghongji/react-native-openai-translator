@@ -4,6 +4,7 @@ import { DBTableName } from '../table-names'
 import { TModeResult, TResultBase } from '../types'
 import {
   dbGenDeleteExecution,
+  dbGenDeleteWhereExecution,
   dbGenInsertExecution,
   dbGenSelectExecution,
   dbGenSelectWhereExecution,
@@ -11,6 +12,16 @@ import {
 } from '../utils'
 
 const TABLE_NAME = DBTableName.modeReulst
+
+// select
+
+export function dbSelectModeResult() {
+  return dbExecuteSql<TModeResult>(dbGenSelectExecution(TABLE_NAME))
+}
+
+export function dbSelectModeResultWhereMode(mode: TranslatorMode) {
+  return dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, { mode }))
+}
 
 export async function dbFindModeResultWhere(
   target: Pick<TModeResult, 'mode' | 'target_lang' | 'user_content'>
@@ -26,22 +37,24 @@ export async function dbFindModeResultWhere(
   }
 }
 
+// insert
+
 export function dbInsertModeResult(target: Omit<TModeResult, keyof TResultBase>) {
   return dbExecuteSql<TModeResult>(dbGenInsertExecution(TABLE_NAME, target))
 }
 
-export function dbUpdateModeWordCollected(id: number, toCollected: boolean) {
+// update
+
+export function dbUpdateModeResultCollectedOfId(id: number, toCollected: boolean) {
   return dbExecuteSql<TModeResult>(
     dbGenUpdateWhereExecution(TABLE_NAME, { collected: toCollected ? '1' : '0' }, { id })
   )
 }
 
-export function dbSelectModeResult() {
-  return dbExecuteSql<TModeResult>(dbGenSelectExecution(TABLE_NAME))
-}
+// delete
 
-export function dbSelectModeResultWhereMode(mode: TranslatorMode) {
-  return dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, { mode }))
+export function dbDeleteModeResultOfId(id: number) {
+  return dbExecuteSql<TModeResult>(dbGenDeleteWhereExecution(TABLE_NAME, { id }))
 }
 
 export function dbDeleteAllModeResult() {

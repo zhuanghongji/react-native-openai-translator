@@ -2,6 +2,7 @@ import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
 import { TModeWord, TResultBase } from '../types'
 import {
+  dbGenDeleteWhereExecution,
   dbGenInsertExecution,
   dbGenSelectExecution,
   dbGenSelectWhereExecution,
@@ -33,7 +34,7 @@ export async function dbInsertModeWord(target: Omit<TModeWord, keyof TResultBase
   }
 }
 
-export async function dbUpdateModeWordCollected(id: number, toCollected: boolean) {
+export async function dbUpdateModeWordCollectedOfId(id: number, toCollected: boolean) {
   try {
     const result = await dbExecuteSql<TModeWord>(
       dbGenUpdateWhereExecution(TABLE_NAME, { collected: toCollected ? '1' : '0' }, { id })
@@ -44,8 +45,8 @@ export async function dbUpdateModeWordCollected(id: number, toCollected: boolean
   }
 }
 
-export function dbMinusModeWord(target: Omit<TModeWord, keyof TResultBase>) {
-  return dbExecuteSql<TModeWord>(dbGenInsertExecution(TABLE_NAME, target))
+export function dbDeleteModeWordOfId(id: number) {
+  return dbExecuteSql<TModeWord>(dbGenDeleteWhereExecution(TABLE_NAME, { id }))
 }
 
 export function dbSelectModeWord() {
