@@ -1,14 +1,17 @@
 import { Divider } from '../../components/Divider'
 import { EmptyView } from '../../components/EmptyView'
-import { dbSelectModeResultWhereMode } from '../../db/table/t-mode-result'
+import {
+  ModeResultDetailModal,
+  ModeResultDetailModalHandle,
+} from '../../components/ModeResultDetailModal'
+import { ModeResultItemView } from '../../components/ModeResultItemView'
+import { dbSelectModeResultWhereModeAndType } from '../../db/table/t-mode-result'
 import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
 import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { RootStackParamList } from '../screens'
-import { ModeResultDetailModal, ModeResultDetailModalHandle } from './ModeResultDetailModal'
-import { ModeResultItemView } from './ModeResultItemView'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack/lib/typescript/src/types'
 import { FlashList } from '@shopify/flash-list'
@@ -29,15 +32,13 @@ export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
     detailModalRef.current?.show(item)
   }
   const onToChatPress = (item: TModeResult) => {
-    // navigation.push('ModeChat', {
-    //   modeResult: TModeResult; systemPrompt: string; userContent: string; assistantContent: string; }
-    // })
+    navigation.push('ModeChat', { modeResult: item })
   }
 
   const [items, setItems] = useState<TModeResult[]>([])
 
   useEffect(() => {
-    dbSelectModeResultWhereMode(mode)
+    dbSelectModeResultWhereModeAndType(mode, '0')
       .then(result => {
         setItems(result.rows._array)
       })

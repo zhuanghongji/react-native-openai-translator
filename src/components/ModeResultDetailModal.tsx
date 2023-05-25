@@ -1,11 +1,11 @@
-import { SvgIcon } from '../../components/SvgIcon'
-import { ToolButton } from '../../components/ToolButton'
-import { TModeResult } from '../../db/types'
-import { hapticSoft } from '../../haptic'
-import { colors } from '../../res/colors'
-import { dimensions } from '../../res/dimensions'
-import { useThemeScheme } from '../../themes/hooks'
-import { toast } from '../../toast'
+import { TModeResult } from '../db/types'
+import { hapticSoft } from '../haptic'
+import { colors } from '../res/colors'
+import { dimensions } from '../res/dimensions'
+import { useThemeScheme } from '../themes/hooks'
+import { toast } from '../toast'
+import { SvgIcon } from './SvgIcon'
+import { ToolButton } from './ToolButton'
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,

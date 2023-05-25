@@ -25,6 +25,38 @@ export interface TResultExtra {
   extra3: string | null
 }
 
+// MARK: TModeResult
+
+export type TModeResultBasic = TResultExtra & {
+  mode: string
+  target_lang: string
+  system_prompt: string
+  user_prompt_prefix: string
+  user_prompt_suffix: string
+  user_content: string
+  assistant_content: string
+  collected: string
+  /**
+   * '0': normal result
+   * '1': english-word result
+   */
+  type: string
+  status: string | null
+}
+
+export type TModeResult = TResultBase & TModeResultBasic
+
+// MARK: TModeChatMessage
+
+export type TModeChatMessageBasic = TResultExtra & {
+  result_id: number
+  role: string
+  content: string
+  status: string | null
+}
+
+export type TModeChatMessage = TResultBase & TModeChatMessageBasic
+
 // MARK: TCustomChat
 export type TCustomChatBasic = TResultExtra & {
   avatar: string | null
@@ -57,49 +89,6 @@ export type TCustomChatMessageBasic = TResultExtra & {
 }
 
 export type TCustomChatMessage = TResultBase & TCustomChatMessageBasic
-
-// MARK: TModeWord
-
-export type TModeWordBasic = TResultExtra & {
-  mode: string
-  target_lang: string
-  system_prompt: string
-  user_prompt_prefix: string
-  user_prompt_suffix: string
-  user_content: string
-  assistant_content: string
-  collected: string
-  status: string | null
-}
-
-export type TModeWord = TResultBase & TModeWordBasic
-
-// MARK: TModeChatMessage
-
-export type TModeChatMessageBasic = TResultExtra & {
-  result_id: number
-  role: string
-  content: string
-  status: string | null
-}
-
-export type TModeChatMessage = TResultBase & TModeChatMessageBasic
-
-// MARK: TModeResult
-
-export type TModeResultBasic = TResultExtra & {
-  mode: string
-  target_lang: string
-  system_prompt: string
-  user_prompt_prefix: string
-  user_prompt_suffix: string
-  user_content: string
-  assistant_content: string
-  collected: string
-  status: string | null
-}
-
-export type TModeResult = TResultBase & TModeResultBasic
 
 // MARK: Utility
 

@@ -70,8 +70,8 @@ function getAssistantIconName(mode: TranslatorMode): SvgIconName {
 }
 
 export function ModeChatScreen({ route }: Props): JSX.Element {
-  const { modeResult, systemPrompt, userContent, assistantContent } = route.params
-  const { id, mode } = modeResult
+  const { modeResult } = route.params
+  const { id, mode, system_prompt } = modeResult
   const translatorMode = mode as TranslatorMode
   const title = useTitle(translatorMode)
   const assistantIconName = getAssistantIconName(translatorMode)
@@ -92,6 +92,8 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
   }, [])
 
   const resultMessages = useMemo<ChatMessage[]>(() => {
+    const { user_prompt_prefix, user_prompt_suffix, user_content, assistant_content } = modeResult
+    const userContent = `${user_prompt_prefix ?? ''}${user_content}${user_prompt_suffix ?? ''}`
     return [
       {
         role: 'divider',
@@ -103,10 +105,10 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       },
       {
         role: 'assistant',
-        content: assistantContent,
+        content: assistant_content,
       },
     ]
-  }, [userContent, assistantContent])
+  }, [modeResult])
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const messagesInverted = useMemo(() => {
     return [...resultMessages, ...messages].reverse()
@@ -177,8 +179,8 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       })
 
     const messagesToSend: Message[] = []
-    if (systemPrompt) {
-      messagesToSend.push({ role: 'system', content: systemPrompt })
+    if (system_prompt) {
+      messagesToSend.push({ role: 'system', content: system_prompt })
     }
     for (const msg of nextMessages) {
       if (msg.role === 'user') {
@@ -238,7 +240,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
       <TitleBar
         title={title}
-        subtitle={systemPrompt}
+        subtitle={system_prompt}
         action={
           messages.length > 0
             ? {

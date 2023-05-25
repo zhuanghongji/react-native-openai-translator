@@ -31,7 +31,7 @@ export function dbDeleteCustomChatMessageOfChatId(chat_id: number) {
 
 export function useInfiniteQueryCustomChatMessagePageable(chat_id: number, pageSize = 20) {
   return useInfiniteQuery({
-    queryKey: [QueryKey.customChatMessage, 'infinite', pageSize],
+    queryKey: [QueryKey.customChatMessage, 'infinite', chat_id, pageSize],
     queryFn: ({ pageParam }) => {
       return dbSelectCustomChatMessagePageable(chat_id, { nextCursor: pageParam ?? null, pageSize })
     },

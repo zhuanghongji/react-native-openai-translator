@@ -13,9 +13,6 @@ type RootStackParamList = {
   }
   ModeChat: {
     modeResult: TModeResult
-    systemPrompt: string
-    userContent: string
-    assistantContent: string
   }
   CustomChat: {
     chat: TCustomChat

@@ -74,25 +74,25 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
     if (targetLang === 'zh-Hans') {
       return {
         systemPrompt,
-        userPromptPrefix: '将下面的内容翻译成简体白话文：',
+        userPromptPrefix: '将下面的内容翻译成简体白话文：\n\n',
       }
     }
     if (targetLang === 'zh-Hant') {
       return {
         systemPrompt,
-        userPromptPrefix: '將下面的內容翻譯成臺灣常用的繁體白話文：',
+        userPromptPrefix: '將下面的內容翻譯成臺灣常用的繁體白話文：\n\n',
       }
     }
     if (targetLang === 'wyw') {
       return {
         systemPrompt,
-        userPromptPrefix: '将下面的内容翻译成中国的古文：',
+        userPromptPrefix: '将下面的内容翻译成中国的古文：\n\n',
       }
     }
     if (targetLang === 'yue') {
       return {
         systemPrompt,
-        userPromptPrefix: '將下面的內容翻譯成粵語：',
+        userPromptPrefix: '將下面的內容翻譯成粵語：\n\n',
       }
     }
     return {
@@ -115,12 +115,12 @@ function generatePromptsOfPolishing(os: GenerateSpecificPromptsOptions): ChatCom
     if (targetLang === 'zh-Hant' || targetLang === 'yue') {
       return {
         systemPrompt: '作為一個語句潤色引擎',
-        userPromptPrefix: '用繁体中文來润色這段文本：',
+        userPromptPrefix: '用繁体中文來润色這段文本：\n\n',
       }
     }
     return {
       systemPrompt: '作为一个语句润色引擎',
-      userPromptPrefix: '使用中文来润色这段文本：',
+      userPromptPrefix: '使用中文来润色这段文本：\n\n',
     }
   }
   return { systemPrompt, userPromptPrefix }
@@ -134,12 +134,12 @@ function generatePromptsOfSummarize(os: GenerateSpecificPromptsOptions): ChatCom
     if (targetLang === 'zh-Hant' || targetLang === 'yue') {
       return {
         systemPrompt: '作為一個文本總結器',
-        userPromptPrefix: '請用最簡潔的繁体中文總結這段文本：',
+        userPromptPrefix: '請用最簡潔的繁体中文總結這段文本：\n\n',
       }
     }
     return {
       systemPrompt: '作为一个文本总结器',
-      userPromptPrefix: '请用最简洁的中文语言总结这段文本：',
+      userPromptPrefix: '请用最简洁的中文语言总结这段文本：\n\n',
     }
   }
   return { systemPrompt, userPromptPrefix }
@@ -153,12 +153,12 @@ function generatePromptsOfAnalyze(os: GenerateSpecificPromptsOptions): ChatCompl
     if (targetLang === 'zh-Hant' || targetLang === 'yue') {
       return {
         systemPrompt: '作為一個語言翻譯引擎和語法分析器',
-        userPromptPrefix: '請將下面的文本翻譯成繁體中文，並解析原文本的語法：',
+        userPromptPrefix: '請將下面的文本翻譯成繁體中文，並解析原文本的語法：\n\n',
       }
     }
     return {
       systemPrompt: '作为一个翻译引擎和语法分析器',
-      userPromptPrefix: '请将下面的文本翻译成简体中文，并解析原文本的语法：',
+      userPromptPrefix: '请将下面的文本翻译成简体中文，并解析原文本的语法：\n\n',
     }
   }
   return { systemPrompt, userPromptPrefix }

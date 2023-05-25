@@ -1,7 +1,10 @@
 import { TranslatorMode } from '../../preferences/options'
+import { QueryKey } from '../../query/keys'
+import { getNextPageParamForT } from '../../query/utils'
+import { dbExecuteSelectPageable } from '../helper'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
-import { TModeResult, TResultBase } from '../types'
+import { TModeResult, TPageParams, TResultBase } from '../types'
 import {
   dbGenDeleteExecution,
   dbGenDeleteWhereExecution,
@@ -10,8 +13,9 @@ import {
   dbGenSelectWhereExecution,
   dbGenUpdateWhereExecution,
 } from '../utils'
+import { useInfiniteQuery } from '@tanstack/react-query'
 
-const TABLE_NAME = DBTableName.modeReulst
+const TABLE_NAME = DBTableName.modeResult
 
 // select
 
@@ -19,12 +23,20 @@ export function dbSelectModeResult() {
   return dbExecuteSql<TModeResult>(dbGenSelectExecution(TABLE_NAME))
 }
 
-export function dbSelectModeResultWhereMode(mode: TranslatorMode) {
-  return dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, { mode }))
+export function dbSelectModeResultWhereModeAndType(mode: TranslatorMode, type: string) {
+  return dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, { mode, type }))
+}
+
+export function dbSelectModeResultWhereModeAndTypePageable(
+  mode: TranslatorMode,
+  type: string,
+  params: TPageParams
+) {
+  return dbExecuteSelectPageable<TModeResult>(TABLE_NAME, params, { mode, type })
 }
 
 export async function dbFindModeResultWhere(
-  target: Pick<TModeResult, 'mode' | 'target_lang' | 'user_content'>
+  target: Pick<TModeResult, 'mode' | 'target_lang' | 'user_content' | 'type'>
 ): Promise<TModeResult | null> {
   try {
     const result = await dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, target))
@@ -59,4 +71,23 @@ export function dbDeleteModeResultOfId(id: number) {
 
 export function dbDeleteAllModeResult() {
   return dbExecuteSql<TModeResult>(dbGenDeleteExecution(TABLE_NAME))
+}
+
+// query
+
+export function useInfiniteQueryModeResultWhereModeAndTypePageable(
+  mode: TranslatorMode,
+  type: string,
+  pageSize = 20
+) {
+  return useInfiniteQuery({
+    queryKey: [QueryKey.modeResult, 'infinite', mode, type, pageSize],
+    queryFn: ({ pageParam }) => {
+      return dbSelectModeResultWhereModeAndTypePageable(mode, type, {
+        nextCursor: pageParam ?? null,
+        pageSize,
+      })
+    },
+    getNextPageParam: getNextPageParamForT,
+  })
 }

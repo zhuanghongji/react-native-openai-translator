@@ -17,21 +17,8 @@ export async function dbInitTables(): Promise<void> {
         { name: 'value', type: 'TEXT', nullable: true },
         { name: 'done', type: 'CHAR(1)', nullable: true },
       ]),
-      // t-mode-word
-      dbGenCreateTableExcution(DBTableName.modeWord, [
-        { name: 'mode', type: 'VARCHAR(50)', nullable: true },
-        { name: 'target_lang', type: 'VARCHAR(50)', nullable: true },
-        { name: 'system_prompt', type: 'TEXT', nullable: false, defaultValue: '' },
-        { name: 'user_prompt_prefix', type: 'TEXT', nullable: false, defaultValue: '' },
-        { name: 'user_prompt_suffix', type: 'TEXT', nullable: false, defaultValue: '' },
-        { name: 'user_content', type: 'TEXT', nullable: true },
-        { name: 'assistant_content', type: 'TEXT', nullable: true },
-        { name: 'collected', type: 'CHAR(1)', nullable: true },
-        { name: 'status', type: 'CHAR(1)', nullable: true },
-        ...EXTRA_DB_TABLE_COLUMNS,
-      ]),
       // t-mode-result
-      dbGenCreateTableExcution(DBTableName.modeReulst, [
+      dbGenCreateTableExcution(DBTableName.modeResult, [
         { name: 'mode', type: 'VARCHAR(50)', nullable: false, defaultValue: '' },
         { name: 'target_lang', type: 'VARCHAR(50)', nullable: false, defaultValue: '' },
         { name: 'system_prompt', type: 'TEXT', nullable: false, defaultValue: '' },
@@ -40,6 +27,7 @@ export async function dbInitTables(): Promise<void> {
         { name: 'user_content', type: 'TEXT', nullable: false, defaultValue: '' },
         { name: 'assistant_content', type: 'TEXT', nullable: false, defaultValue: '' },
         { name: 'collected', type: 'CHAR(1)', nullable: false, defaultValue: '0' },
+        { name: 'type', type: 'CHAR(1)', nullable: false, defaultValue: '0' },
         { name: 'status', type: 'CHAR(1)', nullable: true },
         ...EXTRA_DB_TABLE_COLUMNS,
       ]),

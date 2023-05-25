@@ -45,8 +45,7 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
           text="DROP TABLE"
           onPress={() => {
             dropTableWhenDev(DBTableName.test)
-            dropTableWhenDev(DBTableName.modeWord)
-            dropTableWhenDev(DBTableName.modeReulst)
+            dropTableWhenDev(DBTableName.modeResult)
             dropTableWhenDev(DBTableName.modeChatMessage)
             dropTableWhenDev(DBTableName.customChat)
             dropTableWhenDev(DBTableName.customChatMessage)
@@ -80,6 +79,7 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
               user_content: 'world',
               assistant_content: '世界',
               collected: '1',
+              type: '0',
               status: null,
             })
               .then(result => {
