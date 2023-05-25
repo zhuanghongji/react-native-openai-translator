@@ -2,18 +2,17 @@ import { SvgIconName } from '../../../components/SvgIcon'
 import { ToolButton } from '../../../components/ToolButton'
 import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
 import {
-  dbFindModeResultWhere,
   dbInsertModeResult,
   dbUpdateModeResultCollectedOfId,
 } from '../../../db/table/t-mode-result'
 import { TModeResult } from '../../../db/types'
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { print } from '../../../printer'
+import { QueryKey } from '../../../query/keys'
 import { ChatCompletionsPrompts } from './prompts'
-import React, { useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import React from 'react'
 import { StyleProp, ViewStyle } from 'react-native'
-
-type ResultMap = { [key: string]: TModeResult | null }
 
 export type ModeSceneResultButtonProps = {
   style?: StyleProp<ViewStyle>
@@ -23,12 +22,8 @@ export type ModeSceneResultButtonProps = {
   outputText: string
   prompts: ChatCompletionsPrompts
   resultType: string
-  isOutputFromCache: boolean
   isOutputDisabled: boolean
-  isInputOrTargetLangChanged: boolean
-  cacheKey: string
   cacheResult: TModeResult | null | undefined
-  setCacheResultMap: React.Dispatch<React.SetStateAction<ResultMap>>
 }
 
 export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
@@ -40,15 +35,11 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
     outputText,
     prompts,
     resultType,
-    isOutputFromCache,
     isOutputDisabled,
-    isInputOrTargetLangChanged,
-    cacheKey,
     cacheResult,
-    setCacheResultMap,
   } = props
 
-  const [trigger, setTrigger] = useState(0)
+  const queryClient = useQueryClient()
 
   let iconName: SvgIconName = 'bookmark-none'
   if (cacheResult === undefined) {
@@ -84,36 +75,11 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
         const collected = cacheResult.collected === '1'
         await dbUpdateModeResultCollectedOfId(cacheResult.id, !collected)
       }
-      setTrigger(prev => prev + 1)
+      queryClient.invalidateQueries({ queryKey: [QueryKey.findModeResultWhere] })
     } catch (e) {
       print('dbInsertModeResult error', e)
     }
   }
 
-  useEffect(() => {
-    if (!inputText) {
-      return
-    }
-    dbFindModeResultWhere({
-      mode,
-      target_lang: targetLang,
-      user_content: inputText,
-      type: resultType,
-    })
-      .then(value => {
-        setCacheResultMap(prev => ({ ...prev, [cacheKey]: value }))
-      })
-      .catch(e => {
-        print('dbFindModeResultWhere error', e)
-      })
-  }, [mode, targetLang, inputText, resultType, cacheKey, setCacheResultMap, trigger])
-
-  return (
-    <ToolButton
-      style={style}
-      name={iconName}
-      disabled={isOutputFromCache ? false : isOutputDisabled || isInputOrTargetLangChanged}
-      onPress={onPress}
-    />
-  )
+  return <ToolButton style={style} name={iconName} disabled={isOutputDisabled} onPress={onPress} />
 }

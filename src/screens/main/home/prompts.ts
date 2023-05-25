@@ -11,9 +11,9 @@ const ENGLISH_WORD_CHINESE_PREFIX = `所需格式：：
 例句：
 <序号><例句>\n(例句翻译)
 
-输入单词："""`
+输入单词："""\n`
 const ENGLISH_WORD_CHINESE_SUFFIX =
-  '"""\n\n请将翻译输入单词，不需要额外解释，同时给出单词原始形态、单词的语种、对应的音标、所词性的中文含义、三个双语示例句子：'
+  '\n"""\n\n请将翻译输入单词，不需要额外解释，同时给出单词原始形态、单词的语种、对应的音标、所词性的中文含义、三个双语示例句子：'
 
 export interface ChatCompletionsPrompts {
   systemPrompt: string
@@ -168,7 +168,7 @@ export function generateMessagesWithPrompts(options: ChatCompletionsPromptsOptio
   messages: Message[]
   prompts: ChatCompletionsPrompts
   systemContent: string
-  userContent: string
+  finalUserContent: string
 } {
   const prompts = generatePrompts(options)
   const { inputText } = options
@@ -178,12 +178,12 @@ export function generateMessagesWithPrompts(options: ChatCompletionsPromptsOptio
   if (systemPrompt) {
     messages.push({ role: 'system', content: systemPrompt })
   }
-  const userContent = [userPromptPrefix, inputText, userPromptSuffix]
+  const finalUserContent = [userPromptPrefix, inputText, userPromptSuffix]
     .filter(v => (v ? true : false))
-    .join('\n')
-  messages.push({ role: 'user', content: userContent })
+    .join('')
+  messages.push({ role: 'user', content: finalUserContent })
 
-  return { messages, prompts, systemContent: systemPrompt, userContent }
+  return { messages, prompts, systemContent: systemPrompt, finalUserContent }
 }
 
 export function useMessagesWithPrompts(options: ChatCompletionsPromptsOptions) {

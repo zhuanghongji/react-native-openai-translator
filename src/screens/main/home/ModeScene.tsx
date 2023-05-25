@@ -1,8 +1,11 @@
 import { TTSModal, TTSModalHandle } from '../../../components/TTSModal'
 import { ToolButton } from '../../../components/ToolButton'
 import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
-import { dbFindModeResultWhere, dbInsertModeResult } from '../../../db/table/t-mode-result'
-import { TModeResult } from '../../../db/types'
+import {
+  dbFindModeResultWhere,
+  dbInsertModeResult,
+  useQueryFindModeResultWhere,
+} from '../../../db/table/t-mode-result'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
@@ -27,8 +30,6 @@ import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import EventSource from 'react-native-sse'
-
-type CacheResultMap = { [key: string]: TModeResult | null }
 
 export type ModeSceneProps = {
   style?: StyleProp<ViewStyle>
@@ -57,11 +58,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   // input
   const inputViewRef = useRef<InputViewHandle>(null)
   const [inputText, setInputText] = useState('')
-  const {
-    messages: messagesToSend,
-    prompts,
-    userContent,
-  } = useMessagesWithPrompts({
+  const { messages: messagesToSend, prompts } = useMessagesWithPrompts({
     targetLang,
     translatorMode,
     inputText,
@@ -74,88 +71,32 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   const resultType = isTranslateMode && isInputEnglishWord ? '1' : '0'
 
   // result cache
-  const [cacheResultMap, setCacheResultMap] = useState<CacheResultMap>({})
-  const cacheKey = `${translatorMode}_${targetLang}_${inputText}_${resultType}`
-  const cacheResult = cacheResultMap[cacheKey]
-  const cacheText = cacheResult?.assistant_content ?? ''
+  const cacheQueryResult = useQueryFindModeResultWhere({
+    mode: translatorMode,
+    target_lang: targetLang,
+    user_content: inputText,
+    type: resultType,
+  })
+  const cacheResult = cacheQueryResult.data
 
   // output
   // assistantText: if null, should output text from cache-result
   const outputViewRef = useRef<OutputViewHandle>(null)
   const [assistantText, setAssistantText] = useState<string | null>(null)
-  const isOutputFromCache = assistantText === null
-  const outputText = isOutputFromCache ? cacheText : assistantText
+  const outputText = assistantText ?? cacheResult?.assistant_content ?? ''
   const isOutputDisabled = outputText ? false : true
 
   // observe
-  const [isInputOrTargetLangChanged, setIsInputOrTargetLangChanged] = useState(false)
   const [prevInputText, setPreInputText] = useState(inputText)
   if (inputText !== prevInputText) {
-    setIsInputOrTargetLangChanged(true)
+    setAssistantText(null)
     setPreInputText(inputText)
   }
   const [prevTargetLang, setPreTargetLang] = useState(targetLang)
   if (targetLang !== prevTargetLang) {
-    setIsInputOrTargetLangChanged(true)
+    setAssistantText(null)
     setPreTargetLang(targetLang)
   }
-
-  // // result icon
-  // let resultIconName: SvgIconName = 'bookmark-none'
-  // if (cacheResult === undefined) {
-  //   resultIconName = resultType === '1' ? 'heart-none' : 'bookmark-none'
-  // } else if (cacheResult === null || cacheResult.collected !== '1') {
-  //   resultIconName = resultType === '1' ? 'heart-plus' : 'bookmark-add'
-  // } else {
-  //   resultIconName = resultType === '1' ? 'heart-minus' : 'bookmark-added'
-  // }
-  // // result funcs
-  // const perfromDbFindModeResultWhere = async () => {
-  //   try {
-
-  //   } catch
-  //   dbFindModeResultWhere({
-  //     mode,
-  //     target_lang: targetLang,
-  //     user_content: inputText,
-  //     type: resultType,
-  //   })
-  //     .then(value => {
-  //       setResultMap(prev => ({ ...prev, [targetKey]: value }))
-  //     })
-  //     .catch(e => {
-  //       print('dbFindModeResultWhere error', e)
-  //     })
-  // }
-  // const handleResultIconPress = async () => {
-  //   if (cacheResult === undefined) {
-  //     return
-  //   }
-  //   try {
-  //     if (cacheResult === null) {
-  //       print('dbInsertModeResult')
-  //       await dbInsertModeResult({
-  //         ...DEFAULT_T_RESULT_EXTRA,
-  //         mode: translatorMode,
-  //         target_lang: targetLang,
-  //         user_content: inputText,
-  //         assistant_content: outputText,
-  //         collected: '0',
-  //         system_prompt: prompts.systemPrompt,
-  //         user_prompt_prefix: prompts.userPromptPrefix ?? '',
-  //         user_prompt_suffix: prompts.userPromptSuffix ?? '',
-  //         type: resultType,
-  //         status: null,
-  //       })
-  //     } else {
-  //       print('dbDeleteModeWordOfId ...')
-  //       const collected = cacheResult.collected === '1'
-  //       await dbUpdateModeResultCollectedOfId(cacheResult.id, !collected)
-  //     }
-  //   } catch (e) {
-  //     print('dbInsertModeResult error', e)
-  //   }
-  // }
 
   // auto focus after clipboard confirmed
   const clipboardConfirmedRef = useRef(false)
@@ -195,7 +136,6 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
       },
       onDone: message => {
         setAssistantText(message.content)
-        setIsInputOrTargetLangChanged(false)
         setStatus('success')
         hapticSuccess()
       },
@@ -206,39 +146,34 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   }
 
   const handleChatPress = async () => {
-    if (cacheResult) {
+    if (cacheResult === undefined) {
+      return
+    }
+    if (cacheResult !== null) {
       navigation.push('ModeChat', { modeResult: cacheResult })
       return
     }
     try {
       const { systemPrompt, userPromptPrefix, userPromptSuffix } = prompts
-      let result = await dbFindModeResultWhere({
+      await dbInsertModeResult({
+        ...DEFAULT_T_RESULT_EXTRA,
+        mode: translatorMode,
+        target_lang: targetLang,
+        user_content: inputText,
+        assistant_content: outputText,
+        system_prompt: systemPrompt,
+        user_prompt_prefix: userPromptPrefix ?? '',
+        user_prompt_suffix: userPromptSuffix ?? '',
+        collected: '0',
+        type: resultType,
+        status: null,
+      })
+      const result = await dbFindModeResultWhere({
         mode: translatorMode,
         target_lang: targetLang,
         user_content: inputText,
         type: resultType,
       })
-      if (!result) {
-        await dbInsertModeResult({
-          ...DEFAULT_T_RESULT_EXTRA,
-          mode: translatorMode,
-          target_lang: targetLang,
-          user_content: inputText,
-          assistant_content: outputText,
-          system_prompt: systemPrompt,
-          user_prompt_prefix: userPromptPrefix ?? '',
-          user_prompt_suffix: userPromptSuffix ?? '',
-          collected: '0',
-          type: resultType,
-          status: null,
-        })
-        result = await dbFindModeResultWhere({
-          mode: translatorMode,
-          target_lang: targetLang,
-          user_content: inputText,
-          type: resultType,
-        })
-      }
       if (!result) {
         toast('danger', 'Error', 'Create mode result error')
         return
@@ -294,7 +229,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
       <ScrollView
         style={{ flex: 1, marginTop: dimensions.edge }}
         contentContainerStyle={{ paddingBottom: dimensions.spaceBottom }}>
-        <OutputView ref={outputViewRef} fromCache={isOutputFromCache} text={outputText} />
+        <OutputView ref={outputViewRef} assistantText={assistantText} text={outputText} />
         <View style={styles.toolsRow}>
           <ModeSceneResultButton
             mode={translatorMode}
@@ -303,12 +238,8 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
             outputText={outputText}
             prompts={prompts}
             resultType={resultType}
-            isOutputFromCache={isOutputFromCache}
             isOutputDisabled={isOutputDisabled}
-            isInputOrTargetLangChanged={isInputOrTargetLangChanged}
-            cacheKey={cacheKey}
             cacheResult={cacheResult}
-            setCacheResultMap={setCacheResultMap}
           />
           <ToolButton
             name="compaign"
@@ -329,11 +260,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
               toast('success', t('Copied to clipboard'), outputText)
             }}
           />
-          <ToolButton
-            name="chat"
-            disabled={isOutputFromCache ? false : isOutputDisabled || isInputOrTargetLangChanged}
-            onPress={handleChatPress}
-          />
+          <ToolButton name="chat" disabled={isOutputDisabled} onPress={handleChatPress} />
         </View>
         <UnsupportTip />
       </ScrollView>

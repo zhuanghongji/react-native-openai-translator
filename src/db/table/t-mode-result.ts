@@ -13,7 +13,7 @@ import {
   dbGenSelectWhereExecution,
   dbGenUpdateWhereExecution,
 } from '../utils'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
 const TABLE_NAME = DBTableName.modeResult
 
@@ -74,6 +74,16 @@ export function dbDeleteAllModeResult() {
 }
 
 // query
+
+export function useQueryFindModeResultWhere(
+  target: Pick<TModeResult, 'mode' | 'target_lang' | 'user_content' | 'type'>
+) {
+  return useQuery({
+    queryFn: () => dbFindModeResultWhere(target),
+    queryKey: [QueryKey.findModeResultWhere, target],
+    enabled: target.user_content ? true : false,
+  })
+}
 
 export function useInfiniteQueryModeResultWhereModeAndTypePageable(
   mode: TranslatorMode,

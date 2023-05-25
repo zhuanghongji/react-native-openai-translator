@@ -6,7 +6,7 @@ import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
 
 export interface OutputViewProps {
   style?: StyleProp<TextStyle>
-  fromCache: boolean
+  assistantText: string | null
   text: string
 }
 
@@ -15,9 +15,9 @@ export interface OutputViewHandle {
 }
 
 export const OutputView = React.forwardRef<OutputViewHandle, OutputViewProps>((props, ref) => {
-  const { style, fromCache, text } = props
+  const { style, assistantText, text } = props
   const { text: textColor, text3: text3Color } = useThemeScheme()
-  const color = fromCache ? text3Color : textColor
+  const color = text !== assistantText ? text3Color : textColor
 
   const [displayText, setDisplayText] = useState('')
   const [preText, setPreText] = useState(text)
