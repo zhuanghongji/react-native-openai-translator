@@ -22,7 +22,7 @@ export function MeScreen({ navigation }: Props): JSX.Element {
             icon="heart-none"
             iconColor="#CA6D5C"
             title={t('English Word Book')}
-            onPress={() => navigation.navigate('EnglishWordBook')}
+            onPress={() => navigation.navigate('ModeWordBook')}
           />
           <CellView
             icon="bookmarks"

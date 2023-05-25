@@ -19,7 +19,7 @@ type RootStackParamList = {
   }
   CustomChatInit: undefined
   AwesomePrompts: undefined
-  EnglishWordBook: undefined
+  ModeWordBook: undefined
   ModeResultBookmarks: undefined
 }
 

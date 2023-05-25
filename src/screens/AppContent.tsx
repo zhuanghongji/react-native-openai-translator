@@ -5,10 +5,10 @@ import { AwesomePromptsScreen } from './awesome-prompts'
 import { CustomChatScreen } from './custom-chat'
 import { CustomChatInitScreen } from './custom-chat-init'
 import { DevScreen } from './dev'
-import { EnglishWordBookScreen } from './english-word-book'
 import { MainNavigator } from './main/main-navigator'
 import { ModeChatScreen } from './mode-chat'
 import { ModeResultBookmarksScreen } from './mode-result-bookmarks'
+import { ModeWordBookScreen } from './mode-word-book'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
 import { SettingsScreen } from './settings'
@@ -60,7 +60,7 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="CustomChat" component={CustomChatScreen} />
         <RootStack.Screen name="CustomChatInit" component={CustomChatInitScreen} />
         <RootStack.Screen name="AwesomePrompts" component={AwesomePromptsScreen} />
-        <RootStack.Screen name="EnglishWordBook" component={EnglishWordBookScreen} />
+        <RootStack.Screen name="ModeWordBook" component={ModeWordBookScreen} />
         <RootStack.Screen name="ModeResultBookmarks" component={ModeResultBookmarksScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>

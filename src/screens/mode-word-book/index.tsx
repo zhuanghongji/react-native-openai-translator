@@ -18,9 +18,9 @@ import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'EnglishWordBook'>
+type Props = NativeStackScreenProps<RootStackParamList, 'ModeWordBook'>
 
-export function EnglishWordBookScreen({ navigation }: Props): JSX.Element {
+export function ModeWordBookScreen({ navigation }: Props): JSX.Element {
   const { t } = useTranslation()
   const { background, backgroundChat } = useThemeScheme()
 
