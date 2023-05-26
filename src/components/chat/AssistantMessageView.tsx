@@ -41,7 +41,12 @@ export function AssistantMessageView(props: AssistantMessageProps) {
     if (svgIconName) {
       return (
         <View style={stylez.chatAvatarContainer}>
-          <SvgIcon size={22} name={svgIconName} color={tint} />
+          <SvgIcon
+            // style={{ transform: [{ translateY: -3 }] }}
+            size={22}
+            name={svgIconName}
+            color={tint}
+          />
         </View>
       )
     }

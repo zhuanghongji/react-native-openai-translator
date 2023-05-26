@@ -45,9 +45,9 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
   if (cacheResult === undefined) {
     iconName = resultType === '1' ? 'heart-none' : 'bookmark-none'
   } else if (cacheResult === null || cacheResult.collected !== '1') {
-    iconName = resultType === '1' ? 'heart-plus' : 'bookmark-add'
+    iconName = resultType === '1' ? 'heart-plus' : 'bookmark-plus'
   } else {
-    iconName = resultType === '1' ? 'heart-minus' : 'bookmark-added'
+    iconName = resultType === '1' ? 'heart-minus' : 'bookmark-minus'
   }
 
   const onPress = async () => {

@@ -4,7 +4,7 @@ import { getNextPageParamForT } from '../../query/utils'
 import { dbExecuteSelectPageable } from '../helper'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
-import { TModeResult, TPageParams, TResultBase } from '../types'
+import { TModeResult, TModeResultBasic, TPageParams, TResultBase } from '../types'
 import {
   dbGenDeleteExecution,
   dbGenDeleteWhereExecution,
@@ -27,12 +27,11 @@ export function dbSelectModeResultWhereModeAndType(mode: TranslatorMode, type: s
   return dbExecuteSql<TModeResult>(dbGenSelectWhereExecution(TABLE_NAME, { mode, type }))
 }
 
-export function dbSelectModeResultWhereModeAndTypePageable(
-  mode: TranslatorMode,
-  type: string,
-  params: TPageParams
+export function dbSelectModeResultPageableWhere(
+  params: TPageParams,
+  conditions: Partial<TModeResultBasic>
 ) {
-  return dbExecuteSelectPageable<TModeResult>(TABLE_NAME, params, { mode, type })
+  return dbExecuteSelectPageable<TModeResult>(TABLE_NAME, params, conditions)
 }
 
 export async function dbFindModeResultWhere(
@@ -85,18 +84,20 @@ export function useQueryFindModeResultWhere(
   })
 }
 
-export function useInfiniteQueryModeResultWhereModeAndTypePageable(
-  mode: TranslatorMode,
-  type: string,
+export function useInfiniteQueryModeResultPageableWhere(
+  conditions: Partial<TModeResultBasic>,
   pageSize = 20
 ) {
   return useInfiniteQuery({
-    queryKey: [QueryKey.modeResult, 'infinite', mode, type, pageSize],
+    queryKey: [QueryKey.modeResult, 'infinite', conditions, pageSize],
     queryFn: ({ pageParam }) => {
-      return dbSelectModeResultWhereModeAndTypePageable(mode, type, {
-        nextCursor: pageParam ?? null,
-        pageSize,
-      })
+      return dbSelectModeResultPageableWhere(
+        {
+          nextCursor: pageParam ?? null,
+          pageSize,
+        },
+        conditions
+      )
     },
     getNextPageParam: getNextPageParamForT,
   })

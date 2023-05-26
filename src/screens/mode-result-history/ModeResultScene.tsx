@@ -1,21 +1,18 @@
 import { Divider } from '../../components/Divider'
-import { EmptyView } from '../../components/EmptyView'
 import {
   ModeResultDetailModal,
   ModeResultDetailModalHandle,
 } from '../../components/ModeResultDetailModal'
 import { ModeResultItemView } from '../../components/ModeResultItemView'
-import { dbSelectModeResultWhereModeAndType } from '../../db/table/t-mode-result'
+import { InfiniteQueryListContainer } from '../../components/query/InfiniteQueryListContainer'
+import { useInfiniteQueryModeResultPageableWhere } from '../../db/table/t-mode-result'
 import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
-import { print } from '../../printer'
-import { dimensions } from '../../res/dimensions'
-import { useThemeScheme } from '../../themes/hooks'
 import { RootStackParamList } from '../screens'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack/lib/typescript/src/types'
 import { FlashList } from '@shopify/flash-list'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
 export type ModeResultSceneProps = {
   mode: TranslatorMode
@@ -23,7 +20,6 @@ export type ModeResultSceneProps = {
 
 export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
   const { mode } = props
-  const { background } = useThemeScheme()
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
@@ -35,33 +31,33 @@ export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
     navigation.push('ModeChat', { modeResult: item })
   }
 
-  const [items, setItems] = useState<TModeResult[]>([])
-
-  useEffect(() => {
-    dbSelectModeResultWhereModeAndType(mode, '0')
-      .then(result => {
-        setItems(result.rows._array)
-      })
-      .catch(e => {
-        print('dbSelectModeResult', e)
-      })
-  }, [mode])
+  const result = useInfiniteQueryModeResultPageableWhere({
+    mode,
+    type: '0',
+  })
 
   const renderItemSeparator = () => <Divider />
 
-  return items.length === 0 ? (
-    <EmptyView style={{ justifyContent: 'flex-start', paddingTop: dimensions.edgeTwice }} />
-  ) : (
+  return (
     <>
-      <FlashList
-        contentContainerStyle={{ backgroundColor: background }}
-        data={items}
-        estimatedItemSize={96}
-        keyExtractor={(item, index) => `${index}_${item.id}`}
-        renderItem={({ item }) => {
-          return <ModeResultItemView item={item} onPress={onItemPress} />
+      <InfiniteQueryListContainer
+        style={{ flex: 1 }}
+        result={result}
+        renderContent={({ items, refreshControl, onEndReached }) => {
+          return (
+            <FlashList
+              refreshControl={refreshControl}
+              data={items}
+              estimatedItemSize={96}
+              keyExtractor={(item, index) => `${index}_${item.id}`}
+              renderItem={({ item }) => {
+                return <ModeResultItemView item={item} onPress={onItemPress} />
+              }}
+              ItemSeparatorComponent={renderItemSeparator}
+              onEndReached={onEndReached}
+            />
+          )
         }}
-        ItemSeparatorComponent={renderItemSeparator}
       />
       <ModeResultDetailModal ref={detailModalRef} onToChatPress={onToChatPress} />
     </>

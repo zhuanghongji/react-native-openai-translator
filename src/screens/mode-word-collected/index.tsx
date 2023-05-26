@@ -6,7 +6,7 @@ import {
 import { ModeResultItemView } from '../../components/ModeResultItemView'
 import { TitleBar } from '../../components/TitleBar'
 import { InfiniteQueryListContainer } from '../../components/query/InfiniteQueryListContainer'
-import { useInfiniteQueryModeResultWhereModeAndTypePageable } from '../../db/table/t-mode-result'
+import { useInfiniteQueryModeResultPageableWhere } from '../../db/table/t-mode-result'
 import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
 import { useThemeScheme } from '../../themes/hooks'
@@ -18,11 +18,11 @@ import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ModeWordBook'>
+type Props = NativeStackScreenProps<RootStackParamList, 'ModeWordCollected'>
 
-export function ModeWordBookScreen({ navigation }: Props): JSX.Element {
+export function ModeWordCollectedScreen({ navigation }: Props): JSX.Element {
   const { t } = useTranslation()
-  const { background, backgroundChat } = useThemeScheme()
+  const { backgroundChat } = useThemeScheme()
 
   const detailModalRef = useRef<ModeResultDetailModalHandle>(null)
   const onItemPress = (item: TModeResult) => {
@@ -33,7 +33,11 @@ export function ModeWordBookScreen({ navigation }: Props): JSX.Element {
   }
 
   const mode: TranslatorMode = 'translate'
-  const result = useInfiniteQueryModeResultWhereModeAndTypePageable(mode, '1')
+  const result = useInfiniteQueryModeResultPageableWhere({
+    mode,
+    type: '1',
+    collected: '1',
+  })
 
   const renderItemSeparator = () => <Divider />
 
@@ -47,12 +51,10 @@ export function ModeWordBookScreen({ navigation }: Props): JSX.Element {
           renderContent={({ items, refreshControl, onEndReached }) => {
             return (
               <FlashList
-                contentContainerStyle={{ backgroundColor: background }}
                 refreshControl={refreshControl}
                 data={items}
                 estimatedItemSize={96}
                 keyExtractor={(item, index) => `${index}_${item.id}`}
-                // ListFooterComponent={footerView}
                 renderItem={({ item }) => {
                   return <ModeResultItemView item={item} onPress={onItemPress} />
                 }}

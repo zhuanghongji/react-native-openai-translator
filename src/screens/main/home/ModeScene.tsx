@@ -11,6 +11,7 @@ import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { print } from '../../../printer'
+import { QueryKey } from '../../../query/keys'
 import { dimensions } from '../../../res/dimensions'
 import { toast } from '../../../toast'
 import { Message, TranslatorStatus } from '../../../types'
@@ -26,6 +27,7 @@ import { useMessagesWithPrompts } from './prompts'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
@@ -71,6 +73,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   const resultType = isTranslateMode && isInputEnglishWord ? '1' : '0'
 
   // result cache
+  const queryClient = useQueryClient()
   const cacheQueryResult = useQueryFindModeResultWhere({
     mode: translatorMode,
     target_lang: targetLang,
@@ -179,6 +182,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
         return
       }
       navigation.push('ModeChat', { modeResult: result })
+      queryClient.invalidateQueries({ queryKey: [QueryKey.findModeResultWhere] })
     } catch (e) {
       print('push ModeChat', e)
     }

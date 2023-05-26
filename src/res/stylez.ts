@@ -1,14 +1,18 @@
 import { dimensions } from './dimensions'
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native'
 
-type Sheets = {
+type Stylez = {
+  f1: ViewStyle
   contentText: TextStyle
   chatAvatarLogo: ImageStyle
   chatAvatarContainer: ViewStyle
   chatAvatarContainerHidden: ViewStyle
 }
 
-export const stylez = StyleSheet.create<Sheets>({
+export const stylez = StyleSheet.create<Stylez>({
+  f1: {
+    flex: 1,
+  },
   contentText: {
     fontSize: 16,
     lineHeight: 24,
@@ -22,7 +26,7 @@ export const stylez = StyleSheet.create<Sheets>({
     width: dimensions.chatAvatar,
     height: dimensions.chatAvatar,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 12,
     marginHorizontal: 8,
   },
   chatAvatarContainerHidden: {

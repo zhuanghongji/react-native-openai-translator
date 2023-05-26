@@ -2,6 +2,7 @@ import { TModeResult } from '../db/types'
 import { LanguageKey, languageLabelByKey } from '../preferences/options'
 import { dimensions } from '../res/dimensions'
 import { TText } from '../themes/TText'
+import { useThemeScheme } from '../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
@@ -13,10 +14,11 @@ export type ModeResultItemViewProps = {
 
 export function ModeResultItemView(props: ModeResultItemViewProps) {
   const { style, item, onPress } = props
+  const { background: backgroundColor } = useThemeScheme()
   const { user_content, assistant_content, target_lang, update_time } = item
 
   return (
-    <Pressable style={[styles.container, style]} onPress={() => onPress(item)}>
+    <Pressable style={[styles.container, { backgroundColor }, style]} onPress={() => onPress(item)}>
       <View style={styles.row1}>
         <TText style={styles.t1} typo="text" numberOfLines={1}>
           {user_content}

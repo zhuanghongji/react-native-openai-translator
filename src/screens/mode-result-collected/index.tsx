@@ -3,6 +3,7 @@ import { TitleBar } from '../../components/TitleBar'
 import { TranslatorMode } from '../../preferences/options'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
+import { stylez } from '../../res/stylez'
 import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { ModeResultScene } from './ModeResultScene'
@@ -10,11 +11,10 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, ViewStyle } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Route, TabBar, TabView } from 'react-native-tab-view'
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ModeResultBookmarks'>
+type Props = NativeStackScreenProps<RootStackParamList, 'ModeResultCollected'>
 
 type ResultRoute = Route & {
   key: string
@@ -22,7 +22,7 @@ type ResultRoute = Route & {
   iconName: SvgIconName
 }
 
-export function ModeResultBookmarksScreen({ navigation: _ }: Props): JSX.Element {
+export function ModeResultCollectedScreen({ navigation: _ }: Props): JSX.Element {
   const { t } = useTranslation()
   const { backgroundChat } = useThemeScheme()
 
@@ -38,9 +38,9 @@ export function ModeResultBookmarksScreen({ navigation: _ }: Props): JSX.Element
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
-        <TitleBar title={t('Mode Result Bookmarks')} />
+        <TitleBar title={t('Mode Result Collected')} />
         <TabView
-          style={styles.content}
+          style={stylez.f1}
           lazy={true}
           lazyPreloadDistance={1}
           navigationState={{ index: tabIndex, routes }}
@@ -71,13 +71,3 @@ export function ModeResultBookmarksScreen({ navigation: _ }: Props): JSX.Element
     </BottomSheetModalProvider>
   )
 }
-
-type Styles = {
-  content: ViewStyle
-}
-
-const styles = StyleSheet.create<Styles>({
-  content: {
-    flex: 1,
-  },
-})

@@ -19,19 +19,36 @@ export function MeScreen({ navigation }: Props): JSX.Element {
       <ScrollView style={{ flex: 1 }}>
         <CellGroup>
           <CellView
-            icon="heart-none"
+            icon="heart-checked"
             iconColor="#CA6D5C"
             title={t('English Word Book')}
-            onPress={() => navigation.navigate('ModeWordBook')}
+            onPress={() => navigation.navigate('ModeWordCollected')}
           />
           <CellView
-            icon="bookmarks"
-            iconColor="#A97D5D"
-            title={t('Mode Result Bookmarks')}
-            onPress={() => navigation.navigate('ModeResultBookmarks')}
+            icon="heart-none"
+            iconColor="#CA6D5C"
+            title={t('English Word Records')}
+            onPress={() => navigation.navigate('ModeWordRecords')}
           />
         </CellGroup>
         <CellDivider />
+
+        <CellGroup>
+          <CellView
+            icon="bookmark-checked"
+            iconColor="#B8834B"
+            title={t('Mode Result Collected')}
+            onPress={() => navigation.navigate('ModeResultCollected')}
+          />
+          <CellView
+            icon="bookmark-none"
+            iconColor="#B8834B"
+            title={t('Mode Result Records')}
+            onPress={() => navigation.navigate('ModeResultRecords')}
+          />
+        </CellGroup>
+        <CellDivider />
+
         <CellView
           icon="settings"
           iconColor="#5D8DE7"

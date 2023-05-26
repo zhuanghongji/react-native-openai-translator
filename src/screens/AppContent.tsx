@@ -7,8 +7,10 @@ import { CustomChatInitScreen } from './custom-chat-init'
 import { DevScreen } from './dev'
 import { MainNavigator } from './main/main-navigator'
 import { ModeChatScreen } from './mode-chat'
-import { ModeResultBookmarksScreen } from './mode-result-bookmarks'
-import { ModeWordBookScreen } from './mode-word-book'
+import { ModeResultCollectedScreen } from './mode-result-collected'
+import { ModeResultRecordsScreen } from './mode-result-history'
+import { ModeWordCollectedScreen } from './mode-word-collected'
+import { ModeWordRecordsScreen } from './mode-word-records'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
 import { SettingsScreen } from './settings'
@@ -60,8 +62,10 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="CustomChat" component={CustomChatScreen} />
         <RootStack.Screen name="CustomChatInit" component={CustomChatInitScreen} />
         <RootStack.Screen name="AwesomePrompts" component={AwesomePromptsScreen} />
-        <RootStack.Screen name="ModeWordBook" component={ModeWordBookScreen} />
-        <RootStack.Screen name="ModeResultBookmarks" component={ModeResultBookmarksScreen} />
+        <RootStack.Screen name="ModeWordCollected" component={ModeWordCollectedScreen} />
+        <RootStack.Screen name="ModeWordRecords" component={ModeWordRecordsScreen} />
+        <RootStack.Screen name="ModeResultCollected" component={ModeResultCollectedScreen} />
+        <RootStack.Screen name="ModeResultRecords" component={ModeResultRecordsScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )
