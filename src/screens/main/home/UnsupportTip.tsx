@@ -2,9 +2,12 @@ import { ALLOWED_COUNTRY_CODES, requestOpenAICDNCGITrace } from '../../../http/a
 import { print } from '../../../printer'
 import { colors } from '../../../res/colors'
 import { dimensions } from '../../../res/dimensions'
+import { RootStackParamList } from '../../screens'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AppState, Linking, StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
+import { AppState, StyleProp, StyleSheet, Text, TextStyle } from 'react-native'
 
 type Status =
   | {
@@ -25,8 +28,13 @@ export function UnsupportTip(props: UnsupportTipProps) {
   const { t } = useTranslation()
   const [status, setStatus] = useState<Status>({ supportive: true })
 
+  const navigation = useNavigation().getParent<NativeStackNavigationProp<RootStackParamList>>()
+
   const onLinkPress = () => {
-    Linking.openURL('https://platform.openai.com/docs/supported-countries')
+    navigation.push('Web', {
+      title: 'OpenAI',
+      url: 'https://platform.openai.com/docs/supported-countries',
+    })
   }
 
   const check = async () => {

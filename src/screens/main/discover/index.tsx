@@ -16,7 +16,7 @@ export function DiscoverScreen({ navigation }: Props): JSX.Element {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
-      <TitleBar backDisabled title={t('Discover')} />
+      <TitleBar backHidden title={t('Discover')} />
       <ScrollView style={{ flex: 1 }}>
         <CellView
           icon="awesome"
@@ -29,7 +29,12 @@ export function DiscoverScreen({ navigation }: Props): JSX.Element {
           icon="book"
           iconColor="#B8834B"
           title={t('Prompt Engineering Guide')}
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('Web', {
+              title: t('Prompt Engineering Guide'),
+              url: 'https://www.promptingguide.ai',
+            })
+          }}
         />
       </ScrollView>
     </SafeAreaView>

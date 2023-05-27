@@ -38,7 +38,7 @@ import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import { ScrollView, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const DIVIDER_HEIGHT = 20
@@ -114,7 +114,10 @@ export function SettingsScreen(props: Props): JSX.Element {
           <Text
             style={styles.link}
             onPress={() => {
-              Linking.openURL('https://platform.openai.com/account/api-keys')
+              navigation.push('Web', {
+                title: 'OpenAI',
+                url: 'https://platform.openai.com/account/api-keys',
+              })
             }}>
             {'OpenAI Page'}
           </Text>

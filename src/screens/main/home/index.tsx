@@ -106,7 +106,7 @@ export function HomeScreen({ navigation }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar
-        backDisabled
+        backHidden
         titleContainerRow
         action={{
           iconName: 'scanner',

@@ -14,6 +14,7 @@ import { ModeWordRecordsScreen } from './mode-word-records'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
 import { SettingsScreen } from './settings'
+import { WebScreen } from './web'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
 import { AlertNotificationRoot } from 'react-native-alert-notification'
@@ -66,6 +67,7 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="ModeWordRecords" component={ModeWordRecordsScreen} />
         <RootStack.Screen name="ModeResultCollected" component={ModeResultCollectedScreen} />
         <RootStack.Screen name="ModeResultRecords" component={ModeResultRecordsScreen} />
+        <RootStack.Screen name="Web" component={WebScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )

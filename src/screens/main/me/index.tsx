@@ -15,7 +15,7 @@ export function MeScreen({ navigation }: Props): JSX.Element {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
-      <TitleBar backDisabled title={t('Me')} />
+      <TitleBar backHidden title={t('Me')} />
       <ScrollView style={{ flex: 1 }}>
         <CellGroup>
           <CellView

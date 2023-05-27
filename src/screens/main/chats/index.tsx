@@ -54,7 +54,7 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
       <TitleBar
-        backDisabled
+        backHidden
         title={t('Chats')}
         action={{
           iconName: 'add-circle',

@@ -15,6 +15,7 @@ export const dimensions = {
   iconSmall: 16,
   iconMedium: 20,
   iconLarge: 24,
+  iconSuper: 28,
   chatAvatar: 23,
   disabledOpacity: 0.3,
   messageSeparator: edge,

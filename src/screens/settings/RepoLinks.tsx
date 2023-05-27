@@ -1,8 +1,11 @@
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { TText } from '../../themes/TText'
+import { RootStackParamList } from '../screens'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import React from 'react'
-import { Linking, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
 export type RepoLinksProps = {
   style?: StyleProp<ViewStyle>
@@ -10,6 +13,8 @@ export type RepoLinksProps = {
 
 export function RepoLinks(props: RepoLinksProps) {
   const { style } = props
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
   return (
     <View style={[styles.container, style]}>
@@ -19,7 +24,10 @@ export function RepoLinks(props: RepoLinksProps) {
       <Text
         style={styles.link}
         onPress={() => {
-          Linking.openURL('https://github.com/yetone/openai-translator')
+          navigation.push('Web', {
+            title: 'openai-translator',
+            url: 'https://github.com/yetone/openai-translator',
+          })
         }}>
         openai-translator
       </Text>
@@ -29,7 +37,10 @@ export function RepoLinks(props: RepoLinksProps) {
       <Text
         style={styles.link}
         onPress={() => {
-          Linking.openURL('https://github.com/zhuanghongji/react-native-openai-translator')
+          navigation.push('Web', {
+            title: 'react-native-openai-translator',
+            url: 'https://github.com/zhuanghongji/react-native-openai-translator',
+          })
         }}>
         react-native-openai-translator
       </Text>

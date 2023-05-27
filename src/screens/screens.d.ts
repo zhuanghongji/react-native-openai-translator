@@ -23,6 +23,10 @@ type RootStackParamList = {
   ModeWordRecords: undefined
   ModeResultCollected: undefined
   ModeResultRecords: undefined
+  Web: {
+    title: string
+    url: string
+  }
 }
 
 type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<

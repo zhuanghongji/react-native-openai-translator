@@ -17,6 +17,9 @@ import {
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+const H_EDGE = 8
+const ACTION_WIDTH = 36
+
 export interface TitleBarAction {
   disabled?: boolean
   iconSize?: number
@@ -29,25 +32,28 @@ export interface TitleBarProps {
   style?: StyleProp<ViewStyle>
   title?: string
   subtitle?: string
-  backDisabled?: boolean
+  backHidden?: boolean
+  closeHidden?: boolean
   titleContainerRow?: boolean
+  titleContainerNarrow?: boolean
   action?: TitleBarAction
   onBackPress?: () => void
+  onClosePress?: () => void
   renderTitle?: (options: { titleStyle: TextStyle; subtitleStyle: TextStyle }) => React.ReactNode
   renderAction?: () => React.ReactNode
 }
-
-const H_EDGE = 8
-
 export function TitleBar(props: TitleBarProps): JSX.Element {
   const {
     style,
     title,
     subtitle,
-    backDisabled = false,
+    backHidden = false,
+    closeHidden = true,
     titleContainerRow = false,
+    titleContainerNarrow = false,
     action,
     onBackPress,
+    onClosePress,
     renderTitle,
     renderAction,
   } = props
@@ -107,32 +113,47 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
     )
   }
 
+  const touchableRowWidth = ACTION_WIDTH * (titleContainerNarrow ? 2 : 1)
   return (
     <View
       style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }, style]}>
       <StatusBar translucent barStyle={barStyle} backgroundColor={colors.transparent} />
-      <Pressable
-        style={styles.touchable}
-        hitSlop={{ right: H_EDGE }}
-        disabled={backDisabled}
-        onPress={onBackPress ?? goBack}>
-        {backDisabled ? null : (
-          <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
+      <View style={[styles.touchableRow, { width: touchableRowWidth }]}>
+        {backHidden ? (
+          <View style={styles.touchable} />
+        ) : (
+          <Pressable
+            style={styles.touchable}
+            hitSlop={{ left: H_EDGE }}
+            onPress={onBackPress ?? goBack}>
+            <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
+          </Pressable>
         )}
-      </Pressable>
+        {closeHidden ? null : (
+          <Pressable style={styles.touchable} hitSlop={{ right: H_EDGE }} onPress={onClosePress}>
+            <SvgIcon size={dimensions.iconLarge} color={tintColor} name="close" />
+          </Pressable>
+        )}
+      </View>
+
       <Pressable
         style={[styles.center, { flexDirection: titleContainerRow ? 'row' : 'column' }]}
         disabled={!__DEV__}
         onLongPress={() => __DEV__ && navigation.navigate('Dev')}>
         {_renderTitle()}
       </Pressable>
-      {_renderAction()}
+
+      <View style={[styles.touchableRow, { width: touchableRowWidth, justifyContent: 'flex-end' }]}>
+        {closeHidden ? null : <View style={styles.touchable} />}
+        {_renderAction()}
+      </View>
     </View>
   )
 }
 
 type Styles = {
   container: ViewStyle
+  touchableRow: ViewStyle
   touchable: ViewStyle
   center: ViewStyle
   title: TextStyle
@@ -147,9 +168,14 @@ const styles = StyleSheet.create<Styles>({
     alignItems: 'center',
     paddingHorizontal: H_EDGE,
   },
+  touchableRow: {
+    flexDirection: 'row',
+    width: ACTION_WIDTH * 2,
+    height: dimensions.barHeight,
+  },
   touchable: {
-    width: 36,
-    height: 48,
+    width: ACTION_WIDTH,
+    height: dimensions.barHeight,
     justifyContent: 'center',
     alignItems: 'center',
   },

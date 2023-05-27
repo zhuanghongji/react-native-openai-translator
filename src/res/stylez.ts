@@ -3,6 +3,9 @@ import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native'
 
 type Stylez = {
   f1: ViewStyle
+  w100: ViewStyle
+  h100: ViewStyle
+  wh100: ViewStyle
   contentText: TextStyle
   chatAvatarLogo: ImageStyle
   chatAvatarContainer: ViewStyle
@@ -12,6 +15,16 @@ type Stylez = {
 export const stylez = StyleSheet.create<Stylez>({
   f1: {
     flex: 1,
+  },
+  w100: {
+    width: '100%',
+  },
+  h100: {
+    height: '100%',
+  },
+  wh100: {
+    width: '100%',
+    height: '100%',
   },
   contentText: {
     fontSize: 16,
