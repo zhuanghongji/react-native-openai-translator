@@ -52,7 +52,7 @@ export function InputView(props: InputViewProps) {
             <SvgIcon
               size={dimensions.iconSmall}
               color={iconColor}
-              name={secureTextEntry ? 'visibility' : 'visibility-off'}
+              name={secureTextEntry ? 'visibility-on' : 'visibility-off'}
             />
           </Pressable>
         ) : null}

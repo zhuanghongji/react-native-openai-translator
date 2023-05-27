@@ -43,7 +43,7 @@ export function PickView(props: PickViewProps) {
         {label}
       </TText>
       <Animated.View style={transfromStyle}>
-        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="errow-drop-down" />
+        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="arrow-down" />
       </Animated.View>
     </Animated.View>
   )

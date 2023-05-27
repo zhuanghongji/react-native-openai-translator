@@ -101,7 +101,7 @@ export function FilterInput(props: FilterInputProps) {
         <Animated.View
           style={[styles.rowCenter, tipAnimStyle]}
           onLayout={e => (tipX.value = e.nativeEvent.layout.x)}>
-          <SvgIcon size={dimensions.iconSmall} color={tint3} name="filter-list" />
+          <SvgIcon size={dimensions.iconSmall} color={tint3} name="filter-on" />
           <Animated.Text style={[styles.text, { color: tint3 }, tipTextAnimStyle]}>
             Filter
           </Animated.Text>

@@ -16,7 +16,7 @@ export function AddTip(props: AddTipProps) {
 
   return (
     <View style={[styles.container, style]}>
-      <SvgIcon style={{}} name="pan-tool-alt" size={dimensions.iconLarge} color={tint3} />
+      <SvgIcon style={{}} name="pan-alt" size={dimensions.iconLarge} color={tint3} />
       <TText style={[styles.text, { color: tint3 }]} typo="text">
         {'There is no chat yet,\nclick to create one.'}
       </TText>
