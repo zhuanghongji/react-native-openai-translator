@@ -56,6 +56,10 @@ export function dbInsertModeResult(target: Omit<TModeResult, keyof TResultBase>)
 
 // update
 
+export function dbUpdateModeResultValuesOfId(id: number, values: Partial<TModeResultBasic>) {
+  return dbExecuteSql<TModeResult>(dbGenUpdateWhereExecution(TABLE_NAME, values, { id }))
+}
+
 export function dbUpdateModeResultCollectedOfId(id: number, toCollected: boolean) {
   return dbExecuteSql<TModeResult>(
     dbGenUpdateWhereExecution(TABLE_NAME, { collected: toCollected ? '1' : '0' }, { id })

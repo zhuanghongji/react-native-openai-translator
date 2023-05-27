@@ -1,17 +1,17 @@
 import { SvgIconName } from '../../../components/SvgIcon'
 import { ToolButton } from '../../../components/ToolButton'
 import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
-import {
-  dbInsertModeResult,
-  dbUpdateModeResultCollectedOfId,
-} from '../../../db/table/t-mode-result'
+import { dbInsertModeResult, dbUpdateModeResultValuesOfId } from '../../../db/table/t-mode-result'
 import { TModeResult } from '../../../db/types'
+import { hapticSoft } from '../../../haptic'
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
 import { print } from '../../../printer'
 import { QueryKey } from '../../../query/keys'
+import { toast } from '../../../toast'
 import { ChatCompletionsPrompts } from './prompts'
 import { useQueryClient } from '@tanstack/react-query'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
 
 export type ModeSceneResultButtonProps = {
@@ -39,6 +39,7 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
     cacheResult,
   } = props
 
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
 
   let iconName: SvgIconName = 'bookmark-none'
@@ -46,14 +47,22 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
     iconName = resultType === '1' ? 'heart-none' : 'bookmark-none'
   } else if (cacheResult === null || cacheResult.collected !== '1') {
     iconName = resultType === '1' ? 'heart-plus' : 'bookmark-plus'
+  } else if (cacheResult.assistant_content === outputText) {
+    // iconName = resultType === '1' ? 'heart-minus' : 'bookmark-minus'
+    iconName = resultType === '1' ? 'heart-checked' : 'bookmark-checked'
   } else {
-    iconName = resultType === '1' ? 'heart-minus' : 'bookmark-minus'
+    iconName = 'publish-change'
   }
 
   const onPress = async () => {
     if (cacheResult === undefined) {
       return
     }
+    if (cacheResult?.assistant_content === outputText) {
+      toast('success', t('Already collected'), inputText)
+      return
+    }
+    hapticSoft()
     try {
       if (cacheResult === null) {
         print('dbInsertModeResult')
@@ -70,10 +79,15 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
           type: resultType,
           status: null,
         })
-      } else {
-        print('dbDeleteModeWordOfId ...')
-        const collected = cacheResult.collected === '1'
-        await dbUpdateModeResultCollectedOfId(cacheResult.id, !collected)
+      }
+      // else if (cacheResult?.assistant_content === outputText) {
+      //   print('dbUpdateModeResultCollectedOfId ...')
+      //   const collected = cacheResult.collected === '1'
+      //   await dbUpdateModeResultCollectedOfId(cacheResult.id, !collected)
+      // }
+      else {
+        print('dbUpdateModeResultValuesOfId ...')
+        await dbUpdateModeResultValuesOfId(cacheResult.id, { assistant_content: outputText })
       }
       queryClient.invalidateQueries({ queryKey: [QueryKey.findModeResultWhere] })
     } catch (e) {
