@@ -27,6 +27,10 @@ type RootStackParamList = {
     title: string
     url: string
   }
+  PDF: {
+    title: string
+    url: string
+  }
 }
 
 type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<

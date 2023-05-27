@@ -17,7 +17,7 @@ import { WebView } from 'react-native-webview'
 type Props = NativeStackScreenProps<RootStackParamList, 'Web'>
 
 export function WebScreen({ navigation, route }: Props): JSX.Element {
-  const { url: initialUrl, title: initialTitle } = route.params
+  const { title: initialTitle, url: initialUrl } = route.params
 
   const { t } = useTranslation()
 

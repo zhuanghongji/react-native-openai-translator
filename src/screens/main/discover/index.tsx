@@ -1,4 +1,5 @@
 import { CellDivider } from '../../../components/CellDivider'
+import { CellGroup } from '../../../components/CellGroup'
 import { CellView } from '../../../components/CellView'
 import { TitleBar } from '../../../components/TitleBar'
 import { useThemeScheme } from '../../../themes/hooks'
@@ -25,17 +26,31 @@ export function DiscoverScreen({ navigation }: Props): JSX.Element {
           onPress={() => navigation.navigate('AwesomePrompts')}
         />
         <CellDivider />
-        <CellView
-          icon="book"
-          iconColor="#B8834B"
-          title={t('Prompt Engineering Guide')}
-          onPress={() => {
-            navigation.navigate('Web', {
-              title: t('Prompt Engineering Guide'),
-              url: 'https://www.promptingguide.ai',
-            })
-          }}
-        />
+
+        <CellGroup>
+          <CellView
+            icon="school"
+            iconColor="#B8834B"
+            title={t('Prompt Engineering Lecture')}
+            onPress={() => {
+              navigation.navigate('PDF', {
+                title: t('Prompt Engineering Lecture'),
+                url: 'https://github.com/dair-ai/Prompt-Engineering-Guide/raw/main/lecture/Prompt-Engineering-Lecture-Elvis.pdf',
+              })
+            }}
+          />
+          <CellView
+            icon="book"
+            iconColor="#B8834B"
+            title={t('Prompt Engineering Guide')}
+            onPress={() => {
+              navigation.navigate('Web', {
+                title: t('Prompt Engineering Guide'),
+                url: 'https://www.promptingguide.ai',
+              })
+            }}
+          />
+        </CellGroup>
       </ScrollView>
     </SafeAreaView>
   )

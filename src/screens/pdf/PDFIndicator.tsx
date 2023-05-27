@@ -11,16 +11,16 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
-export type WebIndicatorProps = {
+export type PDFIndicatorProps = {
   style?: StyleProp<ViewStyle>
   indicatorStyle?: StyleProp<ViewStyle>
 }
 
-export type WebIndicatorHandle = {
+export type PDFIndicatorHandle = {
   updatePropgress: (progress: number) => void
 }
 
-export const WebIndicator = React.forwardRef<WebIndicatorHandle, WebIndicatorProps>(
+export const PDFIndicator = React.forwardRef<PDFIndicatorHandle, PDFIndicatorProps>(
   (props, ref) => {
     const { style, indicatorStyle } = props
 

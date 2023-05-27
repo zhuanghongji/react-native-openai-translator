@@ -11,6 +11,7 @@ import { ModeResultCollectedScreen } from './mode-result-collected'
 import { ModeResultRecordsScreen } from './mode-result-history'
 import { ModeWordCollectedScreen } from './mode-word-collected'
 import { ModeWordRecordsScreen } from './mode-word-records'
+import { PDFScreen } from './pdf'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
 import { SettingsScreen } from './settings'
@@ -68,6 +69,7 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="ModeResultCollected" component={ModeResultCollectedScreen} />
         <RootStack.Screen name="ModeResultRecords" component={ModeResultRecordsScreen} />
         <RootStack.Screen name="Web" component={WebScreen} />
+        <RootStack.Screen name="PDF" component={PDFScreen} />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )
