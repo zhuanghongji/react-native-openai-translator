@@ -107,6 +107,7 @@ const styles = StyleSheet.create<Styles>({
   input: {
     flex: 1,
     minHeight: 36,
+    maxHeight: 120,
     paddingVertical: 6,
     paddingHorizontal: dimensions.edge,
     borderRadius: dimensions.borderRadius,

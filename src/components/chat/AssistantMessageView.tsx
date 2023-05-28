@@ -63,6 +63,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
       <View style={[styles.content, { backgroundColor }]}>
         <TText
           style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}
+          selectable={true}
           typo="text">
           {trimContent(content)}
         </TText>
