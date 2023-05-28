@@ -1,24 +1,24 @@
-export type MessageRole = 'system' | 'user' | 'assistant'
+export type ApiMessageRole = 'system' | 'user' | 'assistant'
 
-export type Message<T = MessageRole> = {
-  role: T
+export type ApiMessage = {
+  role: ApiMessageRole
   content: string
 }
 
-export type ChatMessage =
-  | {
-      role: 'divider'
-      content: 'FOREMOST' | 'NEW DIALOGUE'
-      // time: number
-    }
-  | {
-      role: 'user'
-      content: string
-    }
-  | {
-      role: 'assistant'
-      content: string
-    }
+export type ChatMessageRole = 'user' | 'assistant' | 'divider'
+
+export type ChatMessage = {
+  role: ChatMessageRole
+  // 'FOREMOST' | 'NEW DIALOGUE' | else
+  content: string
+  // true: colors.in | false: colors.out | null: colors.transparent
+  inContext: boolean | null
+}
+
+export type BaseMessage = {
+  role: string
+  content: string
+}
 
 export type ScanBlock = {
   text: string

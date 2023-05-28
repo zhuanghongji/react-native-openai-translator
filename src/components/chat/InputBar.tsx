@@ -1,11 +1,11 @@
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { useThemeDark, useThemeScheme } from '../../themes/hooks'
+import { useThemeScheme, useThemeSelector } from '../../themes/hooks'
 import { SvgIcon } from '../SvgIcon'
 import { ToolButton } from '../ToolButton'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
+import { Pressable, StyleSheet, Text, TextInput, TextStyle, View, ViewStyle } from 'react-native'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, {
   Easing,
@@ -20,6 +20,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 export interface InputBarProps {
   value: string
   sendDisabled: boolean
+  inContextNum: number
+  contextMessagesNum: number
   onChangeText: (value: string) => void
   onSendPress: () => void
   onNewDialoguePress: () => void
@@ -28,15 +30,22 @@ export interface InputBarProps {
 const H_EDGE = 8
 
 export function InputBar(props: InputBarProps): JSX.Element {
-  const { value, sendDisabled, onChangeText, onSendPress, onNewDialoguePress } = props
+  const {
+    value,
+    sendDisabled,
+    inContextNum,
+    contextMessagesNum,
+    onChangeText,
+    onSendPress,
+    onNewDialoguePress,
+  } = props
 
-  const isDark = useThemeDark()
-  const tintColor = isDark ? colors.white : colors.black
-  const textColor = isDark ? colors.white : colors.black
-  const backgroundColor = isDark ? colors.c1C : colors.cF7
-  const backgroundColor2 = isDark ? colors.c28 : colors.white
+  const tintColor = useThemeSelector(colors.white, colors.black)
+  const textColor = useThemeSelector(colors.white, colors.black)
+  const backgroundColor = useThemeSelector(colors.c1C, colors.cF7)
+  const backgroundColor2 = useThemeSelector(colors.c28, colors.white)
 
-  const { placeholder: placeholderColor } = useThemeScheme()
+  const { placeholder: placeholderColor, tint3 } = useThemeScheme()
 
   const { bottom } = useSafeAreaInsets()
   const { height, progress } = useReanimatedKeyboardAnimation()
@@ -74,6 +83,17 @@ export function InputBar(props: InputBarProps): JSX.Element {
     <Animated.View style={[styles.container, heightStyle, { backgroundColor }]}>
       <View style={styles.toolsRow}>
         <ToolButton containerSize={36} name="chat-new" onPress={onNewDialoguePress} />
+        <SvgIcon
+          style={{ marginLeft: 4, marginBottom: 1 }}
+          size={15}
+          color={tint3}
+          name={'history'}
+        />
+        <Text
+          style={[
+            styles.messagesNum,
+            { color: tint3 },
+          ]}>{`${inContextNum}/${contextMessagesNum}`}</Text>
       </View>
       <View style={styles.content}>
         <TextInput
@@ -113,6 +133,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
 type Styles = {
   container: ViewStyle
   toolsRow: ViewStyle
+  messagesNum: TextStyle
   content: ViewStyle
   input: ViewStyle
   touchable: ViewStyle
@@ -123,7 +144,15 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
   },
   toolsRow: {
+    flexDirection: 'row',
     paddingHorizontal: dimensions.edge,
+    alignItems: 'center',
+  },
+  messagesNum: {
+    marginLeft: 2,
+    fontSize: 12,
+    includeFontPadding: false,
+    letterSpacing: 2,
   },
   content: {
     flexDirection: 'row',

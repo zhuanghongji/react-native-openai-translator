@@ -19,7 +19,7 @@ import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
-import { ChatMessage, Message } from '../../types'
+import { ApiMessage, ChatMessage } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -169,7 +169,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     setStatus('sending')
     scrollToTop()
 
-    const messagesToSend: Message[] = []
+    const messagesToSend: ApiMessage[] = []
     if (system_prompt) {
       messagesToSend.push({ role: 'system', content: system_prompt })
     }

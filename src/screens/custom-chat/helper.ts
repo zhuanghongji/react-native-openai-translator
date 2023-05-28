@@ -1,18 +1,14 @@
-import { ChatMessage, Message } from '../../types'
+import { ApiMessage, ChatMessage } from '../../types'
 
 export function generateMessagesToSend(options: {
   systemPrompt: string | null
-  contextMessagesNum: number
   currentMessages: ChatMessage[]
-  newMessage: Message
-}): Message[] {
-  const { systemPrompt, contextMessagesNum, currentMessages, newMessage } = options
-  const result: Message[] = []
+  userMessageContent: string
+}): ApiMessage[] {
+  const { systemPrompt, currentMessages, userMessageContent } = options
+  const result: ApiMessage[] = []
   for (const msg of currentMessages) {
-    if (result.length >= contextMessagesNum) {
-      break
-    }
-    if (msg.role === 'divider') {
+    if (msg.inContext !== true) {
       break
     }
     if (msg.role === 'user') {
@@ -28,6 +24,6 @@ export function generateMessagesToSend(options: {
   if (systemPrompt) {
     result.unshift({ role: 'system', content: systemPrompt })
   }
-  result.push(newMessage)
+  result.push({ role: 'user', content: userMessageContent })
   return result
 }

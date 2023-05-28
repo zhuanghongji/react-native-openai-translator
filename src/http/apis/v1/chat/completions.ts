@@ -1,5 +1,5 @@
 import { texts } from '../../../../res/texts'
-import { Message } from '../../../../types'
+import { ApiMessage } from '../../../../types'
 import { sseRequest } from '../../../sse-manager'
 import { OpenAIApiUrlOptions } from '../../type'
 import EventSource from 'react-native-sse'
@@ -48,7 +48,7 @@ export interface ChatCompletionsCustomizedOptions {
 export interface ChatCompletionsCallbacks {
   onSubscribe?: () => void
   onNext: (content: string) => void
-  onDone: (result: Message) => void
+  onDone: (result: ApiMessage) => void
   onError: (code: string, message: string) => void
   onComplete?: () => void
 }
@@ -77,13 +77,13 @@ function parseAPIKeyChunk(apiKey: string): string {
 export function sseRequestChatCompletions(
   urlOptions: OpenAIApiUrlOptions,
   customizedOptions: ChatCompletionsCustomizedOptions,
-  messages: Message[],
+  messages: ApiMessage[],
   callbacks: ChatCompletionsCallbacks
 ): EventSource {
   const { apiUrl, apiUrlPath, apiKey } = urlOptions
   const { onSubscribe, onNext, onDone, onError, onComplete } = callbacks
 
-  const result: Message<string> = { role: '', content: '' }
+  const result: ApiMessage<string> = { role: '', content: '' }
   const es = sseRequest(
     `${apiUrl}${apiUrlPath}`,
     {
@@ -109,7 +109,7 @@ export function sseRequestChatCompletions(
         }
         if (data === '[DONE]') {
           es.close()
-          onDone(result as Message)
+          onDone(result as ApiMessage)
           onComplete?.()
           return
         }

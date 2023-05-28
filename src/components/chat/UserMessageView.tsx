@@ -17,11 +17,18 @@ export type UserMessageProps = {
 
 export function UserMessageView(props: UserMessageProps) {
   const { style, fontSize, message, hideChatAvatar } = props
-  const { content } = message
+  const { content, inContext } = message
+
+  let borderColor = colors.transparent
+  if (inContext === true) {
+    borderColor = colors.in
+  } else if (inContext === false) {
+    borderColor = colors.out
+  }
 
   return (
     <View style={[style, styles.container]}>
-      <View style={styles.content}>
+      <View style={[styles.content, { borderColor }]}>
         <TText
           style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}
           selectable={true}
@@ -56,6 +63,7 @@ const styles = StyleSheet.create<Styles>({
     maxWidth: '80%',
     padding: dimensions.edge,
     borderRadius: dimensions.borderRadius,
+    borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: colors.primary,
   },
   text: {

@@ -59,7 +59,7 @@ export const WebActionsModal = React.forwardRef<WebActionsModalHandle, WebAction
         <BottomSheetScrollView style={[stylez.f1, style]}>
           <View style={styles.buttonsRow}>
             <WebActionButton
-              iconName="link"
+              iconName="http"
               text={t('Copy Url')}
               onBeforePress={onBeforePress}
               onPress={onCopyUrlPress}

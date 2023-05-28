@@ -1,5 +1,5 @@
 import { LanguageKey, TranslatorMode, languageLabelByKey } from '../../../preferences/options'
-import { Message } from '../../../types'
+import { ApiMessage } from '../../../types'
 import { isChineseLang, isEnglishWord } from '../../../utils'
 import { useMemo } from 'react'
 
@@ -165,7 +165,7 @@ function generatePromptsOfAnalyze(os: GenerateSpecificPromptsOptions): ChatCompl
 }
 
 export function generateMessagesWithPrompts(options: ChatCompletionsPromptsOptions): {
-  messages: Message[]
+  messages: ApiMessage[]
   prompts: ChatCompletionsPrompts
   systemContent: string
   finalUserContent: string
@@ -174,7 +174,7 @@ export function generateMessagesWithPrompts(options: ChatCompletionsPromptsOptio
   const { inputText } = options
   const { systemPrompt, userPromptPrefix, userPromptSuffix } = prompts
 
-  const messages: Message[] = []
+  const messages: ApiMessage[] = []
   if (systemPrompt) {
     messages.push({ role: 'system', content: systemPrompt })
   }

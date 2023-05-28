@@ -18,7 +18,7 @@ import { useHideChatAvatarPref } from '../../preferences/storages'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
-import { ChatMessage } from '../../types'
+import { BaseMessage, ChatMessage } from '../../types'
 import {
   updateCustomChatSettings,
   useCustomChatSettings,
@@ -52,21 +52,49 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
 
   const { t } = useTranslation()
 
-  const [freshMessages, setFreshMessages] = useState<ChatMessage[]>([])
+  const [freshMessages, setFreshMessages] = useState<BaseMessage[]>([])
   const legacyPageSize = context_messages_num > 20 ? 100 : 20
   const legacyResult = useInfiniteQueryCustomChatMessagePageable(id, legacyPageSize)
   const { items: legacyMessages, onFetchNextPage: onEndReached } =
     useInfinitePageDataLoader(legacyResult)
 
   const finalMessages = useMemo<ChatMessage[]>(() => {
-    const legacyItems: ChatMessage[] = legacyMessages.map(v => {
+    const legacyItems: BaseMessage[] = legacyMessages.map(v => {
       return {
         role: v.role,
         content: v.content,
-      } as ChatMessage
+      }
     })
-    return [...freshMessages, ...legacyItems]
-  }, [freshMessages, legacyMessages])
+    const messages: BaseMessage[] = [...freshMessages, ...legacyItems]
+    const result: ChatMessage[] = []
+    let count = 0
+    let encounterDivider = false
+    for (const item of messages) {
+      if (item.role !== 'user' && item.role !== 'assistant' && item.role !== 'divider') {
+        continue
+      }
+      if (item.role === 'divider') {
+        encounterDivider = true
+      }
+      let inContext: boolean | null = null
+      if (!encounterDivider) {
+        inContext = count < context_messages_num
+      }
+      count += 1
+      result.push({ role: item.role, content: item.content, inContext })
+    }
+    return result
+  }, [context_messages_num, freshMessages, legacyMessages])
+  const inContextNum = useMemo(() => {
+    let count = 0
+    for (const item of finalMessages) {
+      if (item.inContext !== true) {
+        break
+      }
+      count += 1
+    }
+    return count
+  }, [finalMessages])
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
   const customizedOptions = useOpenAIApiCustomizedOptions()
@@ -111,9 +139,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       return
     }
     setInputText('')
-    const userMessage: ChatMessage = { role: 'user', content: inputText }
-    const nextMessages: ChatMessage[] = [userMessage, ...freshMessages]
-    setFreshMessages(nextMessages)
+    setFreshMessages([{ role: 'user', content: inputText }, ...freshMessages])
     dbInsertCustomChatMessageSimply({
       chat_id: id,
       role: 'user',
@@ -121,9 +147,8 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     })
     const messages = generateMessagesToSend({
       systemPrompt: system_prompt,
-      contextMessagesNum: context_messages_num,
       currentMessages: finalMessages,
-      newMessage: userMessage,
+      userMessageContent: inputText,
     })
     scrollToTop()
     setStatus('sending')
@@ -140,8 +165,7 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
         toast('warning', code, message)
       },
       onDone: message => {
-        const assistantMessage: ChatMessage = { role: 'assistant', content: message.content }
-        setFreshMessages(prev => [assistantMessage, ...prev])
+        setFreshMessages(prev => [{ role: 'assistant', content: message.content }, ...prev])
         dbInsertCustomChatMessageSimply({
           chat_id: id,
           role: 'assistant',
@@ -226,11 +250,23 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
         <InputBar
           value={inputText}
           sendDisabled={sendDisabled}
+          inContextNum={inContextNum}
+          contextMessagesNum={context_messages_num}
           onChangeText={setInputText}
           onSendPress={onSendPress}
           onNewDialoguePress={() => {
-            const dividerMessage: ChatMessage = { role: 'divider', content: 'NEW DIALOGUE' }
-            setFreshMessages([dividerMessage, ...freshMessages])
+            setFreshMessages([
+              {
+                role: 'divider',
+                content: 'NEW DIALOGUE',
+              },
+              ...freshMessages,
+            ])
+            dbInsertCustomChatMessageSimply({
+              chat_id: id,
+              role: 'divider',
+              content: 'NEW DIALOGUE',
+            })
           }}
         />
         <SettingsSelectorModal

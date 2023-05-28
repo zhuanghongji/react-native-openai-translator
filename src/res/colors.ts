@@ -8,6 +8,9 @@ export const colors = {
   warning: '#E94543',
   link: '#1E90FF',
 
+  in: '#57B999CC',
+  out: '#E9454366',
+
   placeholderDark: '#FFFFFF80',
   placeholderLight: '#B0B0B0FF',
   overlayDark: 'rgba(255, 255, 255, 0.3)',

@@ -7,8 +7,17 @@ import { useThemeScheme } from '../../themes/hooks'
 import { ChatMessage } from '../../types'
 import { trimContent } from '../../utils'
 import { SvgIcon, SvgIconName } from '../SvgIcon'
-import React from 'react'
-import { Image, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
+import React, { useState } from 'react'
+import {
+  Image,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native'
 
 export type AssistantMessageProps = {
   style?: StyleProp<ViewStyle>
@@ -21,9 +30,17 @@ export type AssistantMessageProps = {
 
 export function AssistantMessageView(props: AssistantMessageProps) {
   const { style, avatar, svgIconName, fontSize, message, hideChatAvatar } = props
-  const { content } = message
+  const { content, inContext } = message
 
-  const { tint, backgroundMessage: backgroundColor } = useThemeScheme()
+  let borderColor = colors.transparent
+  if (inContext === true) {
+    borderColor = colors.in
+  } else if (inContext === false) {
+    borderColor = colors.out
+  }
+
+  const { tint, tint2, backgroundMessage: backgroundColor } = useThemeScheme()
+  const [moreVisible, setMoreVisible] = useState(false)
 
   const renderAvatar = () => {
     if (hideChatAvatar) {
@@ -41,12 +58,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
     if (svgIconName) {
       return (
         <View style={stylez.chatAvatarContainer}>
-          <SvgIcon
-            // style={{ transform: [{ translateY: -3 }] }}
-            size={22}
-            name={svgIconName}
-            color={tint}
-          />
+          <SvgIcon size={22} name={svgIconName} color={tint} />
         </View>
       )
     }
@@ -60,13 +72,31 @@ export function AssistantMessageView(props: AssistantMessageProps) {
   return (
     <View style={[style, styles.container]}>
       {renderAvatar()}
-      <View style={[styles.content, { backgroundColor }]}>
+      <View style={[styles.content, { backgroundColor, borderColor }]}>
         <TText
           style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}
           selectable={true}
           typo="text">
           {trimContent(content)}
         </TText>
+      </View>
+      <View style={stylez.f1}>
+        <Pressable
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            paddingLeft: 6,
+            paddingBottom: 2,
+          }}
+          // TODO show more menu
+          disabled={true}
+          onPressIn={() => setMoreVisible(true)}
+          onPressOut={() => setMoreVisible(false)}
+          onLongPress={() => {
+            // TODO show more menu
+          }}>
+          {moreVisible ? <SvgIcon size={14} color={tint2} name="more" /> : null}
+        </Pressable>
       </View>
     </View>
   )
@@ -88,6 +118,7 @@ const styles = StyleSheet.create<Styles>({
     maxWidth: '80%',
     padding: dimensions.edge,
     borderRadius: dimensions.borderRadius,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   text: {
     textAlign: 'justify',

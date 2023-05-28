@@ -14,7 +14,7 @@ import { print } from '../../../printer'
 import { QueryKey } from '../../../query/keys'
 import { dimensions } from '../../../res/dimensions'
 import { toast } from '../../../toast'
-import { Message, TranslatorStatus } from '../../../types'
+import { ApiMessage, TranslatorStatus } from '../../../types'
 import { isEnglishWord } from '../../../utils'
 import { RootStackParamList } from '../../screens'
 import { ClipboardDetectedModal } from './ClipboardDetectedModal'
@@ -118,7 +118,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
   }))
 
   const eventSourceRef = useRef<EventSource | null>(null)
-  const perfromChatCompletions = (messages: Message[]) => {
+  const perfromChatCompletions = (messages: ApiMessage[]) => {
     if (!checkIsOptionsValid()) {
       return
     }
