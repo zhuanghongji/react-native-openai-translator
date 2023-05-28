@@ -105,7 +105,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
     return (
       <Pressable
         style={styles.touchable}
-        hitSlop={{ right: H_EDGE }}
+        hitSlop={{ left: dimensions.edge, right: H_EDGE }}
         disabled={disabled}
         onPress={onPress}>
         <SvgIcon size={iconSize} color={iconColor} name={iconName} />
@@ -124,7 +124,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
         ) : (
           <Pressable
             style={styles.touchable}
-            hitSlop={{ left: H_EDGE }}
+            hitSlop={{ left: H_EDGE, right: closeHidden ? H_EDGE : 0 }}
             onPress={onBackPress ?? goBack}>
             <SvgIcon size={dimensions.iconMedium} color={tintColor} name="back" />
           </Pressable>
