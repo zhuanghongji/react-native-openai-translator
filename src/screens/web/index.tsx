@@ -105,13 +105,13 @@ export function WebScreen({ navigation, route }: Props): JSX.Element {
             onNavigationStateChange={e => {
               const { url } = e
               currentUrlRef.current = url
-
-              // TODO Support use pdf-screen viewer
-              // if (url.endsWith('.pdf') || url.endsWith('.PDF')) {
-              //   navigation.push('PDF', { url: request.url, title: request.title ?? '' })
-              //   return false
-              // }
-
+            }}
+            onShouldStartLoadWithRequest={request => {
+              const { title, url } = request
+              if (url.endsWith('.pdf') || url.endsWith('.PDF')) {
+                navigation.push('PDF', { title: title ?? '', url })
+                return false
+              }
               return true
             }}
           />

@@ -76,9 +76,7 @@ const styles = StyleSheet.create<Styles>({
     position: 'absolute',
     right: dimensions.edge,
     bottom: BOTTOM,
-
     borderRadius: dimensions.borderRadius,
-
     margin: 4,
   },
   touchable: {
@@ -88,6 +86,7 @@ const styles = StyleSheet.create<Styles>({
     alignItems: 'center',
   },
   shadow: {
+    // https://ethercreative.github.io/react-native-shadow-generator/
     shadowOffset: {
       width: 0,
       height: 2,
