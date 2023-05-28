@@ -1,4 +1,5 @@
 import { PickModalHandle } from '../components/PickModal'
+import { useFocusEffect } from '@react-navigation/native'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppState, AppStateStatus } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
@@ -43,4 +44,17 @@ export function useOnRefresh<T>(refresh: () => Promise<T>) {
     }
   }, [refresh])
   return { refreshing, setRefreshing, onRefresh }
+}
+
+export function useRefetchFocusEffect<T>(refetch: () => Promise<T>) {
+  const firstTimeRef = useRef(true)
+  useFocusEffect(
+    useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false
+        return
+      }
+      refetch()
+    }, [refetch])
+  )
 }

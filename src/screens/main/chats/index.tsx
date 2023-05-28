@@ -2,7 +2,7 @@ import { Divider } from '../../../components/Divider'
 import { TitleBar } from '../../../components/TitleBar'
 import { useQueryCustomChat } from '../../../db/table/t-custom-chat'
 import { TCustomChat } from '../../../db/types'
-import { useOnRefresh } from '../../../hooks'
+import { useOnRefresh, useRefetchFocusEffect } from '../../../hooks'
 import { dimensions } from '../../../res/dimensions'
 import { useThemeScheme } from '../../../themes/hooks'
 import { useCustomChatSettingsStore } from '../../../zustand/stores/custom-chat-settings'
@@ -29,6 +29,7 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
   const chats = chatsResult.data?.rows?._array ?? []
   const isEmpty = chats.length === 0
 
+  useRefetchFocusEffect(chatsResult.refetch)
   const { refreshing, onRefresh } = useOnRefresh(chatsResult.refetch)
 
   const handleItemPress = (chat: TCustomChat) => {
