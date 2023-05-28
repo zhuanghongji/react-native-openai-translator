@@ -29,6 +29,8 @@ export const DEFAULT_T_CUSTOM_CHAT_BASIC: TCustomChatBasic = {
   context_messages_num: null,
   tts_voice: null,
   font_size: null,
+  pinned: null,
+  archived: null,
   status: null,
 }
 

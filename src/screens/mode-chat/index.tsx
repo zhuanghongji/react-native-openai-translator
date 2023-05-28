@@ -169,6 +169,8 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       result_id: id,
       role: 'user',
       content: inputText,
+      content_supplements: null,
+      directive: null,
       status: null,
     })
       .then(result => {
@@ -212,6 +214,8 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
           result_id: id,
           role: 'assistant',
           content: message.content,
+          content_supplements: null,
+          directive: null,
           status: null,
         })
           .then(result => {

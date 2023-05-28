@@ -52,12 +52,14 @@ export type TModeChatMessageBasic = TResultExtra & {
   result_id: number
   role: string
   content: string
+  content_supplements: string | null
+  directive: string | null
   status: string | null
 }
 
 export type TModeChatMessage = TResultBase & TModeChatMessageBasic
 
-// MARK: TCustomChat
+// MARK: TCustomChat (all nullable)
 export type TCustomChatBasic = TResultExtra & {
   avatar: string | null
   chat_name: string | null
@@ -69,6 +71,8 @@ export type TCustomChatBasic = TResultExtra & {
   context_messages_num: number | null
   tts_voice: string | null
   font_size: number | null
+  pinned: string | null
+  archived: string | null
   status: string | null
 }
 
@@ -85,6 +89,8 @@ export type TCustomChatMessageBasic = TResultExtra & {
   chat_id: number
   role: string
   content: string
+  content_supplements: string | null
+  directive: string | null
   status: string | null
 }
 
