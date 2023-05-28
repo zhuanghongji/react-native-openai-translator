@@ -91,9 +91,9 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
         <>
           <BottomSheetScrollView style={{ flex: 1 }}>
             <View style={{ width: contentWidth, marginLeft: dimensions.edge }}>
-              {renderHeader('Chat Name', title)}
+              {renderHeader(t('Chat Name'), title)}
               <Text style={textStyle}>{title}</Text>
-              {renderHeader('System Prompt', content)}
+              {renderHeader(t('System Prompt'), content)}
               <Text style={textStyle}>{content}</Text>
             </View>
           </BottomSheetScrollView>
@@ -104,7 +104,7 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
                 bottomSheetModalRef.current?.dismiss()
                 onCreateChatPress(currentPrompt)
               }}>
-              <Text style={styles.createText}>Create a new Chat with it</Text>
+              <Text style={styles.createText}>{t('Create a new Chat with it')}</Text>
             </Pressable>
           </View>
         </>

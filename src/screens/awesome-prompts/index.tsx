@@ -5,6 +5,7 @@ import { TextChunks, splitToTextChunks } from '../../components/chunks-text/util
 import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/helper'
 import { dbFindCustomChatById, dbInsertCustomChat } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
+import { QueryKey } from '../../query/keys'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -16,6 +17,7 @@ import { PromptDetailModal, PromptDetailModalHandle } from './PromptDetailModal'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList, FlashListProps } from '@shopify/flash-list'
+import { useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -88,6 +90,7 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
   }
 
   const batchChat = useCustomChatSettingsStore(state => state.batchChat)
+  const queryClient = useQueryClient()
   const onCreateChatPress = async (prompt: AwesomePrompt) => {
     try {
       const { insertId } = await dbInsertCustomChat({
@@ -104,6 +107,7 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
       const [insertChat] = result.rows._array
       batchChat([insertChat])
       navigation.replace('CustomChat', { chat: insertChat })
+      queryClient.invalidateQueries({ queryKey: [QueryKey.customChat] })
     } catch (e) {
       hapticWarning()
       toast('danger', 'Error', 'Initialize Chat Error 2')

@@ -1,5 +1,6 @@
 export const enum QueryKey {
+  customChat = 'customChat',
   customChatMessage = 'customChatMessage',
-  modeResult = 'modeResult',
   findModeResultWhere = 'findModeResultWhere',
+  modeResult = 'modeResult',
 }

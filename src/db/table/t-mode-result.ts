@@ -17,6 +17,24 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 
 const TABLE_NAME = DBTableName.modeResult
 
+// insert
+
+export function dbInsertModeResult(target: Omit<TModeResult, keyof TResultBase>) {
+  return dbExecuteSql<TModeResult>(dbGenInsertExecution(TABLE_NAME, target))
+}
+
+// update
+
+export function dbUpdateModeResultValuesOfId(id: number, values: Partial<TModeResultBasic>) {
+  return dbExecuteSql<TModeResult>(dbGenUpdateWhereExecution(TABLE_NAME, values, { id }))
+}
+
+export function dbUpdateModeResultCollectedOfId(id: number, toCollected: boolean) {
+  return dbExecuteSql<TModeResult>(
+    dbGenUpdateWhereExecution(TABLE_NAME, { collected: toCollected ? '1' : '0' }, { id })
+  )
+}
+
 // select
 
 export function dbSelectModeResult() {
@@ -34,6 +52,8 @@ export function dbSelectModeResultPageableWhere(
   return dbExecuteSelectPageable<TModeResult>(TABLE_NAME, params, conditions)
 }
 
+// find
+
 export async function dbFindModeResultWhere(
   target: Pick<TModeResult, 'mode' | 'target_lang' | 'user_content' | 'type'>
 ): Promise<TModeResult | null> {
@@ -46,24 +66,6 @@ export async function dbFindModeResultWhere(
   } catch (e) {
     return Promise.reject(e)
   }
-}
-
-// insert
-
-export function dbInsertModeResult(target: Omit<TModeResult, keyof TResultBase>) {
-  return dbExecuteSql<TModeResult>(dbGenInsertExecution(TABLE_NAME, target))
-}
-
-// update
-
-export function dbUpdateModeResultValuesOfId(id: number, values: Partial<TModeResultBasic>) {
-  return dbExecuteSql<TModeResult>(dbGenUpdateWhereExecution(TABLE_NAME, values, { id }))
-}
-
-export function dbUpdateModeResultCollectedOfId(id: number, toCollected: boolean) {
-  return dbExecuteSql<TModeResult>(
-    dbGenUpdateWhereExecution(TABLE_NAME, { collected: toCollected ? '1' : '0' }, { id })
-  )
 }
 
 // delete
