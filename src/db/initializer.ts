@@ -1,6 +1,6 @@
 import { dbExecuteSqlList } from './manager'
 import { DBTableName } from './table-names'
-import { DBTableColumn } from './types'
+import { DBSqlExcution, DBTableColumn } from './types'
 import { dbGenCreateTableExcution } from './utils'
 
 const EXTRA_DB_TABLE_COLUMNS: DBTableColumn[] = [
@@ -8,6 +8,13 @@ const EXTRA_DB_TABLE_COLUMNS: DBTableColumn[] = [
   { name: 'extra2', type: 'VARCHAR(255)', nullable: true },
   { name: 'extra3', type: 'TEXT', nullable: true },
 ]
+
+const dbGenCustomChatMessageInsertTriggerExcution = (): DBSqlExcution => {
+  const update = `UPDATE ${DBTableName.customChat} SET latest_message_id = new.id, latest_message_content = new.content, latest_message_time = DATETIME('NOW','LOCALTIME') WHERE id = new.chat_id;`
+  return {
+    statement: `CREATE TRIGGER IF NOT EXISTS custom_chat_message_insert AFTER INSERT ON ${DBTableName.customChatMessage} BEGIN ${update} END;`,
+  }
+}
 
 export async function dbInitTables(): Promise<void> {
   try {
@@ -55,6 +62,9 @@ export async function dbInitTables(): Promise<void> {
         { name: 'font_size', type: 'INTEGER', nullable: true },
         { name: 'pinned', type: 'CHAR(1)', nullable: true },
         { name: 'archived', type: 'CHAR(1)', nullable: true },
+        { name: 'latest_message_id', type: 'INTEGER', nullable: true },
+        { name: 'latest_message_content', type: 'TEXT', nullable: true },
+        { name: 'latest_message_time', type: 'TIMESTAMP', nullable: true },
         { name: 'status', type: 'CHAR(1)', nullable: true },
         ...EXTRA_DB_TABLE_COLUMNS,
       ]),
@@ -68,6 +78,8 @@ export async function dbInitTables(): Promise<void> {
         { name: 'status', type: 'CHAR(1)', nullable: true },
         ...EXTRA_DB_TABLE_COLUMNS,
       ]),
+      // trigger: custom_chat_message_insert
+      dbGenCustomChatMessageInsertTriggerExcution(),
     ])
     // The code below is the example for 'Add Table Column'
     // await dbAddColumnIfNotExit(DBTableName.test, {

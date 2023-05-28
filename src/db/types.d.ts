@@ -73,6 +73,9 @@ export type TCustomChatBasic = TResultExtra & {
   font_size: number | null
   pinned: string | null
   archived: string | null
+  latest_message_id: number | null
+  latest_message_content: string | null
+  latest_message_time: string | null
   status: string | null
 }
 
@@ -119,6 +122,7 @@ export type DBSqlExcution = {
 
 export type DBTableColumnType =
   | 'INTEGER'
+  | 'TIMESTAMP'
   | 'CHAR(1)'
   | 'VARCHAR(20)'
   | 'VARCHAR(50)'
@@ -149,8 +153,8 @@ export interface DBTableInfoItem {
 
 export interface TResultBase {
   id: number
-  insert_time: number | null
-  update_time: number | null
+  insert_time: string
+  update_time: string
 }
 
 export interface TPageParams {
