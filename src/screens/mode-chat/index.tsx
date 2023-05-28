@@ -6,11 +6,8 @@ import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
-import { DEFAULT_T_RESULT_EXTRA } from '../../db/helper'
-import {
-  dbInsertModeChatMessage,
-  dbSelectModeChatMessageOfResultId,
-} from '../../db/table/t-mode-chat-message'
+import { dbInsertModeChatMessageSimply } from '../../db/helper'
+import { dbSelectModeChatMessageOfResultId } from '../../db/table/t-mode-chat-message'
 import { hapticError, hapticSuccess } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
@@ -164,21 +161,13 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     setInputText('')
     const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
     setMessages(nextMessages)
-    dbInsertModeChatMessage({
-      ...DEFAULT_T_RESULT_EXTRA,
+    dbInsertModeChatMessageSimply({
       result_id: id,
       role: 'user',
       content: inputText,
-      content_supplements: null,
-      directive: null,
-      status: null,
     })
-      .then(result => {
-        print('dbInsertModeChatMessage, user = ', result)
-      })
-      .catch(e => {
-        print('dbInsertModeChatMessage, user = ', e)
-      })
+    setStatus('sending')
+    scrollToTop()
 
     const messagesToSend: Message[] = []
     if (system_prompt) {
@@ -193,8 +182,6 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         // do nothing
       }
     }
-    scrollToTop()
-    setStatus('sending')
     esRequesting.current = true
     esRef.current?.close()
     esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
@@ -209,22 +196,11 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       },
       onDone: message => {
         setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
-        dbInsertModeChatMessage({
-          ...DEFAULT_T_RESULT_EXTRA,
+        dbInsertModeChatMessageSimply({
           result_id: id,
           role: 'assistant',
           content: message.content,
-          content_supplements: null,
-          directive: null,
-          status: null,
         })
-          .then(result => {
-            print('dbInsertModeChatMessage, assistant = ', result)
-          })
-          .catch(e => {
-            print('dbInsertModeChatMessage, assistant = ', e)
-          })
-
         setStatus('complete')
         setContent('')
         hapticSuccess()

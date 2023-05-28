@@ -1,6 +1,6 @@
 import { TTSModal, TTSModalHandle } from '../../../components/TTSModal'
 import { ToolButton } from '../../../components/ToolButton'
-import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
+import { DEFAULT_T_RESULT_EXTRA } from '../../../db/constants'
 import {
   dbFindModeResultWhere,
   dbInsertModeResult,

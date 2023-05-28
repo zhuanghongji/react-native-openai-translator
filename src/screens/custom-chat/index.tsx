@@ -5,18 +5,16 @@ import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { useInfinitePageDataLoader } from '../../components/query/infinite-hooks'
-import { DEFAULT_T_RESULT_EXTRA, fillTCustomChatWithDefaults } from '../../db/helper'
+import { dbInsertCustomChatMessageSimply, fillTCustomChatWithDefaults } from '../../db/helper'
 import { dbUpdateCustomChatWhere } from '../../db/table/t-custom-chat'
 import {
   dbDeleteCustomChatMessageOfChatId,
-  dbInsertCustomMessage,
   useInfiniteQueryCustomChatMessagePageable,
 } from '../../db/table/t-custom-chat-message'
 import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
-import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -116,21 +114,11 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     const userMessage: ChatMessage = { role: 'user', content: inputText }
     const nextMessages: ChatMessage[] = [userMessage, ...freshMessages]
     setFreshMessages(nextMessages)
-    dbInsertCustomMessage({
-      ...DEFAULT_T_RESULT_EXTRA,
+    dbInsertCustomChatMessageSimply({
       chat_id: id,
       role: 'user',
       content: inputText,
-      content_supplements: null,
-      directive: null,
-      status: null,
     })
-      .then(result => {
-        print('dbInsertCustomMessage, user = ', result)
-      })
-      .catch(e => {
-        print('dbInsertCustomMessage, user = ', e)
-      })
     const messages = generateMessagesToSend({
       systemPrompt: system_prompt,
       contextMessagesNum: context_messages_num,
@@ -154,22 +142,11 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       onDone: message => {
         const assistantMessage: ChatMessage = { role: 'assistant', content: message.content }
         setFreshMessages(prev => [assistantMessage, ...prev])
-        dbInsertCustomMessage({
-          ...DEFAULT_T_RESULT_EXTRA,
+        dbInsertCustomChatMessageSimply({
           chat_id: id,
           role: 'assistant',
           content: message.content,
-          content_supplements: null,
-          directive: null,
-          status: null,
         })
-          .then(result => {
-            print('dbInsertCustomMessage, assistant = ', result)
-          })
-          .catch(e => {
-            print('dbInsertCustomMessage, assistant = ', e)
-          })
-
         setStatus('complete')
         setContent('')
         hapticSuccess()

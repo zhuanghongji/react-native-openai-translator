@@ -1,6 +1,6 @@
 import { SvgIconName } from '../../../components/SvgIcon'
 import { ToolButton } from '../../../components/ToolButton'
-import { DEFAULT_T_RESULT_EXTRA } from '../../../db/helper'
+import { DEFAULT_T_RESULT_EXTRA } from '../../../db/constants'
 import { dbInsertModeResult, dbUpdateModeResultValuesOfId } from '../../../db/table/t-mode-result'
 import { TModeResult } from '../../../db/types'
 import { hapticSoft } from '../../../haptic'

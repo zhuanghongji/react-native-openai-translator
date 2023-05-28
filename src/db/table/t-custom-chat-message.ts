@@ -1,10 +1,10 @@
 import { QueryKey } from '../../query/keys'
 import { getNextPageParamForT } from '../../query/utils'
-import { dbExecuteSelectPageable } from '../helper'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
 import { TCustomChatMessage, TPageParams, TResultBase } from '../types'
 import {
+  dbExecuteSelectPageable,
   dbGenDeleteWhereExecution,
   dbGenInsertExecution,
   dbGenSelectWhereExecution,
@@ -13,7 +13,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 
 const TABLE_NAME = DBTableName.customChatMessage
 
-export function dbInsertCustomMessage(target: Omit<TCustomChatMessage, keyof TResultBase>) {
+export function dbInsertCustomChatMessage(target: Omit<TCustomChatMessage, keyof TResultBase>) {
   return dbExecuteSql<TCustomChatMessage>(dbGenInsertExecution(TABLE_NAME, target))
 }
 

@@ -1,40 +1,14 @@
 import { DEFAULTS } from '../preferences/defaults'
-import { dbExecuteSql } from './manager'
+import { print } from '../printer'
+import { DEFAULT_T_CUSTOM_CHAT_BASIC, DEFAULT_T_RESULT_EXTRA } from './constants'
+import { dbInsertCustomChatMessage } from './table/t-custom-chat-message'
+import { dbInsertModeChatMessage } from './table/t-mode-chat-message'
 import {
-  DBSqlExcutionConditions,
   TCustomChat,
-  TCustomChatBasic,
   TCustomChatDefault,
-  TPageData,
-  TPageParams,
-  TResultExtra,
+  TCustomChatMessageBasic,
+  TModeChatMessageBasic,
 } from './types'
-import { dbGenSelectNextCursorWhereLimitExecution } from './utils'
-
-export const DEFAULT_T_RESULT_EXTRA: TResultExtra = {
-  extra1: null,
-  extra2: null,
-  extra3: null,
-}
-
-export const DEFAULT_T_CUSTOM_CHAT_BASIC: TCustomChatBasic = {
-  ...DEFAULT_T_RESULT_EXTRA,
-  avatar: null,
-  chat_name: null,
-  system_prompt: null,
-  model: null,
-  temperature: null,
-  top_p: null,
-  max_tokens: null,
-  context_messages_num: null,
-  tts_voice: null,
-  font_size: null,
-  pinned: null,
-  archived: null,
-  latest_message_id: null,
-  latest_message_content: null,
-  status: null,
-}
 
 export function fillTCustomChatWithDefaults(
   id: number,
@@ -54,26 +28,43 @@ export function fillTCustomChatWithDefaults(
     temperature: _chat.temperature ?? DEFAULTS.apiTemperature,
     context_messages_num: _chat.context_messages_num ?? DEFAULTS.contextMessagesNum,
     font_size: _chat.font_size ?? DEFAULTS.fontSize,
+    insert_time: _chat.insert_time ?? '',
+    update_time: _chat.update_time ?? '',
   }
 }
 
-export async function dbExecuteSelectPageable<ItemT extends { id: number }>(
-  tableName: string,
-  params: TPageParams,
-  conditions: DBSqlExcutionConditions
-): Promise<TPageData<ItemT>> {
-  const { nextCursor, pageSize } = params
-  try {
-    const itemsResult = await dbExecuteSql<ItemT>(
-      dbGenSelectNextCursorWhereLimitExecution(tableName, nextCursor, conditions, pageSize)
-    )
-    const items = itemsResult.rows._array
-    let _nextCursor: number | null = null
-    if (items.length === pageSize) {
-      _nextCursor = items[items.length - 1].id
-    }
-    return { items, nextCursor: _nextCursor }
-  } catch (e) {
-    return Promise.reject(e)
-  }
+export function dbInsertModeChatMessageSimply(
+  params: Pick<TModeChatMessageBasic, 'result_id' | 'role' | 'content'>
+) {
+  dbInsertModeChatMessage({
+    ...DEFAULT_T_RESULT_EXTRA,
+    content_supplements: null,
+    directive: null,
+    status: null,
+    ...params,
+  })
+    .then(result => {
+      print('dbInsertModeChatMessageSimply, success = ', { params, result })
+    })
+    .catch(e => {
+      print('dbInsertModeChatMessageSimply, error = ', { params, e })
+    })
+}
+
+export function dbInsertCustomChatMessageSimply(
+  params: Pick<TCustomChatMessageBasic, 'chat_id' | 'role' | 'content'>
+) {
+  dbInsertCustomChatMessage({
+    ...DEFAULT_T_RESULT_EXTRA,
+    content_supplements: null,
+    directive: null,
+    status: null,
+    ...params,
+  })
+    .then(result => {
+      print('dbInsertCustomChatMessageSimply, success = ', { params, result })
+    })
+    .catch(e => {
+      print('dbInsertCustomChatMessageSimply, error = ', { params, e })
+    })
 }

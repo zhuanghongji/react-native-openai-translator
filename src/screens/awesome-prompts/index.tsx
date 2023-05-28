@@ -2,7 +2,7 @@ import { AWESOME_PROMPTS, AwesomePrompt } from '../../assets/awesome-chatgpt-pro
 import { TitleBar } from '../../components/TitleBar'
 import { TopButton } from '../../components/TopButton'
 import { TextChunks, splitToTextChunks } from '../../components/chunks-text/utils'
-import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/helper'
+import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/constants'
 import { dbFindCustomChatById, dbInsertCustomChat } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
 import { QueryKey } from '../../query/keys'

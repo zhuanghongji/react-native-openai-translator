@@ -1,9 +1,12 @@
+import { dbExecuteSql } from './manager'
 import {
   DBSqlExcution,
   DBSqlExcutionArgs,
   DBSqlExcutionConditions,
   DBSqlExcutionValues,
   DBTableColumn,
+  TPageData,
+  TPageParams,
 } from './types'
 
 function genInsertKeyValueListStr(
@@ -202,4 +205,25 @@ export function dbGenDeleteWhereExecution(
   const args: DBSqlExcutionArgs = []
   const conditionListStr = genWhereConditionListStr(args, conditions)
   return { statement: `DELETE FROM ${tableName} WHERE ${conditionListStr};`, args }
+}
+
+export async function dbExecuteSelectPageable<ItemT extends { id: number }>(
+  tableName: string,
+  params: TPageParams,
+  conditions: DBSqlExcutionConditions
+): Promise<TPageData<ItemT>> {
+  const { nextCursor, pageSize } = params
+  try {
+    const itemsResult = await dbExecuteSql<ItemT>(
+      dbGenSelectNextCursorWhereLimitExecution(tableName, nextCursor, conditions, pageSize)
+    )
+    const items = itemsResult.rows._array
+    let _nextCursor: number | null = null
+    if (items.length === pageSize) {
+      _nextCursor = items[items.length - 1].id
+    }
+    return { items, nextCursor: _nextCursor }
+  } catch (e) {
+    return Promise.reject(e)
+  }
 }

@@ -1,7 +1,7 @@
 import { Button } from '../../components/Button'
 import { TitleBar } from '../../components/TitleBar'
+import { DEFAULT_T_RESULT_EXTRA } from '../../db/constants'
 import { dropTableWhenDev } from '../../db/funcs'
-import { DEFAULT_T_RESULT_EXTRA } from '../../db/helper'
 import { dbExecuteSql } from '../../db/manager'
 import { DBTableName } from '../../db/table-names'
 import { dbInsertModeResult, dbSelectModeResult } from '../../db/table/t-mode-result'

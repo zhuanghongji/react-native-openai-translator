@@ -1,11 +1,11 @@
 import { TranslatorMode } from '../../preferences/options'
 import { QueryKey } from '../../query/keys'
 import { getNextPageParamForT } from '../../query/utils'
-import { dbExecuteSelectPageable } from '../helper'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
 import { TModeResult, TModeResultBasic, TPageParams, TResultBase } from '../types'
 import {
+  dbExecuteSelectPageable,
   dbGenDeleteExecution,
   dbGenDeleteWhereExecution,
   dbGenInsertExecution,
