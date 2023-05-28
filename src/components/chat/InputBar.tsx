@@ -3,11 +3,18 @@ import { dimensions } from '../../res/dimensions'
 import { useThemeDark, useThemeScheme } from '../../themes/hooks'
 import { SvgIcon } from '../SvgIcon'
 import { ToolButton } from '../ToolButton'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
-import Animated, { useAnimatedStyle } from 'react-native-reanimated'
+import Animated, {
+  Easing,
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface InputBarProps {
@@ -42,7 +49,26 @@ export function InputBar(props: InputBarProps): JSX.Element {
   )
 
   const { t } = useTranslation()
-  const opacity = sendDisabled ? dimensions.disabledOpacity : 1
+
+  const sendAnim = useSharedValue(0)
+  const sendAnimStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(sendAnim.value, [0, 1], [0.3, 1], Extrapolation.CLAMP),
+      transform: [
+        // { translateX: interpolate(sendAnim.value, [0, 1], [0, -5], Extrapolation.CLAMP) },
+        // { translateY: interpolate(sendAnim.value, [0, 1], [0, -5], Extrapolation.CLAMP) },
+        // { rotate: `-${sendAnim.value * 45}deg` },
+        // { rotate: `-${sendAnim.value * 90}deg` },
+        { rotate: `-${sendAnim.value * 90}deg` },
+      ],
+    }
+  })
+  useEffect(() => {
+    sendAnim.value = withTiming(sendDisabled ? 0 : 1, {
+      duration: 200,
+      easing: Easing.inOut(Easing.ease),
+    })
+  }, [sendDisabled])
 
   return (
     <Animated.View style={[styles.container, heightStyle, { backgroundColor }]}>
@@ -65,18 +91,20 @@ export function InputBar(props: InputBarProps): JSX.Element {
           onSubmitEditing={() => onChangeText(`${value}\n`)}
           onChangeText={onChangeText}
         />
-        <Pressable
-          style={[styles.touchable, { opacity }]}
-          disabled={sendDisabled}
-          hitSlop={{
-            left: H_EDGE,
-            top: H_EDGE,
-            right: dimensions.edge,
-            bottom: H_EDGE,
-          }}
-          onPress={onSendPress}>
-          <SvgIcon size={dimensions.iconLarge} color={tintColor} name="send" />
-        </Pressable>
+        <Animated.View style={sendAnimStyle}>
+          <Pressable
+            style={[styles.touchable]}
+            disabled={sendDisabled}
+            hitSlop={{
+              left: H_EDGE,
+              top: H_EDGE,
+              right: dimensions.edge,
+              bottom: H_EDGE,
+            }}
+            onPress={onSendPress}>
+            <SvgIcon size={dimensions.iconLarge} color={tintColor} name="send" />
+          </Pressable>
+        </Animated.View>
       </View>
     </Animated.View>
   )
