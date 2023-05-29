@@ -39,6 +39,7 @@ export function MainNavigator(_: Props): JSX.Element {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        lazy: false,
         headerShown: false,
         tabBarActiveTintColor: tint,
         tabBarInactiveTintColor: tint3,

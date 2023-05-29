@@ -9,9 +9,7 @@ export type ChatMessageRole = 'user' | 'assistant' | 'divider'
 
 export type ChatMessage = {
   role: ChatMessageRole
-  // 'FOREMOST' | 'NEW DIALOGUE' | else
   content: string
-  // true: colors.in | false: colors.out | null: colors.transparent
   inContext: boolean | null
 }
 

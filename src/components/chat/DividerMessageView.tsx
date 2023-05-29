@@ -3,6 +3,7 @@ import { useThemeScheme } from '../../themes/hooks'
 import { ChatMessage } from '../../types'
 import { ToolButton } from '../ToolButton'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -10,14 +11,20 @@ const CONTAINER_SIZE = 36
 
 export type AppDividerView = {
   style?: StyleProp<ViewStyle>
+  index: number
   message: ChatMessage
-  onSavePress: () => void
+  onSharePress: (message: ChatMessage, index: number) => void
 }
 
 export function AppDividerView(props: AppDividerView) {
-  const { style, message, onSavePress } = props
-
+  const { style, index, message, onSharePress } = props
   const { tint2: text, tint3: strong, backdrop2: weak } = useThemeScheme()
+
+  const shareDisabled = index === 0
+
+  const { t } = useTranslation()
+  const isOrigin = message.content === '0'
+  const content = isOrigin ? t('START') : t('NEW DIALOGUE')
 
   const renderLine = (inLeft: boolean) => {
     const _colors = inLeft ? [weak, strong] : [strong, weak]
@@ -36,14 +43,17 @@ export function AppDividerView(props: AppDividerView) {
       <View style={{ width: CONTAINER_SIZE }} />
       <View style={styles.row}>
         {renderLine(true)}
-        <Text style={[styles.text, { color: text }]}>{message.content}</Text>
+        <Text style={[styles.text, { color: text }]}>{content}</Text>
         {renderLine(false)}
       </View>
       <ToolButton
+        style={{ opacity: shareDisabled ? 0 : 1 }}
         containerSize={CONTAINER_SIZE}
+        iconSize={12}
         tintTypo="tint2"
-        name="chat-share"
-        onPress={onSavePress}
+        name="share"
+        disabled={shareDisabled}
+        onPress={() => onSharePress(message, index)}
       />
     </View>
   )
@@ -61,6 +71,7 @@ const styles = StyleSheet.create<Styles>({
     flexDirection: 'row',
     width: '100%',
     paddingHorizontal: dimensions.edge,
+    alignItems: 'center',
   },
   row: {
     flex: 1,

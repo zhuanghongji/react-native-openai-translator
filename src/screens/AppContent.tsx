@@ -15,6 +15,7 @@ import { PDFScreen } from './pdf'
 import { ScannerScreen } from './scanner'
 import { RootStackParamList } from './screens'
 import { SettingsScreen } from './settings'
+import { ShareChatScreen } from './share-chat'
 import { WebScreen } from './web'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
@@ -68,6 +69,7 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="ModeWordRecords" component={ModeWordRecordsScreen} />
         <RootStack.Screen name="ModeResultCollected" component={ModeResultCollectedScreen} />
         <RootStack.Screen name="ModeResultRecords" component={ModeResultRecordsScreen} />
+        <RootStack.Screen name="ShareChat" component={ShareChatScreen} />
         <RootStack.Screen name="Web" component={WebScreen} />
         <RootStack.Screen name="PDF" component={PDFScreen} />
       </RootStack.Navigator>

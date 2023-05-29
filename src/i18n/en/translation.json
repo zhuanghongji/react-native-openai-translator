@@ -104,5 +104,14 @@
   "Copy Url": "Copy Url",
   "Refresh": "Refresh",
   "Open in default Browser": "Open in default Browser",
-  "Create a new Chat with it": "Create a new Chat with it"
+  "Create a new Chat with it": "Create a new Chat with it",
+  "START": "START",
+  "NEW DIALOGUE": "NEW DIALOGUE",
+  "Share Dialogue": "Share Dialogue",
+  "View Shot": "View Shot",
+  "Plain Text": "Plain Text",
+  "Save to Album": "Save to Album",
+  "Save to album success": "Save to album success",
+  "Save to album error": "Save to album error",
+  "Copy to Clipboard": "Copy to Clipboard"
 }

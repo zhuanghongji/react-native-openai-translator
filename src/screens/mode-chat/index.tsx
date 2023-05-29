@@ -284,7 +284,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         onChangeText={setInputText}
         onSendPress={onSendPress}
         onNewDialoguePress={() => {
-          setMessages([...messages, { role: 'divider', content: 'NEW DIALOGUE' }])
+          setMessages([...messages, { role: 'divider', content: '1' }])
         }}
       />
       <ConfirmModal

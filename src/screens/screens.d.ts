@@ -1,5 +1,6 @@
+import { SvgIconName } from '../components/SvgIcon'
 import { TCustomChat, TModeResult } from '../db/types'
-import type { ScanBlock } from '../types'
+import type { ChatMessage, ScanBlock } from '../types'
 import type { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
@@ -23,6 +24,12 @@ type RootStackParamList = {
   ModeWordRecords: undefined
   ModeResultCollected: undefined
   ModeResultRecords: undefined
+  ShareChat: {
+    avatar?: string
+    avatarName?: SvgIconName
+    fontSize?: number
+    messages: ChatMessage[]
+  }
   Web: {
     title: string
     url: string

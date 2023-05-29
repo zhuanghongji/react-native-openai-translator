@@ -15,6 +15,7 @@ import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
+import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -42,7 +43,7 @@ import EventSource from 'react-native-sse'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CustomChat'>
 
-export function CustomChatScreen({ route }: Props): JSX.Element {
+export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
   const { chat } = route.params
   const { id } = chat
 
@@ -83,8 +84,13 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
       count += 1
       result.push({ role: item.role, content: item.content, inContext })
     }
+    result.push({
+      role: 'divider',
+      content: '0',
+      inContext: null,
+    })
     return result
-  }, [context_messages_num, freshMessages, legacyMessages])
+  }, [context_messages_num, freshMessages, legacyMessages, t])
   const inContextNum = useMemo(() => {
     let count = 0
     for (const item of finalMessages) {
@@ -182,7 +188,22 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
     })
   }
 
-  const handleSavePress = () => {}
+  const handleSharePress = (_: ChatMessage, index: number) => {
+    print('handleSharePress', { index })
+    const messages: ChatMessage[] = []
+    for (let i = index - 1; i >= 0; i--) {
+      const item = finalMessages[i]
+      if (item.role === 'divider') {
+        break
+      }
+      messages.push(item)
+    }
+    if (messages.length === 0) {
+      toast('warning', 'No valid messages', '')
+      return
+    }
+    navigation.push('ShareChat', { avatar, fontSize: font_size, messages })
+  }
 
   const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
@@ -211,9 +232,11 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
               inverted={true}
               data={finalMessages}
               keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
-              renderItem={({ item }) => {
+              renderItem={({ item, index }) => {
                 if (item.role === 'divider') {
-                  return <AppDividerView message={item} onSavePress={handleSavePress} />
+                  return (
+                    <AppDividerView index={index} message={item} onSharePress={handleSharePress} />
+                  )
                 }
                 if (item.role === 'user') {
                   return (
@@ -258,14 +281,14 @@ export function CustomChatScreen({ route }: Props): JSX.Element {
             setFreshMessages([
               {
                 role: 'divider',
-                content: 'NEW DIALOGUE',
+                content: '1',
               },
               ...freshMessages,
             ])
             dbInsertCustomChatMessageSimply({
               chat_id: id,
               role: 'divider',
-              content: 'NEW DIALOGUE',
+              content: '1',
             })
           }}
         />

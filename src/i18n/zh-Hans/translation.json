@@ -104,5 +104,14 @@
   "Copy Url": "复制链接",
   "Refresh": "刷新",
   "Open in default Browser": "在默认浏览器中打开",
-  "Create a new Chat with it": "用它创建一个新的对话"
+  "Create a new Chat with it": "用它创建一个新的对话",
+  "START": "开始",
+  "NEW DIALOGUE": "新对话",
+  "Share Dialogue": "分享对话",
+  "View Shot": "视图拍摄",
+  "Plain Text": "纯文本",
+  "Save to Album": "保存到相册",
+  "Save to album success": "保存到相册成功",
+  "Save to album error": "保存到相册错误",
+  "Copy to Clipboard": "复制到粘贴板"
 }
