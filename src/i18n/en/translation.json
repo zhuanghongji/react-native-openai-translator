@@ -114,5 +114,6 @@
   "Save to album success": "Save to album success",
   "Save to album error": "Save to album error",
   "Copy to Clipboard": "Copy to Clipboard",
-  "No valid messages": "No valid messages"
+  "No valid messages": "No valid messages",
+  "CreateFirstChatTip": "There is no chat yet,\nclick to create one."
 }

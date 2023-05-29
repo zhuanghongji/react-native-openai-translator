@@ -29,8 +29,7 @@ export function TextScene(props: TextSceneProps): JSX.Element {
         contents.push('\n-----\n\n')
       }
       isPreAssistant = item.role === 'assistant'
-      // contents.push(`${item.role === 'assistant' ? '✨' : avatar} ${item.content}\n`)
-      contents.push(`${item.role === 'assistant' ? '●' : '○'} ${item.content}\n`)
+      contents.push(`${item.role === 'assistant' ? '\n●' : '○'} ${item.content}\n`)
     }
     return contents.join('')
   }, [messages])

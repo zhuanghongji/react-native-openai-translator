@@ -114,5 +114,6 @@
   "Save to album success": "保存到相册成功",
   "Save to album error": "保存到相册错误",
   "Copy to Clipboard": "复制到粘贴板",
-  "No valid messages": "无有效消息"
+  "No valid messages": "无有效消息",
+  "CreateFirstChatTip": "还没有对话，\n点击创建一个"
 }
