@@ -2,6 +2,7 @@ import { TitleBar } from '../../components/TitleBar'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
 import { AppDividerView } from '../../components/chat/DividerMessageView'
 import { InputBar } from '../../components/chat/InputBar'
+import { InputToolsBar } from '../../components/chat/InputToolsBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { useInfinitePageDataLoader } from '../../components/query/infinite-hooks'
@@ -13,7 +14,10 @@ import {
 } from '../../db/table/t-custom-chat-message'
 import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
-import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
+import {
+  ChatCompletionsCustomizedOptions,
+  sseRequestChatCompletions,
+} from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
@@ -26,7 +30,7 @@ import {
 } from '../../zustand/stores/custom-chat-settings-helper'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import type { RootStackParamList } from '../screens'
-import { generateMessagesToSend } from './helper'
+import { generateCustomMessagesToSend } from './helper'
 import {
   SettingsSelectorModal,
   SettingsSelectorModalHandle,
@@ -49,7 +53,8 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
 
   const settingsModalRef = useRef<SettingsSelectorModalHandle>(null)
   const settings = fillTCustomChatWithDefaults(id, useCustomChatSettings(id))
-  const { chat_name, system_prompt, avatar, font_size, context_messages_num } = settings
+  const { chat_name, system_prompt, model, temperature, avatar, font_size, context_messages_num } =
+    settings
 
   const { t } = useTranslation()
 
@@ -103,7 +108,11 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
   }, [finalMessages])
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
-  const customizedOptions = useOpenAIApiCustomizedOptions()
+  const customizedOptions: ChatCompletionsCustomizedOptions = {
+    ...useOpenAIApiCustomizedOptions(),
+    model,
+    temperature,
+  }
 
   const { backgroundChat: backgroundColor } = useThemeScheme()
   const [hideChatAvatar] = useHideChatAvatarPref()
@@ -151,13 +160,14 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
       role: 'user',
       content: inputText,
     })
-    const messages = generateMessagesToSend({
+    setStatus('sending')
+    scrollToTop()
+
+    const messages = generateCustomMessagesToSend({
       systemPrompt: system_prompt,
       currentMessages: finalMessages,
       userMessageContent: inputText,
     })
-    scrollToTop()
-    setStatus('sending')
     esRequesting.current = true
     esRef.current?.close()
     esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
@@ -199,7 +209,8 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
       messages.push(item)
     }
     if (messages.length === 0) {
-      toast('warning', 'No valid messages', '')
+      hapticWarning()
+      toast('warning', t('No valid messages'), '')
       return
     }
     navigation.push('ShareChat', { avatar, fontSize: font_size, messages })
@@ -273,24 +284,29 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
         <InputBar
           value={inputText}
           sendDisabled={sendDisabled}
-          inContextNum={inContextNum}
-          contextMessagesNum={context_messages_num}
+          renderToolsBar={() => (
+            <InputToolsBar
+              inContextNum={inContextNum}
+              contextMessagesNum={context_messages_num}
+              newDialogueDisabled={finalMessages[0]?.role === 'divider'}
+              onNewDialoguePress={() => {
+                setFreshMessages([
+                  {
+                    role: 'divider',
+                    content: '1',
+                  },
+                  ...freshMessages,
+                ])
+                dbInsertCustomChatMessageSimply({
+                  chat_id: id,
+                  role: 'divider',
+                  content: '1',
+                })
+              }}
+            />
+          )}
           onChangeText={setInputText}
           onSendPress={onSendPress}
-          onNewDialoguePress={() => {
-            setFreshMessages([
-              {
-                role: 'divider',
-                content: '1',
-              },
-              ...freshMessages,
-            ])
-            dbInsertCustomChatMessageSimply({
-              chat_id: id,
-              role: 'divider',
-              content: '1',
-            })
-          }}
         />
         <SettingsSelectorModal
           ref={settingsModalRef}

@@ -1,5 +1,5 @@
 import { texts } from '../../../../res/texts'
-import { ApiMessage } from '../../../../types'
+import { ApiMessage, BaseMessage } from '../../../../types'
 import { sseRequest } from '../../../sse-manager'
 import { OpenAIApiUrlOptions } from '../../type'
 import EventSource from 'react-native-sse'
@@ -83,7 +83,7 @@ export function sseRequestChatCompletions(
   const { apiUrl, apiUrlPath, apiKey } = urlOptions
   const { onSubscribe, onNext, onDone, onError, onComplete } = callbacks
 
-  const result: ApiMessage<string> = { role: '', content: '' }
+  const result: BaseMessage = { role: '', content: '' }
   const es = sseRequest(
     `${apiUrl}${apiUrlPath}`,
     {

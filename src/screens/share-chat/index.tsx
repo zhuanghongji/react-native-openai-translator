@@ -27,7 +27,7 @@ export function ShareChatScreen({ navigation: _, route: navRoute }: Props): JSX.
 
   const [tabIndex, setTabIndex] = useState(0)
   const [routes] = useState<ShareRoute[]>([
-    { key: 'shot', title: t('View Shot') },
+    { key: 'capture', title: t('View Capture') },
     { key: 'text', title: t('Plain Text') },
   ])
 
@@ -55,7 +55,7 @@ export function ShareChatScreen({ navigation: _, route: navRoute }: Props): JSX.
         renderScene={({ route }) => {
           const { key } = route
           switch (key) {
-            case 'shot':
+            case 'capture':
               return (
                 <ShotScene
                   avatar={avatar}

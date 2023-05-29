@@ -7,21 +7,24 @@ import { InputBar } from '../../components/chat/InputBar'
 import { SSEMessageView } from '../../components/chat/SSEMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { dbInsertModeChatMessageSimply } from '../../db/helper'
-import { dbSelectModeChatMessageOfResultId } from '../../db/table/t-mode-chat-message'
-import { hapticError, hapticSuccess } from '../../haptic'
+import {
+  dbDeleteModeChatMessageOfResultId,
+  useQueryModeChatMessageOfResultId,
+} from '../../db/table/t-mode-chat-message'
+import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { DEFAULTS } from '../../preferences/defaults'
 import { TranslatorMode } from '../../preferences/options'
 import { useHideChatAvatarPref } from '../../preferences/storages'
-import { print } from '../../printer'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
-import { ApiMessage, ChatMessage } from '../../types'
+import { BaseMessage, ChatMessage } from '../../types'
 import { useSSEMessageStore } from '../../zustand/stores/sse-message-store'
 import { RootStackParamList } from '../screens'
+import { generateModeMessagesToSend } from './helper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -66,7 +69,7 @@ function getAssistantIconName(mode: TranslatorMode): SvgIconName {
   return 'bubble'
 }
 
-export function ModeChatScreen({ route }: Props): JSX.Element {
+export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const { modeResult } = route.params
   const { id, mode, system_prompt } = modeResult
   const translatorMode = mode as TranslatorMode
@@ -88,14 +91,15 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     return { transform: [{ translateY: keyboardHeight.value }] }
   }, [])
 
-  const resultMessages = useMemo<ChatMessage[]>(() => {
+  const resultMessages = useMemo<BaseMessage[]>(() => {
     const { user_prompt_prefix, user_prompt_suffix, user_content, assistant_content } = modeResult
     const userContent = `${user_prompt_prefix ?? ''}${user_content}${user_prompt_suffix ?? ''}`
     return [
       {
         role: 'divider',
-        content: 'FOREMOST',
+        content: '0',
       },
+
       {
         role: 'user',
         content: userContent,
@@ -106,27 +110,29 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       },
     ]
   }, [modeResult])
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const messagesInverted = useMemo(() => {
-    return [...resultMessages, ...messages].reverse()
-  }, [resultMessages, messages])
-  useEffect(() => {
-    dbSelectModeChatMessageOfResultId(id)
-      .then(result => {
-        setMessages(
-          result.rows._array.map(
-            v =>
-              ({
-                role: v.role,
-                content: v.content,
-              } as any)
-          )
-        )
-      })
-      .catch(e => {
-        print('dbSelectModeChatMessageOfResultId', e)
-      })
-  }, [id])
+  const legacyResult = useQueryModeChatMessageOfResultId(id)
+  const legacyMessages = legacyResult.data?.rows._array ?? []
+  const [freshMessages, setFreshMessages] = useState<BaseMessage[]>([])
+  const finalMessages = useMemo<ChatMessage[]>(() => {
+    const result: ChatMessage[] = []
+    const inContext = null
+    for (const { role, content } of resultMessages) {
+      if (role === 'divider' || role === 'user' || role === 'assistant') {
+        result.push({ role, content, inContext })
+      }
+    }
+    for (const { role, content } of legacyMessages) {
+      if (role === 'divider' || role === 'user' || role === 'assistant') {
+        result.push({ role, content, inContext })
+      }
+    }
+    for (const { role, content } of freshMessages) {
+      if (role === 'divider' || role === 'user' || role === 'assistant') {
+        result.push({ role, content, inContext })
+      }
+    }
+    return result.reverse()
+  }, [resultMessages, legacyMessages, freshMessages])
 
   const messageListRef = useRef<FlatList<ChatMessage>>(null)
   const scrollToTop = useCallback((delay = 200) => {
@@ -136,7 +142,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
   useEffect(() => {
     const show = KeyboardEvents.addListener('keyboardWillShow', () => scrollToTop(0))
     return () => show.remove()
-  }, [messages.length])
+  }, [finalMessages.length])
 
   const [inputText, setInputText] = useState('')
 
@@ -159,8 +165,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
       return
     }
     setInputText('')
-    const nextMessages: ChatMessage[] = [...messages, { role: 'user', content: inputText }]
-    setMessages(nextMessages)
+    setFreshMessages(prev => [...prev, { role: 'user', content: inputText }])
     dbInsertModeChatMessageSimply({
       result_id: id,
       role: 'user',
@@ -169,22 +174,14 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     setStatus('sending')
     scrollToTop()
 
-    const messagesToSend: ApiMessage[] = []
-    if (system_prompt) {
-      messagesToSend.push({ role: 'system', content: system_prompt })
-    }
-    for (const msg of nextMessages) {
-      if (msg.role === 'user') {
-        messagesToSend.push({ role: 'user', content: msg.content })
-      } else if (msg.role === 'assistant') {
-        messagesToSend.push({ role: 'assistant', content: msg.content })
-      } else {
-        // do nothing
-      }
-    }
+    const messages = generateModeMessagesToSend({
+      systemPrompt: system_prompt,
+      currentMessages: finalMessages,
+      userMessageContent: inputText,
+    })
     esRequesting.current = true
     esRef.current?.close()
-    esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messagesToSend, {
+    esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
       onNext: content => {
         setContent(content)
         scrollToTop(0)
@@ -195,7 +192,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         toast('warning', code, message)
       },
       onDone: message => {
-        setMessages(prev => [...prev, { role: 'assistant', content: message.content }])
+        setFreshMessages(prev => [...prev, { role: 'assistant', content: message.content }])
         dbInsertModeChatMessageSimply({
           result_id: id,
           role: 'assistant',
@@ -212,7 +209,19 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
     })
   }
 
-  const handleSavePress = () => {}
+  const handleSharePress = () => {
+    if (finalMessages.length === 0) {
+      hapticWarning()
+      toast('warning', t('No valid messages'), '')
+      return
+    }
+    const messages = [...finalMessages].reverse().filter(v => v.role !== 'divider')
+    navigation.navigate('ShareChat', {
+      avatarName: assistantIconName,
+      fontSize: fontSize,
+      messages,
+    })
+  }
 
   const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
@@ -222,7 +231,7 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         title={title}
         subtitle={system_prompt}
         action={
-          messages.length > 0
+          finalMessages.length > 0
             ? {
                 iconName: 'delete',
                 onPress: () => setDeleteModalVisible(true),
@@ -243,11 +252,13 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
             keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             inverted={true}
-            data={messagesInverted}
+            data={finalMessages}
             keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               if (item.role === 'divider') {
-                return <AppDividerView message={item} onSavePress={handleSavePress} />
+                return (
+                  <AppDividerView index={index} message={item} onSharePress={handleSharePress} />
+                )
               }
               if (item.role === 'user') {
                 return (
@@ -283,9 +294,6 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         sendDisabled={sendDisabled}
         onChangeText={setInputText}
         onSendPress={onSendPress}
-        onNewDialoguePress={() => {
-          setMessages([...messages, { role: 'divider', content: '1' }])
-        }}
       />
       <ConfirmModal
         rightTextStyle={{ color: colors.warning }}
@@ -293,9 +301,15 @@ export function ModeChatScreen({ route }: Props): JSX.Element {
         message={t('ChatMessageClearWarning')}
         leftText={t('CANCEL')}
         rightText={t('CLEAR')}
-        onRightPress={() => {
-          setMessages([])
-          // TODO SQLite
+        onRightPress={async () => {
+          try {
+            await dbDeleteModeChatMessageOfResultId(id)
+            legacyResult.refetch()
+            setFreshMessages([])
+            hapticSuccess()
+          } catch (e) {
+            hapticWarning()
+          }
         }}
         onDismissRequest={setDeleteModalVisible}
       />

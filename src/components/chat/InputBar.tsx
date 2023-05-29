@@ -2,10 +2,9 @@ import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme, useThemeSelector } from '../../themes/hooks'
 import { SvgIcon } from '../SvgIcon'
-import { ToolButton } from '../ToolButton'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Pressable, StyleSheet, Text, TextInput, TextStyle, View, ViewStyle } from 'react-native'
+import { Pressable, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, {
   Easing,
@@ -20,32 +19,22 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 export interface InputBarProps {
   value: string
   sendDisabled: boolean
-  inContextNum: number
-  contextMessagesNum: number
+  renderToolsBar?: () => React.ReactNode
   onChangeText: (value: string) => void
   onSendPress: () => void
-  onNewDialoguePress: () => void
 }
 
 const H_EDGE = 8
 
 export function InputBar(props: InputBarProps): JSX.Element {
-  const {
-    value,
-    sendDisabled,
-    inContextNum,
-    contextMessagesNum,
-    onChangeText,
-    onSendPress,
-    onNewDialoguePress,
-  } = props
+  const { value, sendDisabled, renderToolsBar, onChangeText, onSendPress } = props
 
   const tintColor = useThemeSelector(colors.white, colors.black)
   const textColor = useThemeSelector(colors.white, colors.black)
   const backgroundColor = useThemeSelector(colors.c1C, colors.cF7)
   const backgroundColor2 = useThemeSelector(colors.c28, colors.white)
 
-  const { placeholder: placeholderColor, tint3 } = useThemeScheme()
+  const { placeholder: placeholderColor } = useThemeScheme()
 
   const { bottom } = useSafeAreaInsets()
   const { height, progress } = useReanimatedKeyboardAnimation()
@@ -63,13 +52,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
   const sendAnimStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(sendAnim.value, [0, 1], [0.3, 1], Extrapolation.CLAMP),
-      transform: [
-        // { translateX: interpolate(sendAnim.value, [0, 1], [0, -5], Extrapolation.CLAMP) },
-        // { translateY: interpolate(sendAnim.value, [0, 1], [0, -5], Extrapolation.CLAMP) },
-        // { rotate: `-${sendAnim.value * 45}deg` },
-        // { rotate: `-${sendAnim.value * 90}deg` },
-        { rotate: `-${sendAnim.value * 90}deg` },
-      ],
+      transform: [{ rotate: `-${sendAnim.value * 18}deg` }],
     }
   })
   useEffect(() => {
@@ -81,20 +64,7 @@ export function InputBar(props: InputBarProps): JSX.Element {
 
   return (
     <Animated.View style={[styles.container, heightStyle, { backgroundColor }]}>
-      <View style={styles.toolsRow}>
-        <ToolButton containerSize={36} name="chat-new" onPress={onNewDialoguePress} />
-        <SvgIcon
-          style={{ marginLeft: 4, marginBottom: 1 }}
-          size={15}
-          color={tint3}
-          name={'history'}
-        />
-        <Text
-          style={[
-            styles.messagesNum,
-            { color: tint3 },
-          ]}>{`${inContextNum}/${contextMessagesNum}`}</Text>
-      </View>
+      {renderToolsBar ? renderToolsBar() : <View style={{ height: dimensions.edge }} />}
       <View style={styles.content}>
         <TextInput
           style={[
@@ -132,8 +102,6 @@ export function InputBar(props: InputBarProps): JSX.Element {
 
 type Styles = {
   container: ViewStyle
-  toolsRow: ViewStyle
-  messagesNum: TextStyle
   content: ViewStyle
   input: ViewStyle
   touchable: ViewStyle
@@ -142,17 +110,6 @@ type Styles = {
 const styles = StyleSheet.create<Styles>({
   container: {
     width: '100%',
-  },
-  toolsRow: {
-    flexDirection: 'row',
-    paddingHorizontal: dimensions.edge,
-    alignItems: 'center',
-  },
-  messagesNum: {
-    marginLeft: 2,
-    fontSize: 12,
-    includeFontPadding: false,
-    letterSpacing: 2,
   },
   content: {
     flexDirection: 'row',

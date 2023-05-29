@@ -108,10 +108,11 @@
   "START": "START",
   "NEW DIALOGUE": "NEW DIALOGUE",
   "Share Dialogue": "Share Dialogue",
-  "View Shot": "View Shot",
+  "View Capture": "View Capture",
   "Plain Text": "Plain Text",
   "Save to Album": "Save to Album",
   "Save to album success": "Save to album success",
   "Save to album error": "Save to album error",
-  "Copy to Clipboard": "Copy to Clipboard"
+  "Copy to Clipboard": "Copy to Clipboard",
+  "No valid messages": "No valid messages"
 }

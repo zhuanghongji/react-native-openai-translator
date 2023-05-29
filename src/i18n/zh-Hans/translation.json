@@ -108,10 +108,11 @@
   "START": "开始",
   "NEW DIALOGUE": "新对话",
   "Share Dialogue": "分享对话",
-  "View Shot": "视图拍摄",
+  "View Capture": "视图截取",
   "Plain Text": "纯文本",
   "Save to Album": "保存到相册",
   "Save to album success": "保存到相册成功",
   "Save to album error": "保存到相册错误",
-  "Copy to Clipboard": "复制到粘贴板"
+  "Copy to Clipboard": "复制到粘贴板",
+  "No valid messages": "无有效消息"
 }

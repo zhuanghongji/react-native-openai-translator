@@ -1,6 +1,6 @@
 import { ApiMessage, ChatMessage } from '../../types'
 
-export function generateCustomMessagesToSend(options: {
+export function generateModeMessagesToSend(options: {
   systemPrompt: string | null
   currentMessages: ChatMessage[]
   userMessageContent: string

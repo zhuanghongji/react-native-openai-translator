@@ -26,7 +26,7 @@ export function TextScene(props: TextSceneProps): JSX.Element {
     let isPreAssistant = false
     for (const item of messages) {
       if (isPreAssistant && item.role === 'user') {
-        contents.push('\n')
+        contents.push('\n-----\n\n')
       }
       isPreAssistant = item.role === 'assistant'
       // contents.push(`${item.role === 'assistant' ? '✨' : avatar} ${item.content}\n`)

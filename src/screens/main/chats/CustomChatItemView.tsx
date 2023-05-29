@@ -24,7 +24,8 @@ export function CustomChatItemView(props: CustomChatItemViewProps) {
   const name = settings?.chat_name ? settings.chat_name : 'Unnamed'
 
   const system_prompt = settings?.system_prompt ? settings.system_prompt : ''
-  const subtitle = latest_message_content ? latest_message_content : system_prompt
+  const content = latest_message_content ? latest_message_content : system_prompt
+  const subtitle = !content || content === '1' ? '-' : content
 
   const time = useMemo(() => {
     if (!latest_message_time) {
