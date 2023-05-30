@@ -4,8 +4,8 @@ import { useThemeScheme } from '../../themes/hooks'
 import type { MainTabParamList, RootStackParamList } from '../screens'
 import { ChatsScreen } from './chats'
 import { DiscoverScreen } from './discover'
-import { HomeScreen } from './home'
 import { MeScreen } from './me'
+import { ModesScreen } from './modes'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React from 'react'
@@ -57,7 +57,7 @@ export function MainNavigator(_: Props): JSX.Element {
           )
         },
       })}>
-      <Tab.Screen name="Modes" component={HomeScreen} />
+      <Tab.Screen name="Modes" component={ModesScreen} />
       <Tab.Screen name="Chats" component={ChatsScreen} />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Me" component={MeScreen} />

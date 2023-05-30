@@ -49,7 +49,7 @@ const MODE_ITEMS: ModeItem[] = [
 ]
 const MODES = MODE_ITEMS.map(v => v.mode)
 
-export function HomeScreen({ navigation }: Props): JSX.Element {
+export function ModesScreen({ navigation }: Props): JSX.Element {
   const { tint2, background: backgroundColor } = useThemeScheme()
 
   const initialModeIndex = useMemo(() => {
