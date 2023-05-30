@@ -20,6 +20,7 @@ import {
 } from '../../http/apis/v1/chat/completions'
 import { useHideChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
+import { QueryKey } from '../../query/keys'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -37,9 +38,10 @@ import {
 } from './settings/SettingsSelectorModal'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { useQueryClient } from '@tanstack/react-query'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FlatList, View } from 'react-native'
+import { FlatList, Keyboard, View } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -89,11 +91,13 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
       count += 1
       result.push({ role: item.role, content: item.content, inContext })
     }
-    result.push({
-      role: 'divider',
-      content: '0',
-      inContext: null,
-    })
+    if (result.length > 0) {
+      result.push({
+        role: 'divider',
+        content: '0',
+        inContext: null,
+      })
+    }
     return result
   }, [context_messages_num, freshMessages, legacyMessages, t])
   const inContextNum = useMemo(() => {
@@ -198,8 +202,8 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
     })
   }
 
-  const handleSharePress = (_: ChatMessage, index: number) => {
-    print('handleSharePress', { index })
+  const onSharePress = (_: ChatMessage, index: number) => {
+    print('onSharePress', { index })
     const messages: ChatMessage[] = []
     for (let i = index - 1; i >= 0; i--) {
       const item = finalMessages[i]
@@ -216,6 +220,25 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
     navigation.push('ShareChat', { avatar, fontSize: font_size, messages })
   }
 
+  const queryClient = useQueryClient()
+  const onClearMessagesConfirmed = async () => {
+    try {
+      await dbDeleteCustomChatMessageOfChatId(id)
+      await dbUpdateCustomChatWhere(id, {
+        latest_message_id: null,
+        latest_message_content: null,
+        latest_message_time: null,
+      })
+      queryClient.invalidateQueries({ queryKey: [QueryKey.customChat] })
+      legacyResult.refetch()
+      toast('success', t('Clear messages success'), '')
+      setFreshMessages([])
+      hapticSuccess()
+    } catch (e) {
+      hapticWarning()
+    }
+  }
+
   const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
   return (
@@ -226,7 +249,10 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
           subtitle={system_prompt ?? ''}
           action={{
             iconName: 'tune',
-            onPress: () => settingsModalRef.current?.show(),
+            onPress: () => {
+              Keyboard.dismiss()
+              settingsModalRef.current?.show()
+            },
           }}
         />
         <View style={[{ flex: 1, overflow: 'hidden' }]}>
@@ -245,9 +271,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
               keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
               renderItem={({ item, index }) => {
                 if (item.role === 'divider') {
-                  return (
-                    <AppDividerView index={index} message={item} onSharePress={handleSharePress} />
-                  )
+                  return <AppDividerView index={index} message={item} onSharePress={onSharePress} />
                 }
                 if (item.role === 'user') {
                   return (
@@ -316,16 +340,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
             dbUpdateCustomChatWhere(id, values)
             hapticSuccess()
           }}
-          onDeleteAllMessageConfirm={async () => {
-            try {
-              await dbDeleteCustomChatMessageOfChatId(id)
-              legacyResult.refetch()
-              setFreshMessages([])
-              hapticSuccess()
-            } catch (e) {
-              hapticWarning()
-            }
-          }}
+          onClearMessagesConfirmed={onClearMessagesConfirmed}
           onShow={() => (enablekeyboardAvoid.value = false)}
           onDismiss={() => (enablekeyboardAvoid.value = true)}
         />

@@ -1,7 +1,7 @@
 import { Divider } from '../../../components/Divider'
 import { SvgIconName } from '../../../components/SvgIcon'
 import { TCustomChatBasic, TCustomChatDefault } from '../../../db/types'
-import { DeleteAllMessagesDetailView } from './DeleteAllMessagesDetailView'
+import { ClearMessagesDetailView } from './ClearMessagesDetailView'
 import { EditAvatarDetailView } from './EditAvatarDetailView'
 import { EditChatNameDetialView } from './EditChatNameDetialView'
 import { EditContextMessageNumDetailView } from './EditContextMessageNumDetailView'
@@ -13,7 +13,7 @@ import { SettingsDetailContainer } from './SettingsDetailContainer'
 import { SettingsItemView } from './SettingsItemView'
 import { SettingsSelectorProvider } from './SettingsSelectorProvider'
 import { SettingsTitleBar } from './SettingsTitleBar'
-import { ShareDetailView } from './ShareDetailView'
+import { ShareConfigDetailView } from './ShareConfigDetailView'
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -35,7 +35,7 @@ export type SettingsSelectorModalProps = {
   style?: StyleProp<ViewStyle>
   settings: TCustomChatDefault
   onSettingsChange: (values: Partial<TCustomChatBasic>) => void
-  onDeleteAllMessageConfirm: () => void
+  onClearMessagesConfirmed: () => void
   onShow: () => void
   onDismiss: () => void
 }
@@ -48,7 +48,7 @@ export const SettingsSelectorModal = React.forwardRef<
   SettingsSelectorModalHandle,
   SettingsSelectorModalProps
 >((props, ref) => {
-  const { style, settings, onSettingsChange, onDeleteAllMessageConfirm, onShow, onDismiss } = props
+  const { style, settings, onSettingsChange, onClearMessagesConfirmed, onShow, onDismiss } = props
   const { avatar, chat_name, system_prompt, model, temperature, context_messages_num, font_size } =
     settings
 
@@ -83,8 +83,8 @@ export const SettingsSelectorModal = React.forwardRef<
       subtitle: `${context_messages_num}`,
       iconName: 'history',
     },
-    { title: t('Delete All Messages'), iconName: 'delete' },
-    { title: t('Share'), iconName: 'share' },
+    { title: t('Clear Messages'), iconName: 'delete' },
+    { title: t('Share Config'), iconName: 'share' },
   ]
   useImperativeHandle(ref, () => ({
     show: () => {
@@ -202,14 +202,14 @@ export const SettingsSelectorModal = React.forwardRef<
           </SettingsDetailContainer>
 
           <SettingsDetailContainer index={7}>
-            <DeleteAllMessagesDetailView
-              onConfirmPress={onDeleteAllMessageConfirm}
+            <ClearMessagesDetailView
+              onConfirmPress={onClearMessagesConfirmed}
               onBackNotify={onBackNotify}
             />
           </SettingsDetailContainer>
 
           <SettingsDetailContainer index={8}>
-            <ShareDetailView onBackNotify={onBackNotify} />
+            <ShareConfigDetailView settings={settings} onBackNotify={onBackNotify} />
           </SettingsDetailContainer>
         </View>
       </SettingsSelectorProvider>

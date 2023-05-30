@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-import { SharedValue, runOnJS, useSharedValue, withTiming } from 'react-native-reanimated'
+import { Easing, SharedValue, runOnJS, useSharedValue, withTiming } from 'react-native-reanimated'
 
 type SettingsSelectorProviderProps = PropsWithChildren<{}>
 
@@ -34,10 +34,10 @@ export function SettingsSelectorProvider(props: SettingsSelectorProviderProps) {
   const handleItemPress = useCallback((index: number) => {
     setCurrentIndex(index)
     indexAnim.value = index
-    slideAnim.value = withTiming(1)
+    slideAnim.value = withTiming(1, { easing: Easing.inOut(Easing.ease) })
   }, [])
   const handleBackPress = useCallback(() => {
-    slideAnim.value = withTiming(0, undefined, finished => {
+    slideAnim.value = withTiming(0, { easing: Easing.inOut(Easing.ease) }, finished => {
       indexAnim.value = -1
       finished && runOnJS(setCurrentIndex)(-1)
     })

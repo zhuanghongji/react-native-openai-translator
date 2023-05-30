@@ -4,6 +4,7 @@ export const colors = {
   transparent: '#00000000',
 
   primary: '#809BE8',
+  primaryDark: '#909BE8',
   accent: '#E8798B',
   warning: '#E94543',
   link: '#1E90FF',

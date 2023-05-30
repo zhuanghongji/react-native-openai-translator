@@ -17,9 +17,9 @@ export type SettingsItemViewProps = {
 export function SettingsItemView(props: SettingsItemViewProps) {
   const { style, index, title, subtitle = '', iconName, onSelectedNotify } = props
 
-  const { handleItemPress } = useSettingsSelectorContext()
+  const { text: titleColor, text3: subtitleColor, tint } = useThemeScheme()
 
-  const { text: titleColor, text3: subtitleColor } = useThemeScheme()
+  const { handleItemPress } = useSettingsSelectorContext()
 
   return (
     <Pressable
@@ -38,6 +38,12 @@ export function SettingsItemView(props: SettingsItemViewProps) {
           name={iconName}
         />
       ) : null}
+      <SvgIcon
+        style={{ marginLeft: dimensions.edge }}
+        size={dimensions.iconMedium}
+        color={tint}
+        name="navigate-next"
+      />
     </Pressable>
   )
 }

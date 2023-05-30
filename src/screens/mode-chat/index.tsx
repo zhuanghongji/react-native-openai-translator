@@ -28,7 +28,7 @@ import { generateModeMessagesToSend } from './helper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FlatList, View } from 'react-native'
+import { FlatList, Keyboard, View } from 'react-native'
 import { KeyboardEvents, useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller'
 import Animated, { useAnimatedStyle } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -77,7 +77,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const assistantIconName = getAssistantIconName(translatorMode)
 
   const { t } = useTranslation()
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+  const [clearMessagesModalVisible, setClearMessagesModalVisible] = useState(false)
   const fontSize = DEFAULTS.fontSize
 
   const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
@@ -234,7 +234,10 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
           finalMessages.length > 0
             ? {
                 iconName: 'delete',
-                onPress: () => setDeleteModalVisible(true),
+                onPress: () => {
+                  Keyboard.dismiss()
+                  setClearMessagesModalVisible(true)
+                },
               }
             : undefined
         }
@@ -297,7 +300,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
       />
       <ConfirmModal
         rightTextStyle={{ color: colors.warning }}
-        visible={deleteModalVisible}
+        visible={clearMessagesModalVisible}
         message={t('ChatMessageClearWarning')}
         leftText={t('CANCEL')}
         rightText={t('CLEAR')}
@@ -305,13 +308,14 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
           try {
             await dbDeleteModeChatMessageOfResultId(id)
             legacyResult.refetch()
+            toast('success', t('Clear messages success'), '')
             setFreshMessages([])
             hapticSuccess()
           } catch (e) {
             hapticWarning()
           }
         }}
-        onDismissRequest={setDeleteModalVisible}
+        onDismissRequest={setClearMessagesModalVisible}
       />
     </SafeAreaView>
   )
