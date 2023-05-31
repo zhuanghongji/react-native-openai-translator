@@ -32,6 +32,7 @@ export const LIGHT_THEME_SCHEME: ThemeScheme = {
   backgroundIndicator: colors.black,
   backgroundModal: colors.cF7,
   backgroundBar: colors.cF7,
+  backgroundText: colors.cED,
   divider: colors.cCC,
 
   error: colors.warning,
@@ -69,6 +70,7 @@ export const DARK_THEME_SCHEME: ThemeScheme = {
   backgroundIndicator: colors.white,
   backgroundModal: colors.c1C,
   backgroundBar: colors.c1F,
+  backgroundText: colors.c29,
   divider: colors.c33,
 
   error: colors.warning,

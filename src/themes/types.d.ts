@@ -32,6 +32,7 @@ export interface ThemeScheme {
   backgroundIndicator: string
   backgroundModal: string
   backgroundBar: string
+  backgroundText: string
   divider: string
 
   // others

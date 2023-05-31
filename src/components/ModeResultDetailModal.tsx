@@ -44,7 +44,7 @@ export const ModeResultDetailModal = React.forwardRef<
     text: textColor,
     text2: text2Color,
     tint,
-    backdrop,
+    backgroundText,
     backgroundIndicator,
     backgroundModal: backgroundColor,
   } = useThemeScheme()
@@ -52,7 +52,7 @@ export const ModeResultDetailModal = React.forwardRef<
   const { width: frameWidth } = useSafeAreaFrame()
   const contentWidth = frameWidth - dimensions.edgeTwice
 
-  const textStyle = [styles.text, { color: textColor, backgroundColor: backdrop }]
+  const textStyle = [styles.text, { color: textColor, backgroundColor: backgroundText }]
 
   const queryClient = useQueryClient()
 

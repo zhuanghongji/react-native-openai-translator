@@ -1,5 +1,6 @@
+import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useThemeScheme } from '../themes/hooks'
+import { useThemeScheme, useThemeSelector } from '../themes/hooks'
 import { SvgIcon } from './SvgIcon'
 import React from 'react'
 import {
@@ -21,12 +22,8 @@ export type InputProps = {
 export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
   const { style, textStyle, value, onChangeText, ...restProps } = props
 
-  const {
-    tint4: iconColor,
-    border: borderColor,
-    text: textColor,
-    placeholder: placeholderColor,
-  } = useThemeScheme()
+  const { border: borderColor, text: textColor, placeholder: placeholderColor } = useThemeScheme()
+  const iconColor = useThemeSelector(colors.cE2, colors.c24)
 
   const clearDisabled = value ? false : true
 

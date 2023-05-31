@@ -36,7 +36,7 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
     const {
       text: textColor,
       text2: text2Color,
-      backdrop,
+      backgroundText,
       backgroundIndicator,
       backgroundModal: backgroundColor,
     } = useThemeScheme()
@@ -46,7 +46,7 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
 
     const [currentPrompt, setCurrentPrompt] = useState<AwesomePrompt | null>(null)
 
-    const textStyle = [styles.text, { color: textColor, backgroundColor: backdrop }]
+    const textStyle = [styles.text, { color: textColor, backgroundColor: backgroundText }]
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => ['70%'], [])

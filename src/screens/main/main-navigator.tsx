@@ -36,11 +36,7 @@ export function MainNavigator(_: Props): JSX.Element {
     Me: t('Me'),
   }
 
-  const {
-    tint: activeColor,
-    tint4: inactiveColor,
-    backgroundBar: backgroundColor,
-  } = useThemeScheme()
+  const { textActive, textInactive, backgroundBar: backgroundColor } = useThemeScheme()
 
   return (
     <Tab.Navigator
@@ -48,8 +44,8 @@ export function MainNavigator(_: Props): JSX.Element {
         lazy: false,
         headerShown: false,
         tabBarStyle: [styles.tabBar, { backgroundColor }],
-        tabBarActiveTintColor: activeColor,
-        tabBarInactiveTintColor: inactiveColor,
+        tabBarActiveTintColor: textActive,
+        tabBarInactiveTintColor: textInactive,
         tabBarIcon: ({ color }) => {
           const routeName = route.name as RouteName
           const iconName = TAB_ICONS[routeName]
