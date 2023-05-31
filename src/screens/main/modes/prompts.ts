@@ -4,7 +4,7 @@ import { isChineseLang, isEnglishWord } from '../../../utils'
 import { useMemo } from 'react'
 
 const ENGLISH_WORD_CHINESE_PREFIX = `所需格式：：
-<输入单词>
+<输入单词>\n
 [<语种>] · / <单词音标>
 [<词性缩写>] <中文含义>]
 
@@ -65,7 +65,7 @@ function generatePromptsOfTranslate(os: GenerateSpecificPromptsOptions): ChatCom
   if (targetChinese) {
     if (isEnglishWord(inputText)) {
       return {
-        systemPrompt: '作为一个英语翻译引擎',
+        systemPrompt: '作为一个英语单词专家',
         userPromptPrefix: ENGLISH_WORD_CHINESE_PREFIX,
         userPromptSuffix: ENGLISH_WORD_CHINESE_SUFFIX,
       }

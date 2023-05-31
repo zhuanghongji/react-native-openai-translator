@@ -4,6 +4,7 @@ import { DEFAULT_T_RESULT_EXTRA } from '../../../db/constants'
 import {
   dbFindModeResultWhere,
   dbInsertModeResult,
+  dbUpdateModeResultValuesOfId,
   useQueryFindModeResultWhere,
 } from '../../../db/table/t-mode-result'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
@@ -117,6 +118,23 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     inputText: setInputText,
   }))
 
+  const performInsertModeResult = (assistant_content: string) => {
+    const { systemPrompt, userPromptPrefix, userPromptSuffix } = prompts
+    return dbInsertModeResult({
+      ...DEFAULT_T_RESULT_EXTRA,
+      mode: translatorMode,
+      target_lang: targetLang,
+      user_content: inputText,
+      assistant_content,
+      system_prompt: systemPrompt,
+      user_prompt_prefix: userPromptPrefix ?? '',
+      user_prompt_suffix: userPromptSuffix ?? '',
+      collected: '0',
+      type: resultType,
+      status: null,
+    })
+  }
+
   const eventSourceRef = useRef<EventSource | null>(null)
   const perfromChatCompletions = (messages: ApiMessage[]) => {
     if (!checkIsOptionsValid()) {
@@ -141,6 +159,28 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
         setAssistantText(message.content)
         setStatus('success')
         hapticSuccess()
+        // auto update or insert
+        if (cacheResult) {
+          dbUpdateModeResultValuesOfId(cacheResult.id, {
+            assistant_content: message.content,
+          })
+            .then(() => {
+              print('Auto update mode result success')
+              cacheQueryResult.refetch()
+            })
+            .catch(() => {
+              print('Auto update mode result error')
+            })
+        } else {
+          performInsertModeResult(message.content)
+            .then(() => {
+              print('Auto insert mode result success')
+              cacheQueryResult.refetch()
+            })
+            .catch(() => {
+              print('Auto insert mode result error')
+            })
+        }
       },
       onComplete: () => {
         eventSourceRef.current = null
@@ -157,20 +197,8 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
       return
     }
     try {
-      const { systemPrompt, userPromptPrefix, userPromptSuffix } = prompts
-      await dbInsertModeResult({
-        ...DEFAULT_T_RESULT_EXTRA,
-        mode: translatorMode,
-        target_lang: targetLang,
-        user_content: inputText,
-        assistant_content: outputText,
-        system_prompt: systemPrompt,
-        user_prompt_prefix: userPromptPrefix ?? '',
-        user_prompt_suffix: userPromptSuffix ?? '',
-        collected: '0',
-        type: resultType,
-        status: null,
-      })
+      // backup action if auto-insert error
+      await performInsertModeResult(outputText)
       const result = await dbFindModeResultWhere({
         mode: translatorMode,
         target_lang: targetLang,
