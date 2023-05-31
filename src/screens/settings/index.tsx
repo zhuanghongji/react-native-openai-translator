@@ -31,9 +31,9 @@ import { TText } from '../../themes/TText'
 import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { CheckView } from './CheckView'
+import { InfosView } from './InfosView'
 import { InputView } from './InputView'
 import { PickView } from './PickView'
-import { RepoLinks } from './RepoLinks'
 import { TitleBar } from './TitleBar'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useState } from 'react'
@@ -222,7 +222,7 @@ export function SettingsScreen(props: Props): JSX.Element {
           onValueChange={setHideChatAvatar}
         />
 
-        <RepoLinks />
+        <InfosView />
       </ScrollView>
 
       <ConfirmModal

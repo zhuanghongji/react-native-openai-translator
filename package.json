@@ -30,6 +30,7 @@
     "add": "^2.0.6",
     "dayjs": "^1.11.7",
     "expo": "^48.0.17",
+    "expo-application": "^5.1.1",
     "expo-asset": "^8.9.1",
     "expo-file-system": "^15.2.2",
     "expo-media-library": "^15.2.3",

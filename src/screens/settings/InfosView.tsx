@@ -4,14 +4,15 @@ import { TText } from '../../themes/TText'
 import { RootStackParamList } from '../screens'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { nativeApplicationVersion } from 'expo-application'
 import React from 'react'
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
 
-export type RepoLinksProps = {
+export type InfosViewProps = {
   style?: StyleProp<ViewStyle>
 }
 
-export function RepoLinks(props: RepoLinksProps) {
+export function InfosView(props: InfosViewProps) {
   const { style } = props
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
@@ -44,6 +45,10 @@ export function RepoLinks(props: RepoLinksProps) {
         }}>
         react-native-openai-translator
       </Text>
+
+      <TText style={{ fontSize: 13, marginTop: dimensions.edge }} typo="text">
+        {`V${nativeApplicationVersion}`}
+      </TText>
     </View>
   )
 }
