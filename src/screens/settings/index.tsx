@@ -20,9 +20,9 @@ import {
   useDefaultTargetLanguagePref,
   useDefaultTranslatorModePref,
   useEnableClipboardDetectPref,
-  useHideChatAvatarPref,
   useLanguageModePref,
   useServiceProviderPref,
+  useShowChatAvatarPref,
   useThemeModePref,
 } from '../../preferences/storages'
 import { colors } from '../../res/colors'
@@ -61,7 +61,7 @@ export function SettingsScreen(props: Props): JSX.Element {
   const [themeMode, setThemeMode] = useThemeModePref()
   const [langMode, setLangMode] = useLanguageModePref()
   const [enableClipboardDetect, setEnableClipboardDetect] = useEnableClipboardDetectPref()
-  const [hideChatAvatar, setHideChatAvatar] = useHideChatAvatarPref()
+  const [showChatAvatar, setShowChatAvatar] = useShowChatAvatarPref()
 
   const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
 
@@ -217,9 +217,9 @@ export function SettingsScreen(props: Props): JSX.Element {
 
         {divider}
         <CheckView
-          title={t('Hide Chat Avatar')}
-          value={hideChatAvatar}
-          onValueChange={setHideChatAvatar}
+          title={t('Show Chat Avatar')}
+          value={showChatAvatar}
+          onValueChange={setShowChatAvatar}
         />
 
         <InfosView />

@@ -18,7 +18,7 @@ import {
   ChatCompletionsCustomizedOptions,
   sseRequestChatCompletions,
 } from '../../http/apis/v1/chat/completions'
-import { useHideChatAvatarPref } from '../../preferences/storages'
+import { useShowChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
 import { QueryKey } from '../../query/keys'
 import { dimensions } from '../../res/dimensions'
@@ -119,7 +119,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
   }
 
   const { backgroundChat: backgroundColor } = useThemeScheme()
-  const [hideChatAvatar] = useHideChatAvatarPref()
+  const [showChatAvatar] = useShowChatAvatarPref()
 
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const enablekeyboardAvoid = useSharedValue(true)
@@ -276,9 +276,9 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
                 if (item.role === 'user') {
                   return (
                     <UserMessageView
-                      hideChatAvatar={hideChatAvatar}
                       fontSize={font_size}
                       message={item}
+                      showChatAvatar={showChatAvatar}
                     />
                   )
                 }
@@ -286,9 +286,9 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
                   return (
                     <AssistantMessageView
                       avatar={avatar}
-                      hideChatAvatar={hideChatAvatar}
                       fontSize={font_size}
                       message={item}
+                      showChatAvatar={showChatAvatar}
                     />
                   )
                 }
@@ -296,7 +296,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
               }}
               ItemSeparatorComponent={renderItemSeparator}
               ListHeaderComponent={
-                <SSEMessageView fontSize={font_size} hideChatAvatar={hideChatAvatar} />
+                <SSEMessageView fontSize={font_size} showChatAvatar={showChatAvatar} />
               }
               onEndReached={() => {
                 console.log('onEndReached')

@@ -19,7 +19,7 @@ export const DEFAULTS: {
   themeMode: ThemeMode
   languageMode: LanguageMode
   enableClipboardDetect: boolean
-  hideChatAvatar: boolean
+  showChatAvatar: boolean
   avatar: string
   contextMessagesNum: number
   fontSize: number
@@ -35,7 +35,7 @@ export const DEFAULTS: {
   themeMode: 'system',
   languageMode: 'en',
   enableClipboardDetect: true,
-  hideChatAvatar: false,
+  showChatAvatar: true,
   avatar: '😀',
   contextMessagesNum: 4,
   fontSize: 16,

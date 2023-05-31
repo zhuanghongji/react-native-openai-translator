@@ -25,11 +25,11 @@ export type AssistantMessageProps = {
   svgIconName?: SvgIconName
   fontSize: number
   message: ChatMessage
-  hideChatAvatar: boolean
+  showChatAvatar: boolean
 }
 
 export function AssistantMessageView(props: AssistantMessageProps) {
-  const { style, avatar, svgIconName, fontSize, message, hideChatAvatar } = props
+  const { style, avatar, svgIconName, fontSize, message, showChatAvatar } = props
   const { content, inContext } = message
 
   let borderColor = colors.transparent
@@ -43,7 +43,7 @@ export function AssistantMessageView(props: AssistantMessageProps) {
   const [moreVisible, setMoreVisible] = useState(false)
 
   const renderAvatar = () => {
-    if (hideChatAvatar) {
+    if (!showChatAvatar) {
       return <View style={stylez.chatAvatarContainerHidden} />
     }
     if (avatar) {

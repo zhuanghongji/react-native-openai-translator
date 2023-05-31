@@ -89,6 +89,6 @@ export function useEnableClipboardDetectPref() {
   return useStorageBoolean(StorageKey.enableClipboardDetect, DEFAULTS.enableClipboardDetect)
 }
 
-export function useHideChatAvatarPref() {
-  return useStorageBoolean(StorageKey.hideChatAvatar, DEFAULTS.hideChatAvatar)
+export function useShowChatAvatarPref() {
+  return useStorageBoolean(StorageKey.showChatAvatar, DEFAULTS.showChatAvatar)
 }

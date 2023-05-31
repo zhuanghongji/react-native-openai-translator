@@ -3,7 +3,7 @@ import { AssistantMessageView } from '../../components/chat/AssistantMessageView
 import { UserMessageView } from '../../components/chat/UserMessageView'
 import { hapticSuccess } from '../../haptic'
 import { saveImageToAlbum } from '../../manager/album-manager'
-import { useHideChatAvatarPref } from '../../preferences/storages'
+import { useShowChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
@@ -28,7 +28,7 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
   const { avatar, avatarName, fontSize, messages } = props
 
   const { t } = useTranslation()
-  const [hideChatAvatar] = useHideChatAvatarPref()
+  const [showChatAvatar] = useShowChatAvatarPref()
 
   const backgroundColor = useThemeSelector(colors.c18, colors.cED)
 
@@ -65,9 +65,9 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
                 return (
                   <Fragment key={`${index}_${item.content}`}>
                     <UserMessageView
-                      hideChatAvatar={hideChatAvatar}
                       fontSize={fontSize}
                       message={item}
+                      showChatAvatar={showChatAvatar}
                     />
                     {renderItemSeparator()}
                   </Fragment>
@@ -79,9 +79,9 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
                     <AssistantMessageView
                       avatar={avatar}
                       svgIconName={avatarName}
-                      hideChatAvatar={hideChatAvatar}
                       fontSize={fontSize}
                       message={item}
+                      showChatAvatar={showChatAvatar}
                     />
                     {renderItemSeparator()}
                   </Fragment>

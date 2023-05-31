@@ -10,7 +10,7 @@ export const enum StorageKey {
   themeMode = 'theme_mode',
   languageMode = 'language_mode',
   enableClipboardDetect = 'enable_clipboard_detect',
-  hideChatAvatar = 'hide_chat_avatar',
+  showChatAvatar = 'show_chat_avatar',
 
   // others
   lastDetectedText = 'last_detected_text',

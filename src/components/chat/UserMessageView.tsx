@@ -12,11 +12,11 @@ export type UserMessageProps = {
   style?: StyleProp<ViewStyle>
   fontSize: number
   message: ChatMessage
-  hideChatAvatar: boolean
+  showChatAvatar: boolean
 }
 
 export function UserMessageView(props: UserMessageProps) {
-  const { style, fontSize, message, hideChatAvatar } = props
+  const { style, fontSize, message, showChatAvatar } = props
   const { content, inContext } = message
 
   let borderColor = colors.transparent
@@ -36,12 +36,12 @@ export function UserMessageView(props: UserMessageProps) {
           {trimContent(content)}
         </TText>
       </View>
-      {hideChatAvatar ? (
-        <View style={stylez.chatAvatarContainerHidden} />
-      ) : (
+      {showChatAvatar ? (
         <View style={stylez.chatAvatarContainer}>
           <SvgIcon size={dimensions.chatAvatar} color={colors.primary} name="account" />
         </View>
+      ) : (
+        <View style={stylez.chatAvatarContainerHidden} />
       )}
     </View>
   )

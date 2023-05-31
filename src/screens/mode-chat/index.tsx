@@ -16,7 +16,7 @@ import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../htt
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { DEFAULTS } from '../../preferences/defaults'
 import { TranslatorMode } from '../../preferences/options'
-import { useHideChatAvatarPref } from '../../preferences/storages'
+import { useShowChatAvatarPref } from '../../preferences/storages'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
@@ -84,7 +84,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const customizedOptions = useOpenAIApiCustomizedOptions()
 
   const { backgroundChat: backgroundColor } = useThemeScheme()
-  const [hideChatAvatar] = useHideChatAvatarPref()
+  const [showChatAvatar] = useShowChatAvatarPref()
 
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const transformStyle = useAnimatedStyle(() => {
@@ -267,18 +267,18 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
                 return (
                   <UserMessageView
                     fontSize={fontSize}
-                    hideChatAvatar={hideChatAvatar}
                     message={item}
+                    showChatAvatar={showChatAvatar}
                   />
                 )
               }
               if (item.role === 'assistant') {
                 return (
                   <AssistantMessageView
-                    hideChatAvatar={hideChatAvatar}
                     svgIconName={assistantIconName}
                     fontSize={fontSize}
                     message={item}
+                    showChatAvatar={showChatAvatar}
                   />
                 )
               }
@@ -286,7 +286,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
             }}
             ItemSeparatorComponent={renderItemSeparator}
             ListHeaderComponent={
-              <SSEMessageView hideChatAvatar={hideChatAvatar} fontSize={fontSize} />
+              <SSEMessageView fontSize={fontSize} showChatAvatar={showChatAvatar} />
             }
             onEndReached={() => console.log('onEndReached')}
           />
