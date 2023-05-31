@@ -13,17 +13,20 @@ export type UserMessageProps = {
   fontSize: number
   message: ChatMessage
   showChatAvatar: boolean
+  colouredContextMessage: boolean
 }
 
 export function UserMessageView(props: UserMessageProps) {
-  const { style, fontSize, message, showChatAvatar } = props
+  const { style, fontSize, message, showChatAvatar, colouredContextMessage } = props
   const { content, inContext } = message
 
   let borderColor = colors.transparent
-  if (inContext === true) {
-    borderColor = colors.in
-  } else if (inContext === false) {
-    borderColor = colors.out
+  if (colouredContextMessage) {
+    if (inContext === true) {
+      borderColor = colors.in
+    } else if (inContext === false) {
+      borderColor = colors.out
+    }
   }
 
   return (

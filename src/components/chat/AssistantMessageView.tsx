@@ -26,17 +26,21 @@ export type AssistantMessageProps = {
   fontSize: number
   message: ChatMessage
   showChatAvatar: boolean
+  colouredContextMessage: boolean
 }
 
 export function AssistantMessageView(props: AssistantMessageProps) {
-  const { style, avatar, svgIconName, fontSize, message, showChatAvatar } = props
+  const { style, avatar, svgIconName, fontSize, message, showChatAvatar, colouredContextMessage } =
+    props
   const { content, inContext } = message
 
   let borderColor = colors.transparent
-  if (inContext === true) {
-    borderColor = colors.in
-  } else if (inContext === false) {
-    borderColor = colors.out
+  if (colouredContextMessage) {
+    if (inContext === true) {
+      borderColor = colors.in
+    } else if (inContext === false) {
+      borderColor = colors.out
+    }
   }
 
   const { tint, tint2, backgroundMessage: backgroundColor } = useThemeScheme()

@@ -18,7 +18,7 @@ import {
   ChatCompletionsCustomizedOptions,
   sseRequestChatCompletions,
 } from '../../http/apis/v1/chat/completions'
-import { useShowChatAvatarPref } from '../../preferences/storages'
+import { useColouredContextMessagePref, useShowChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
 import { QueryKey } from '../../query/keys'
 import { dimensions } from '../../res/dimensions'
@@ -120,6 +120,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
 
   const { backgroundChat: backgroundColor } = useThemeScheme()
   const [showChatAvatar] = useShowChatAvatarPref()
+  const [colouredContextMessage] = useColouredContextMessagePref()
 
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const enablekeyboardAvoid = useSharedValue(true)
@@ -279,6 +280,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
                       fontSize={font_size}
                       message={item}
                       showChatAvatar={showChatAvatar}
+                      colouredContextMessage={colouredContextMessage}
                     />
                   )
                 }
@@ -289,6 +291,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
                       fontSize={font_size}
                       message={item}
                       showChatAvatar={showChatAvatar}
+                      colouredContextMessage={colouredContextMessage}
                     />
                   )
                 }

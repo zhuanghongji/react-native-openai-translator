@@ -11,6 +11,7 @@ export const enum StorageKey {
   languageMode = 'language_mode',
   enableClipboardDetect = 'enable_clipboard_detect',
   showChatAvatar = 'show_chat_avatar',
+  colouredContextMessage = 'coloured_context_message',
 
   // others
   lastDetectedText = 'last_detected_text',

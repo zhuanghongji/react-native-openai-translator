@@ -20,6 +20,7 @@ export const DEFAULTS: {
   languageMode: LanguageMode
   enableClipboardDetect: boolean
   showChatAvatar: boolean
+  colouredContextMessage: boolean
   avatar: string
   contextMessagesNum: number
   fontSize: number
@@ -36,6 +37,7 @@ export const DEFAULTS: {
   languageMode: 'en',
   enableClipboardDetect: true,
   showChatAvatar: true,
+  colouredContextMessage: true,
   avatar: '😀',
   contextMessagesNum: 4,
   fontSize: 16,

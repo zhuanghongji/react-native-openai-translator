@@ -92,3 +92,7 @@ export function useEnableClipboardDetectPref() {
 export function useShowChatAvatarPref() {
   return useStorageBoolean(StorageKey.showChatAvatar, DEFAULTS.showChatAvatar)
 }
+
+export function useColouredContextMessagePref() {
+  return useStorageBoolean(StorageKey.colouredContextMessage, DEFAULTS.colouredContextMessage)
+}

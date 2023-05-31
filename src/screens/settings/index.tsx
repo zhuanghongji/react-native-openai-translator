@@ -17,6 +17,7 @@ import {
   useApiModelPref,
   useApiUrlPathPref,
   useApiUrlPref,
+  useColouredContextMessagePref,
   useDefaultTargetLanguagePref,
   useDefaultTranslatorModePref,
   useEnableClipboardDetectPref,
@@ -62,6 +63,7 @@ export function SettingsScreen(props: Props): JSX.Element {
   const [langMode, setLangMode] = useLanguageModePref()
   const [enableClipboardDetect, setEnableClipboardDetect] = useEnableClipboardDetectPref()
   const [showChatAvatar, setShowChatAvatar] = useShowChatAvatarPref()
+  const [colouredContextMessage, setColouredContextMessage] = useColouredContextMessagePref()
 
   const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
 
@@ -220,6 +222,13 @@ export function SettingsScreen(props: Props): JSX.Element {
           title={t('Show Chat Avatar')}
           value={showChatAvatar}
           onValueChange={setShowChatAvatar}
+        />
+
+        {divider}
+        <CheckView
+          title={t('Coloured Context Message')}
+          value={colouredContextMessage}
+          onValueChange={setColouredContextMessage}
         />
 
         <InfosView />

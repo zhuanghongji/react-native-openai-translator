@@ -36,7 +36,7 @@ export function sseRequest(
   })
 
   es.addEventListener('message', event => {
-    print('sseRequest - onMessage', event)
+    // print('sseRequest - onMessage', event)
     if (event.type !== 'message' || !event.data) {
       return
     }

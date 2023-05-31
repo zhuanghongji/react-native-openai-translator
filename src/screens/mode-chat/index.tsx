@@ -16,7 +16,7 @@ import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../htt
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { DEFAULTS } from '../../preferences/defaults'
 import { TranslatorMode } from '../../preferences/options'
-import { useShowChatAvatarPref } from '../../preferences/storages'
+import { useColouredContextMessagePref, useShowChatAvatarPref } from '../../preferences/storages'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
@@ -85,6 +85,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
 
   const { backgroundChat: backgroundColor } = useThemeScheme()
   const [showChatAvatar] = useShowChatAvatarPref()
+  const [colouredContextMessage] = useColouredContextMessagePref()
 
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const transformStyle = useAnimatedStyle(() => {
@@ -131,7 +132,14 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
         result.push({ role, content, inContext })
       }
     }
-    return result.reverse()
+    result.reverse()
+    for (const item of result) {
+      if (item.role === 'divider') {
+        break
+      }
+      item.inContext = true
+    }
+    return result
   }, [resultMessages, legacyMessages, freshMessages])
 
   const messageListRef = useRef<FlatList<ChatMessage>>(null)
@@ -269,6 +277,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
                     fontSize={fontSize}
                     message={item}
                     showChatAvatar={showChatAvatar}
+                    colouredContextMessage={colouredContextMessage}
                   />
                 )
               }
@@ -279,6 +288,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
                     fontSize={fontSize}
                     message={item}
                     showChatAvatar={showChatAvatar}
+                    colouredContextMessage={colouredContextMessage}
                   />
                 )
               }
