@@ -1,7 +1,7 @@
 import { QueryKey } from '../../query/keys'
 import { dbExecuteSql } from '../manager'
 import { DBTableName } from '../table-names'
-import type { DBResultSet, TCustomChat, TResultBase } from '../types'
+import type { DBOrderType, DBResultSet, TCustomChat, TResultBase } from '../types'
 import {
   dbGenInsertExecution,
   dbGenSelectExecution,
@@ -20,8 +20,8 @@ export function dbInsertCustomChat(target: Omit<TCustomChat, keyof TResultBase>)
 
 // select
 
-export function dbSelectCustomChat() {
-  return dbExecuteSql<TCustomChat>(dbGenSelectExecution(TABLE_NAME))
+export function dbSelectCustomChat(orderBy?: keyof TCustomChat, orderType?: DBOrderType) {
+  return dbExecuteSql<TCustomChat>(dbGenSelectExecution(TABLE_NAME, orderBy, orderType))
 }
 
 // find
@@ -39,11 +39,13 @@ export function dbUpdateCustomChatWhere(id: number, values: Partial<TCustomChat>
 // query
 
 export function useQueryCustomChat(options: {
+  orderBy?: keyof TCustomChat
+  orderType?: DBOrderType
   onSuccess?: (data: DBResultSet<TCustomChat>) => void
 }) {
-  const { onSuccess } = options
+  const { orderBy, orderType, onSuccess } = options
   return useQuery({
-    queryFn: () => dbSelectCustomChat(),
+    queryFn: () => dbSelectCustomChat(orderBy, orderType),
     queryKey: [QueryKey.customChat],
     onSuccess,
   })

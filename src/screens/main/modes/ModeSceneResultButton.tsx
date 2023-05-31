@@ -89,8 +89,8 @@ export function ModeSceneResultButton(props: ModeSceneResultButtonProps) {
     if (!onAction) {
       return
     }
-    hapticSoft()
     try {
+      hapticSoft()
       await onAction()
       queryClient.invalidateQueries({ queryKey: [QueryKey.findModeResultWhere] })
     } catch (e) {

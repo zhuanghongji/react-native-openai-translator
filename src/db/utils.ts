@@ -1,5 +1,6 @@
 import { dbExecuteSql } from './manager'
 import {
+  DBOrderType,
   DBSqlExcution,
   DBSqlExcutionArgs,
   DBSqlExcutionConditions,
@@ -39,6 +40,7 @@ function genSetValueListStr(args: DBSqlExcutionArgs, values: DBSqlExcutionValues
     valueList.push(`${key} = ?`)
     args.push(value)
   }
+  valueList.push("update_time = DATETIME('NOW','LOCALTIME')")
   return valueList.join(', ')
 }
 
@@ -116,7 +118,14 @@ export function dbGenInsertExecution(
 
 // MARK: select
 
-export function dbGenSelectExecution(tableName: string): DBSqlExcution {
+export function dbGenSelectExecution(
+  tableName: string,
+  orderBy?: string,
+  orderType?: DBOrderType
+): DBSqlExcution {
+  if (orderBy) {
+    return { statement: `SELECT * FROM ${tableName} ORDER BY ${orderBy} ${orderType ?? ''};` }
+  }
   return { statement: `SELECT * FROM ${tableName};` }
 }
 
@@ -171,7 +180,7 @@ export function dbGenSelectNextCursorWhereLimitExecution(
   }
   const conditionListStr = genWhereConditionListStr(args, conditions)
   return {
-    statement: `SELECT * FROM ${tableName} WHERE ${nextCursorStr} ${conditionListStr} ORDER BY id DESC LIMIT ${limit};`,
+    statement: `SELECT * FROM ${tableName} WHERE ${nextCursorStr} ${conditionListStr} ORDER BY update_time DESC LIMIT ${limit};`,
     args,
   }
 }

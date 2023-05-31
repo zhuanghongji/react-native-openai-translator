@@ -94,7 +94,7 @@ const styles = StyleSheet.create<Styles>({
     height: '100%',
     justifyContent: 'center',
     paddingVertical: 4,
-    paddingHorizontal: dimensions.edge,
+    paddingLeft: dimensions.edge,
   },
   title: {
     flex: 1,
@@ -108,5 +108,6 @@ const styles = StyleSheet.create<Styles>({
   time: {
     fontSize: 11,
     marginTop: 2,
+    marginLeft: dimensions.edge,
   },
 })

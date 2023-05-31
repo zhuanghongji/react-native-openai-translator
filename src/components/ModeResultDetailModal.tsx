@@ -1,11 +1,13 @@
+import { dbUpdateModeResultCollectedOfId } from '../db/table/t-mode-result'
 import { TModeResult } from '../db/types'
-import { hapticSoft } from '../haptic'
+import { hapticSoft, hapticWarning } from '../haptic'
+import { QueryKey } from '../query/keys'
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { stylez } from '../res/stylez'
 import { useThemeScheme } from '../themes/hooks'
 import { toast } from '../toast'
-import { SvgIcon } from './SvgIcon'
+import { SvgIcon, SvgIconName } from './SvgIcon'
 import { ToolButton } from './ToolButton'
 import {
   BottomSheetBackdrop,
@@ -14,6 +16,7 @@ import {
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { useQueryClient } from '@tanstack/react-query'
 import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Pressable, StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
@@ -40,6 +43,7 @@ export const ModeResultDetailModal = React.forwardRef<
   const {
     text: textColor,
     text2: text2Color,
+    tint,
     backdrop,
     backgroundIndicator,
     backgroundModal: backgroundColor,
@@ -49,6 +53,8 @@ export const ModeResultDetailModal = React.forwardRef<
   const contentWidth = frameWidth - dimensions.edgeTwice
 
   const textStyle = [styles.text, { color: textColor, backgroundColor: backdrop }]
+
+  const queryClient = useQueryClient()
 
   const modalRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => ['70%'], [])
@@ -86,7 +92,14 @@ export const ModeResultDetailModal = React.forwardRef<
     if (!currentItem) {
       return null
     }
-    const { user_content, assistant_content } = currentItem
+    const { id, user_content, assistant_content, type, collected } = currentItem
+    const toCollected = collected === '1' ? false : true
+    let iconName: SvgIconName = 'heart-none'
+    if (type === '1') {
+      iconName = toCollected ? 'heart-plus' : 'heart-minus'
+    } else {
+      iconName = toCollected ? 'bookmark-plus' : 'bookmark-minus'
+    }
     return (
       <>
         <BottomSheetScrollView style={{ flex: 1 }}>
@@ -98,6 +111,21 @@ export const ModeResultDetailModal = React.forwardRef<
           </View>
         </BottomSheetScrollView>
         <View style={styles.actionContainer}>
+          <Pressable
+            style={[styles.actionTouchable, { backgroundColor: colors.transparent }]}
+            hitSlop={dimensions.hitSlop}
+            onPress={async () => {
+              try {
+                hapticSoft()
+                await dbUpdateModeResultCollectedOfId(id, toCollected)
+                queryClient.invalidateQueries({ queryKey: [QueryKey.modeResult] })
+              } catch (e) {
+                hapticWarning()
+              }
+            }}>
+            <SvgIcon size={dimensions.iconMedium} color={tint} name={iconName} />
+          </Pressable>
+          <View style={stylez.f1} />
           <Pressable
             style={styles.actionTouchable}
             hitSlop={dimensions.hitSlop}
@@ -155,9 +183,9 @@ const styles = StyleSheet.create<Styles>({
     marginBottom: dimensions.edge,
   },
   actionContainer: {
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    paddingRight: dimensions.edge,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: dimensions.edge,
     marginTop: dimensions.edge,
     marginBottom: 32,
   },

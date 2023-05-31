@@ -63,7 +63,7 @@ const styles = StyleSheet.create<Styles>({
     maxWidth: '80%',
     padding: dimensions.edge,
     borderRadius: dimensions.borderRadius,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
     backgroundColor: colors.primary,
   },
   text: {

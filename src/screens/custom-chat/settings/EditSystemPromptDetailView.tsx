@@ -53,6 +53,7 @@ const styles = StyleSheet.create<Styles>({
   text: {
     marginTop: dimensions.edge,
     marginHorizontal: dimensions.edgeTwice,
-    maxHeight: 96,
+    maxHeight: 128,
+    textAlign: 'justify',
   },
 })

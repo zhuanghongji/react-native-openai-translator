@@ -28,6 +28,8 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
   const batchChat = useCustomChatSettingsStore(state => state.batchChat)
 
   const chatsResult = useQueryCustomChat({
+    orderBy: 'latest_message_time',
+    orderType: 'DESC',
     onSuccess: data => batchChat(data.rows._array),
   })
   const chats = chatsResult.data?.rows?._array ?? []

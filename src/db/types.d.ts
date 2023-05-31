@@ -25,6 +25,8 @@ export interface TResultExtra {
   extra3: string | null
 }
 
+export type DBOrderType = 'ASC' | 'DESC'
+
 // MARK: TModeResult
 
 export type TModeResultBasic = TResultExtra & {
