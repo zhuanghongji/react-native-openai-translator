@@ -4,6 +4,7 @@ import { hapticSoft } from '../../haptic'
 import { print } from '../../printer'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
+import { stylez } from '../../res/stylez'
 import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
 import {
@@ -32,13 +33,20 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
     const { style, onCreateChatPress } = props
 
     const { t } = useTranslation()
-    const { text: textColor, text2: text2Color, backgroundChat: backgroundColor } = useThemeScheme()
+    const {
+      text: textColor,
+      text2: text2Color,
+      backdrop,
+      backgroundIndicator,
+      backgroundModal: backgroundColor,
+    } = useThemeScheme()
+
     const { width: frameWidth } = useSafeAreaFrame()
     const contentWidth = frameWidth - dimensions.edgeTwice
 
     const [currentPrompt, setCurrentPrompt] = useState<AwesomePrompt | null>(null)
 
-    const textStyle = [styles.text, { color: textColor, backgroundColor }]
+    const textStyle = [styles.text, { color: textColor, backgroundColor: backdrop }]
 
     const bottomSheetModalRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => ['70%'], [])
@@ -114,18 +122,20 @@ export const PromptDetailModal = React.forwardRef<PromptDetailModalHandle, Promp
     return (
       <BottomSheetModal
         ref={bottomSheetModalRef}
+        style={[stylez.modal, style]}
+        handleIndicatorStyle={{ backgroundColor: backgroundIndicator }}
+        backgroundStyle={{ backgroundColor }}
         index={0}
         snapPoints={snapPoints}
         backdropComponent={renderBackdrop}
         onChange={handleSheetChanges}>
-        <View style={[styles.container, style]}>{renderContent()}</View>
+        <View style={stylez.f1}>{renderContent()}</View>
       </BottomSheetModal>
     )
   }
 )
 
 type Styles = {
-  container: ViewStyle
   headerRow: ViewStyle
   headerTitle: TextStyle
   text: TextStyle
@@ -135,9 +145,6 @@ type Styles = {
 }
 
 const styles = StyleSheet.create<Styles>({
-  container: {
-    flex: 1,
-  },
   headerRow: {
     width: '100%',
     flexDirection: 'row',

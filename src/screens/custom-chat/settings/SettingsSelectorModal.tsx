@@ -1,6 +1,8 @@
 import { Divider } from '../../../components/Divider'
 import { SvgIconName } from '../../../components/SvgIcon'
 import { TCustomChatBasic, TCustomChatDefault } from '../../../db/types'
+import { stylez } from '../../../res/stylez'
+import { useThemeScheme } from '../../../themes/hooks'
 import { ClearMessagesDetailView } from './ClearMessagesDetailView'
 import { EditAvatarDetailView } from './EditAvatarDetailView'
 import { EditChatNameDetialView } from './EditChatNameDetialView'
@@ -22,7 +24,7 @@ import {
 } from '@gorhom/bottom-sheet'
 import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { Platform, StyleProp, View, ViewStyle } from 'react-native'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 type Item = {
@@ -52,11 +54,13 @@ export const SettingsSelectorModal = React.forwardRef<
   const { avatar, chat_name, system_prompt, model, temperature, context_messages_num, font_size } =
     settings
 
+  const { backgroundModal: backgroundColor } = useThemeScheme()
+
   const { width: frameWidth } = useSafeAreaFrame()
 
   const selectorModalRef = useRef<BottomSheetModal>(null)
 
-  const selectorPoints = useMemo(() => ['60%'], [])
+  const selectorPoints = useMemo(() => ['70%'], [])
   const [isInSelector, setIsInSelector] = useState(true)
   const onBackNotify = useCallback(() => {
     setIsInSelector(true)
@@ -107,7 +111,8 @@ export const SettingsSelectorModal = React.forwardRef<
   return (
     <BottomSheetModal
       ref={selectorModalRef}
-      style={style}
+      style={[stylez.modal, style]}
+      backgroundStyle={{ backgroundColor }}
       index={0}
       snapPoints={selectorPoints}
       stackBehavior="push"
@@ -115,12 +120,9 @@ export const SettingsSelectorModal = React.forwardRef<
       keyboardBehavior="extend"
       enableContentPanningGesture={isInSelector}
       backdropComponent={renderBackdrop}
-      onChange={index => {
-        // print('onChange', { index })
-        index === -1 ? onDismiss() : onShow()
-      }}>
+      onChange={index => (index === -1 ? onDismiss() : onShow())}>
       <SettingsSelectorProvider>
-        <View style={[styles.content, { width: frameWidth }]}>
+        <View style={[stylez.f1, { width: frameWidth }]}>
           <SettingsTitleBar backHidden actionHidden title="Chat Settings" />
           <BottomSheetFlatList
             style={{ width: frameWidth }}
@@ -215,17 +217,4 @@ export const SettingsSelectorModal = React.forwardRef<
       </SettingsSelectorProvider>
     </BottomSheetModal>
   )
-})
-
-type Styles = {
-  content: ViewStyle
-}
-
-const styles = StyleSheet.create<Styles>({
-  content: {
-    flex: 1,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    overflow: 'hidden',
-  },
 })

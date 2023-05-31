@@ -5,9 +5,10 @@ import { hapticSuccess } from '../../haptic'
 import { saveImageToAlbum } from '../../manager/album-manager'
 import { useHideChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { stylez } from '../../res/stylez'
-import { useThemeScheme } from '../../themes/hooks'
+import { useThemeSelector } from '../../themes/hooks'
 import { toast } from '../../toast'
 import { ChatMessage } from '../../types'
 import { ShareButton } from './ShareButton'
@@ -29,7 +30,7 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
   const { t } = useTranslation()
   const [hideChatAvatar] = useHideChatAvatarPref()
 
-  const { backgroundChat } = useThemeScheme()
+  const backgroundColor = useThemeSelector(colors.c18, colors.cED)
 
   const renderItemSeparator = () => <View style={{ height: dimensions.messageSeparator }} />
 
@@ -57,7 +58,7 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
             style={{
               width: '100%',
               paddingTop: dimensions.messageSeparator,
-              backgroundColor: backgroundChat,
+              backgroundColor,
             }}>
             {messages.map((item, index) => {
               if (item.role === 'user') {

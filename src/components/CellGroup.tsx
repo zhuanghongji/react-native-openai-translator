@@ -1,6 +1,5 @@
-import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useThemeScheme, useThemeSelector } from '../themes/hooks'
+import { useThemeScheme } from '../themes/hooks'
 import React, { PropsWithChildren } from 'react'
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 
@@ -11,8 +10,7 @@ export type CellGroupProps = PropsWithChildren<{
 export function CellGroup(props: CellGroupProps) {
   const { style, children } = props
 
-  const { backgroundChat } = useThemeScheme()
-  const backgroundColor = useThemeSelector(colors.black, colors.white)
+  const { divider, backgroundCell: backgroundColor } = useThemeScheme()
   const count = React.Children.count(children)
 
   return (
@@ -21,9 +19,7 @@ export function CellGroup(props: CellGroupProps) {
         return (
           <>
             {child}
-            {index !== count - 1 && (
-              <View style={[styles.divider, { backgroundColor: backgroundChat }]} />
-            )}
+            {index !== count - 1 && <View style={[styles.divider, { backgroundColor: divider }]} />}
           </>
         )
       })}
@@ -42,10 +38,10 @@ const styles = StyleSheet.create<Styles>({
   },
   divider: {
     width: '100%',
-    height: StyleSheet.hairlineWidth * 2,
+    height: StyleSheet.hairlineWidth,
     transform: [
       {
-        translateX: dimensions.edge,
+        translateX: dimensions.edgeTwice + dimensions.iconMedium,
       },
     ],
   },

@@ -6,11 +6,14 @@ export interface ThemeScheme {
   text2: string
   text3: string
   text4: string
+  textActive: string
+  textInactive: string
 
   // image
   tint: string
   tint2: string
   tint3: string
+  tint4: string
   tintSelected: string
 
   // view
@@ -23,6 +26,13 @@ export interface ThemeScheme {
   background2: string
   backgroundChat: string
   backgroundMessage: string
+  backgroundCell: string
+  backgroundItem: string
+  backgroundItemDeep: string
+  backgroundIndicator: string
+  backgroundModal: string
+  backgroundBar: string
+  divider: string
 
   // others
   error: string

@@ -1,7 +1,8 @@
+import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { stylez } from '../../res/stylez'
 import { TText } from '../../themes/TText'
-import { useThemeScheme } from '../../themes/hooks'
+import { useThemeSelector } from '../../themes/hooks'
 import { toast } from '../../toast'
 import { ChatMessage } from '../../types'
 import { ShareButton } from './ShareButton'
@@ -19,7 +20,7 @@ export function TextScene(props: TextSceneProps): JSX.Element {
   const { fontSize, messages } = props
 
   const { t } = useTranslation()
-  const { backgroundChat } = useThemeScheme()
+  const backgroundColor = useThemeSelector(colors.c18, colors.cED)
 
   const text = useMemo(() => {
     const contents: string[] = []
@@ -40,7 +41,7 @@ export function TextScene(props: TextSceneProps): JSX.Element {
         style={stylez.f1}
         contentContainerStyle={{
           paddingTop: dimensions.messageSeparator,
-          backgroundColor: backgroundChat,
+          backgroundColor,
         }}>
         <TText
           style={{

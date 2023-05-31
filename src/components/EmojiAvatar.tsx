@@ -16,11 +16,11 @@ export type EmojiAvatarProps = {
 export function EmojiAvatar(props: EmojiAvatarProps) {
   const { style, containerSize = 48, emojiSize = 32, disabled = false, value, onPress } = props
 
-  const { tint3: borderColor } = useThemeScheme()
+  const { divider } = useThemeScheme()
 
   return (
     <Pressable
-      style={[styles.container, { width: containerSize, borderColor }, style]}
+      style={[styles.container, { width: containerSize, borderColor: divider }, style]}
       disabled={disabled}
       onPress={onPress}>
       <Text style={[styles.text, { fontSize: emojiSize }]}>{value}</Text>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create<Styles>({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: dimensions.borderRadius,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth * 2,
   },
   text: {
     color: colors.black,

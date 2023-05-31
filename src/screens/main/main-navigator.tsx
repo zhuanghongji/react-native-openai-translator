@@ -1,5 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { SvgIcon, SvgIconName } from '../../components/SvgIcon'
+import { colors } from '../../res/colors'
+import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import type { MainTabParamList, RootStackParamList } from '../screens'
 import { ChatsScreen } from './chats'
@@ -10,7 +12,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Text } from 'react-native'
+import { StyleSheet, Text, TextStyle, ViewStyle } from 'react-native'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Main'>
 
@@ -34,27 +36,28 @@ export function MainNavigator(_: Props): JSX.Element {
     Me: t('Me'),
   }
 
-  const { tint, tint3 } = useThemeScheme()
+  const {
+    tint: activeColor,
+    tint4: inactiveColor,
+    backgroundBar: backgroundColor,
+  } = useThemeScheme()
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         lazy: false,
         headerShown: false,
-        tabBarActiveTintColor: tint,
-        tabBarInactiveTintColor: tint3,
-        tabBarIcon: ({ color, size }) => {
+        tabBarStyle: [styles.tabBar, { backgroundColor }],
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: inactiveColor,
+        tabBarIcon: ({ color }) => {
           const routeName = route.name as RouteName
           const iconName = TAB_ICONS[routeName]
-          return <SvgIcon name={iconName} size={size} color={color} />
+          return <SvgIcon name={iconName} size={dimensions.iconLarge} color={color} />
         },
         tabBarLabel: ({ color }) => {
           const routeName = route.name as RouteName
-          return (
-            <Text style={{ color, fontSize: 12, transform: [{ translateY: -4 }] }}>
-              {tabNames[routeName]}
-            </Text>
-          )
+          return <Text style={[styles.tabBarLabel, { color }]}>{tabNames[routeName]}</Text>
         },
       })}>
       <Tab.Screen name="Modes" component={ModesScreen} />
@@ -64,3 +67,16 @@ export function MainNavigator(_: Props): JSX.Element {
     </Tab.Navigator>
   )
 }
+
+type Styles = {
+  tabBar: ViewStyle
+  tabBarLabel: TextStyle
+}
+
+const styles = StyleSheet.create<Styles>({
+  tabBar: {
+    height: 56,
+    borderTopColor: colors.transparent,
+  },
+  tabBarLabel: { fontSize: 11, transform: [{ translateY: -6 }] },
+})

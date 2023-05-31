@@ -20,26 +20,33 @@ export type InputProps = {
 
 export const Input = React.forwardRef<TextInput, InputProps>((props, ref) => {
   const { style, textStyle, value, onChangeText, ...restProps } = props
-  const { tint } = useThemeScheme()
+
+  const {
+    tint4: iconColor,
+    border: borderColor,
+    text: textColor,
+    placeholder: placeholderColor,
+  } = useThemeScheme()
 
   const clearDisabled = value ? false : true
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, { borderColor }, style]}>
       <TextInput
         hitSlop={dimensions.hitSlop}
         value={value}
+        placeholderTextColor={placeholderColor}
         onChangeText={onChangeText}
         {...restProps}
         ref={ref}
-        style={[styles.text, textStyle]}
+        style={[styles.text, { color: textColor }, textStyle]}
       />
       <Pressable
         style={{ marginLeft: dimensions.edge, opacity: clearDisabled ? 0 : 1 }}
         hitSlop={dimensions.hitSlop}
         disabled={clearDisabled}
         onPress={() => onChangeText?.('')}>
-        <SvgIcon size={dimensions.iconMedium} color={tint} name="close" />
+        <SvgIcon size={dimensions.iconMedium} color={iconColor} name="close" />
       </Pressable>
     </View>
   )
@@ -54,14 +61,15 @@ const styles = StyleSheet.create<Styles>({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: 1,
-    borderColor: 'black',
     paddingVertical: 8,
     paddingHorizontal: dimensions.edge,
     borderRadius: dimensions.borderRadius,
   },
   text: {
     flex: 1,
+    fontSize: 15,
     includeFontPadding: false,
     padding: 0,
   },

@@ -2,7 +2,7 @@ import { TitleBar } from '../../components/TitleBar'
 import { DEFAULTS } from '../../preferences/defaults'
 import { colors } from '../../res/colors'
 import { stylez } from '../../res/stylez'
-import { useThemeScheme } from '../../themes/hooks'
+import { useThemeScheme, useThemeSelector } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { ShotScene } from './ShotScene'
 import { TextScene } from './TextScene'
@@ -22,8 +22,9 @@ type ShareRoute = Route & {
 export function ShareChatScreen({ navigation: _, route: navRoute }: Props): JSX.Element {
   const { avatar, avatarName, fontSize = DEFAULTS.fontSize, messages } = navRoute.params
 
-  const { background } = useThemeScheme()
   const { t } = useTranslation()
+  const { backgroundIndicator, textActive, textInactive } = useThemeScheme()
+  const backgroundColor = useThemeSelector(colors.black, colors.white)
 
   const [tabIndex, setTabIndex] = useState(0)
   const [routes] = useState<ShareRoute[]>([
@@ -32,7 +33,7 @@ export function ShareChatScreen({ navigation: _, route: navRoute }: Props): JSX.
   ])
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: background }} edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar title={t('Share Dialogue')} />
       <TabView
         style={stylez.f1}
@@ -45,9 +46,9 @@ export function ShareChatScreen({ navigation: _, route: navRoute }: Props): JSX.
               {...options}
               style={{ backgroundColor: colors.transparent, elevation: 0 }}
               labelStyle={{ fontWeight: 'bold' }}
-              indicatorStyle={{ backgroundColor: colors.black }}
-              activeColor={colors.black}
-              inactiveColor={colors.c99}
+              indicatorStyle={{ backgroundColor: backgroundIndicator }}
+              activeColor={textActive}
+              inactiveColor={textInactive}
               pressColor={colors.transparent}
             />
           )

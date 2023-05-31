@@ -10,7 +10,7 @@ export type DividerProps = {
 }
 
 export function Divider(props: DividerProps) {
-  const { style, typo = 'backgroundChat', wing = 0 } = props
+  const { style, typo = 'divider', wing = 0 } = props
 
   const backgroundColor = useThemeColor(typo)
 
@@ -35,6 +35,6 @@ type Styles = {
 const styles = StyleSheet.create<Styles>({
   container: {
     width: '100%',
-    height: StyleSheet.hairlineWidth * 2,
+    height: StyleSheet.hairlineWidth,
   },
 })

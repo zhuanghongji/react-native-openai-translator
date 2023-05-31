@@ -19,13 +19,11 @@ export function EditSystemPromptDetailView(props: EditSystemPromptDetailViewProp
   const { t } = useTranslation()
 
   const [systemPrompt, setSystemPrompt] = useState(value ?? '')
-  const actionDisabled = value === systemPrompt
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
         title={t('System Prompt')}
-        actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(systemPrompt.trim())}
       />

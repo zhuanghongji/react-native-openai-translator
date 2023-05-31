@@ -17,7 +17,7 @@ export function SettingsDetailContainer(props: SettingsDetailContainerProps) {
 
   const { width: frameWidth } = useSafeAreaFrame()
 
-  const { background } = useThemeScheme()
+  const { backgroundModal: backgroundColor } = useThemeScheme()
 
   const slideAnimStyle = useAnimatedStyle(() => {
     const slideValue = index === indexAnim.value ? slideAnim.value : 0
@@ -28,11 +28,10 @@ export function SettingsDetailContainer(props: SettingsDetailContainerProps) {
         },
       ],
     }
-  }, [index, background, indexAnim, slideAnim])
+  }, [index, indexAnim, slideAnim])
 
   return (
-    <Animated.View
-      style={[StyleSheet.absoluteFill, { backgroundColor: background }, slideAnimStyle, style]}>
+    <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor }, slideAnimStyle, style]}>
       {index === currentIndex ? children : null}
     </Animated.View>
   )

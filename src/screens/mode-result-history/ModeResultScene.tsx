@@ -8,6 +8,8 @@ import { InfiniteQueryListContainer } from '../../components/query/InfiniteQuery
 import { useInfiniteQueryModeResultPageableWhere } from '../../db/table/t-mode-result'
 import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
+import { dimensions } from '../../res/dimensions'
+import { useThemeScheme } from '../../themes/hooks'
 import { RootStackParamList } from '../screens'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack/lib/typescript/src/types'
@@ -23,6 +25,8 @@ export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
+  const { backgroundItem: backgroundColor } = useThemeScheme()
+
   const detailModalRef = useRef<ModeResultDetailModalHandle>(null)
   const onItemPress = (item: TModeResult) => {
     detailModalRef.current?.show(item)
@@ -36,7 +40,7 @@ export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
     type: '0',
   })
 
-  const renderItemSeparator = () => <Divider />
+  const renderItemSeparator = () => <Divider wing={dimensions.edge} />
 
   return (
     <>
@@ -47,8 +51,9 @@ export function ModeResultScene(props: ModeResultSceneProps): JSX.Element {
           return (
             <FlashList
               refreshControl={refreshControl}
+              contentContainerStyle={{ backgroundColor }}
               data={items}
-              estimatedItemSize={96}
+              estimatedItemSize={dimensions.itemHeight}
               keyExtractor={(item, index) => `${index}_${item.id}`}
               renderItem={({ item }) => {
                 return <ModeResultItemView item={item} onPress={onItemPress} />

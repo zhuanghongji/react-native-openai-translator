@@ -2,6 +2,7 @@ import { CellDivider } from '../../../components/CellDivider'
 import { CellGroup } from '../../../components/CellGroup'
 import { CellView } from '../../../components/CellView'
 import { TitleBar } from '../../../components/TitleBar'
+import { useThemeScheme } from '../../../themes/hooks'
 import type { MainTabScreenProps } from '../../screens'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,8 +14,10 @@ type Props = MainTabScreenProps<'Me'>
 export function MeScreen({ navigation }: Props): JSX.Element {
   const { t } = useTranslation()
 
+  const { backgroundChat: backgroundColor } = useThemeScheme()
+
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar backHidden title={t('Me')} />
       <ScrollView style={{ flex: 1 }}>
         <CellGroup>

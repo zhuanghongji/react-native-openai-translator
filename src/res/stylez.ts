@@ -10,6 +10,7 @@ type Stylez = {
   chatAvatarLogo: ImageStyle
   chatAvatarContainer: ViewStyle
   chatAvatarContainerHidden: ViewStyle
+  modal: ViewStyle
 }
 
 export const stylez = StyleSheet.create<Stylez>({
@@ -44,5 +45,10 @@ export const stylez = StyleSheet.create<Stylez>({
   },
   chatAvatarContainerHidden: {
     width: dimensions.messageSeparator,
+  },
+  modal: {
+    borderTopLeftRadius: dimensions.modalRadius,
+    borderTopRightRadius: dimensions.modalRadius,
+    overflow: 'hidden',
   },
 })

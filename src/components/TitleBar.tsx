@@ -36,6 +36,7 @@ export interface TitleBarProps {
   closeHidden?: boolean
   titleContainerRow?: boolean
   titleContainerNarrow?: boolean
+  bottomLine?: boolean
   action?: TitleBarAction
   onBackPress?: () => void
   onClosePress?: () => void
@@ -51,6 +52,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
     closeHidden = true,
     titleContainerRow = false,
     titleContainerNarrow = false,
+    bottomLine = false,
     action,
     onBackPress,
     onClosePress,
@@ -60,7 +62,7 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const { top } = useSafeAreaInsets()
 
   const barStyle = useStatusBarStyle()
-  const { tint: tintColor } = useThemeScheme()
+  const { tint: tintColor, divider } = useThemeScheme()
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>()
   const goBack = useCallback(() => {
@@ -116,7 +118,15 @@ export function TitleBar(props: TitleBarProps): JSX.Element {
   const touchableRowWidth = ACTION_WIDTH * (titleContainerNarrow ? 2 : 1)
   return (
     <View
-      style={[styles.container, { height: dimensions.barHeight + top, paddingTop: top }, style]}>
+      style={[
+        styles.container,
+        {
+          height: dimensions.barHeight + top,
+          paddingTop: top,
+          borderBottomColor: bottomLine ? `${divider}99` : colors.transparent,
+        },
+        style,
+      ]}>
       <StatusBar translucent barStyle={barStyle} backgroundColor={colors.transparent} />
       <View style={[styles.touchableRow, { width: touchableRowWidth }]}>
         {backHidden ? (
@@ -167,6 +177,7 @@ const styles = StyleSheet.create<Styles>({
     width: '100%',
     alignItems: 'center',
     paddingHorizontal: H_EDGE,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   touchableRow: {
     flexDirection: 'row',

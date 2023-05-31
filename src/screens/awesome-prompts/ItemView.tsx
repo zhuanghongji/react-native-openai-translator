@@ -1,11 +1,10 @@
 import { AwesomePrompt } from '../../assets/awesome-chatgpt-prompts'
+import { Divider } from '../../components/Divider'
 import { SvgIcon } from '../../components/SvgIcon'
 import { ChunksText } from '../../components/chunks-text/ChunksText'
 import { TextChunks } from '../../components/chunks-text/utils'
-import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
-import { useThemeDark, useThemeScheme } from '../../themes/hooks'
-import { Seperator } from './Seperator'
+import { useThemeScheme } from '../../themes/hooks'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native'
 
@@ -19,10 +18,7 @@ export type ItemViewProps = {
 export function ItemView(props: ItemViewProps) {
   const { style, titleChunks, contentChunks, onPress } = props
 
-  const dark = useThemeDark()
-  const backgroundColor = dark ? colors.black : colors.white
-
-  const { text, text2, tint } = useThemeScheme()
+  const { text, text2, tint, backgroundItem: backgroundColor } = useThemeScheme()
 
   return (
     <Pressable
@@ -43,7 +39,7 @@ export function ItemView(props: ItemViewProps) {
         </View>
         <SvgIcon size={dimensions.iconMedium} color={tint} name="navigate-next" />
       </View>
-      <Seperator />
+      <Divider wing={dimensions.edge} />
     </Pressable>
   )
 }

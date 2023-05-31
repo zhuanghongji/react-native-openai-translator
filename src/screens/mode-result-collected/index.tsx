@@ -24,7 +24,12 @@ type ResultRoute = Route & {
 
 export function ModeResultCollectedScreen({ navigation: _ }: Props): JSX.Element {
   const { t } = useTranslation()
-  const { backgroundChat } = useThemeScheme()
+  const {
+    backgroundChat: backgroundColor,
+    backgroundIndicator,
+    textActive,
+    textInactive,
+  } = useThemeScheme()
 
   const [tabIndex, setTabIndex] = useState(0)
   const [routes] = useState<ResultRoute[]>([
@@ -37,7 +42,7 @@ export function ModeResultCollectedScreen({ navigation: _ }: Props): JSX.Element
 
   return (
     <BottomSheetModalProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
+      <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
         <TitleBar title={t('Mode Result Collected')} />
         <TabView
           style={stylez.f1}
@@ -50,9 +55,9 @@ export function ModeResultCollectedScreen({ navigation: _ }: Props): JSX.Element
                 {...options}
                 style={{ backgroundColor: colors.transparent, elevation: 0 }}
                 labelStyle={{ fontWeight: 'bold' }}
-                indicatorStyle={{ backgroundColor: colors.black }}
-                activeColor={colors.black}
-                inactiveColor={colors.c99}
+                indicatorStyle={{ backgroundColor: backgroundIndicator }}
+                activeColor={textActive}
+                inactiveColor={textInactive}
                 pressColor={colors.transparent}
                 renderIcon={({ route, color }) => {
                   const { iconName } = route

@@ -2,6 +2,7 @@ import { dimensions } from '../res/dimensions'
 import { toast } from '../toast'
 import { Button } from './Button'
 import { EmojiAvatar } from './EmojiAvatar'
+import { Input } from './Input'
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, StyleSheet, TextInput, TextStyle, View, ViewStyle } from 'react-native'
@@ -35,6 +36,7 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
   } = props
 
   const { t } = useTranslation()
+
   const nameInputRef = useRef<TextInput>(null)
   const presetInputRef = useRef<TextInput>(null)
 
@@ -49,9 +51,8 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         value={avatar}
         onPress={onAvatarPress}
       />
-      <TextInput
+      <Input
         ref={nameInputRef}
-        style={styles.input}
         autoFocus={true}
         value={chatName}
         placeholder={`${t('Chat Name')} ...`}
@@ -60,9 +61,8 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
         onSubmitEditing={() => presetInputRef.current?.focus()}
       />
       {divider}
-      <TextInput
+      <Input
         ref={presetInputRef}
-        style={styles.input}
         value={systemPrompt}
         placeholder={`${t('System Prompt')} ...`}
         returnKeyType="done"
@@ -106,10 +106,11 @@ const styles = StyleSheet.create<Styles>({
   },
   input: {
     width: '100%',
-    borderColor: 'black',
     borderWidth: 1,
+    fontSize: 15,
     paddingHorizontal: dimensions.edge,
     borderRadius: dimensions.borderRadius,
     paddingVertical: 8,
+    includeFontPadding: false,
   },
 })

@@ -1,6 +1,5 @@
-import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useThemeDark, useThemeScheme } from '../themes/hooks'
+import { useThemeScheme } from '../themes/hooks'
 import { SvgIcon, SvgIconName } from './SvgIcon'
 import React from 'react'
 import { Pressable, StyleProp, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native'
@@ -16,17 +15,14 @@ export type CellViewProps = {
 export function CellView(props: CellViewProps) {
   const { style, icon, iconColor, title, onPress } = props
 
-  const { text, tint } = useThemeScheme()
-
-  const dark = useThemeDark()
-  const backgroundColor = dark ? colors.black : colors.white
+  const { text, tint, backgroundCell: backgroundColor } = useThemeScheme()
 
   return (
     <Pressable style={[styles.container, { backgroundColor }, style]} onPress={onPress}>
       {icon ? (
         <SvgIcon
           style={{ marginRight: dimensions.edge }}
-          size={dimensions.iconMedium}
+          size={dimensions.iconLarge}
           color={iconColor ?? tint}
           name={icon}
         />
@@ -34,7 +30,7 @@ export function CellView(props: CellViewProps) {
       <Text style={[styles.title, { color: text }]} numberOfLines={1}>
         {title}
       </Text>
-      <SvgIcon size={dimensions.iconMedium} color={tint} name="navigate-next" />
+      <SvgIcon size={dimensions.iconLarge} color={tint} name="navigate-next" />
     </Pressable>
   )
 }
@@ -54,6 +50,6 @@ const styles = StyleSheet.create<Styles>({
   },
   title: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16,
   },
 })

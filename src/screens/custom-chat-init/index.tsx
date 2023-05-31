@@ -6,6 +6,7 @@ import { DEFAULT_T_CUSTOM_CHAT_BASIC } from '../../db/constants'
 import { dbFindCustomChatById, dbInsertCustomChat } from '../../db/table/t-custom-chat'
 import { hapticSuccess, hapticWarning } from '../../haptic'
 import { DEFAULTS } from '../../preferences/defaults'
+import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
 import { useCustomChatSettingsStore } from '../../zustand/stores/custom-chat-settings'
 import type { RootStackParamList } from '../screens'
@@ -27,9 +28,8 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
   const [systemPrompt, setSystemPrompt] = useState('')
 
   const { t } = useTranslation()
+  const { background: backgroundColor } = useThemeScheme()
 
-  // const title = (chatName ? chatName : systemPrompt ? 'Unnamed' : 'Initialize Chat').trim()
-  // const subtitle = (systemPrompt ? systemPrompt : '').trim()
   const confirmDisabled = chatName ? false : true
 
   const emojisModalRef = useRef<EmojisModalHandle>(null)
@@ -69,7 +69,7 @@ export function CustomChatInitScreen({ navigation }: Props): JSX.Element {
 
   return (
     <BottomSheetModalProvider>
-      <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+      <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
         <TitleBar title={t('Create New Chat')} />
         <ScrollView
           style={{ flex: 1 }}

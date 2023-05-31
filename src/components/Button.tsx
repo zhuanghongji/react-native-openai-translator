@@ -17,15 +17,7 @@ export function Button(props: ButtonProps) {
   const { style, textStyle, text, plain = false, disabled = false, onPress } = props
 
   const dark = useThemeDark()
-  const backgroundColor = useMemo(() => {
-    if (plain) {
-      return colors.transparent
-    }
-    if (disabled) {
-      return dark ? colors.white : colors.cCC
-    }
-    return dark ? colors.white : colors.black
-  }, [plain, disabled, dark])
+
   const color = useMemo(() => {
     if (plain) {
       if (disabled) {
@@ -34,9 +26,19 @@ export function Button(props: ButtonProps) {
       return dark ? colors.white : colors.black
     }
     if (disabled) {
-      return dark ? colors.cCC : colors.white
+      return dark ? colors.c99 : colors.white
     }
-    return dark ? colors.black : colors.white
+    return dark ? colors.white : colors.white
+  }, [plain, disabled, dark])
+
+  const backgroundColor = useMemo(() => {
+    if (plain) {
+      return colors.transparent
+    }
+    if (disabled) {
+      return dark ? colors.c28 : colors.cCC
+    }
+    return dark ? colors.c28 : colors.black
   }, [plain, disabled, dark])
 
   return (

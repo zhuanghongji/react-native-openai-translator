@@ -1,6 +1,7 @@
 import { TitleBar } from '../../components/TitleBar'
 import { print } from '../../printer'
 import { stylez } from '../../res/stylez'
+import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
 import type { RootStackParamList } from '../screens'
 import { PDFIndicator, PDFIndicatorHandle } from './PDFIndicator'
@@ -15,11 +16,13 @@ type Props = NativeStackScreenProps<RootStackParamList, 'PDF'>
 export function PDFScreen({ navigation, route }: Props): JSX.Element {
   const { title, url } = route.params
 
+  const { backgroundChat: backgroundColor } = useThemeScheme()
+
   const pdfRef = useRef<Pdf>(null)
   const indicatorRef = useRef<PDFIndicatorHandle>(null)
 
   return (
-    <SafeAreaView style={stylez.f1} edges={['bottom']}>
+    <SafeAreaView style={[stylez.f1, { backgroundColor }]} edges={['bottom']}>
       <TitleBar title={title} />
       <View style={stylez.f1}>
         <Pdf

@@ -1,4 +1,3 @@
-import { Divider } from '../../../components/Divider'
 import { TitleBar } from '../../../components/TitleBar'
 import { useQueryCustomChat } from '../../../db/table/t-custom-chat'
 import { TCustomChat } from '../../../db/types'
@@ -19,7 +18,12 @@ type Props = MainTabScreenProps<'Chats'>
 
 export function ChatsScreen({ navigation }: Props): JSX.Element {
   const { t } = useTranslation()
-  const { background, backgroundChat } = useThemeScheme()
+  const {
+    background,
+    backgroundChat,
+    backgroundItem: bgColor,
+    backgroundItemDeep: bgColorPinned,
+  } = useThemeScheme()
 
   const batchChat = useCustomChatSettingsStore(state => state.batchChat)
 
@@ -35,8 +39,6 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
   const handleItemPress = (chat: TCustomChat) => {
     navigation.navigate('CustomChat', { chat })
   }
-
-  const renderItemSeparator = () => <Divider />
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
@@ -58,9 +60,15 @@ export function ChatsScreen({ navigation }: Props): JSX.Element {
           estimatedItemSize={dimensions.itemHeight}
           keyExtractor={(item, index) => `${index}_${item.id}`}
           renderItem={({ item }) => {
-            return <CustomChatItemView item={item} onPress={handleItemPress} />
+            return (
+              <CustomChatItemView
+                bgColor={bgColor}
+                bgColorPinned={bgColorPinned}
+                item={item}
+                onPress={handleItemPress}
+              />
+            )
           }}
-          ItemSeparatorComponent={renderItemSeparator}
         />
       )}
     </SafeAreaView>

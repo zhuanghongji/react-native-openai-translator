@@ -24,7 +24,7 @@ export const WebIndicator = React.forwardRef<WebIndicatorHandle, WebIndicatorPro
   (props, ref) => {
     const { style, indicatorStyle } = props
 
-    const { tint } = useThemeScheme()
+    const { backgroundIndicator: backgroundColor } = useThemeScheme()
     const { width: frameWidth } = useSafeAreaFrame()
 
     const indicatorProgress = useSharedValue(0)
@@ -54,12 +54,7 @@ export const WebIndicator = React.forwardRef<WebIndicatorHandle, WebIndicatorPro
       <View style={[styles.container, style]}>
         {
           <Animated.View
-            style={[
-              styles.indicator,
-              { backgroundColor: tint },
-              indicatorAnimStyle,
-              indicatorStyle,
-            ]}
+            style={[styles.indicator, { backgroundColor }, indicatorAnimStyle, indicatorStyle]}
           />
         }
       </View>

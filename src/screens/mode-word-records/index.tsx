@@ -9,6 +9,7 @@ import { InfiniteQueryListContainer } from '../../components/query/InfiniteQuery
 import { useInfiniteQueryModeResultPageableWhere } from '../../db/table/t-mode-result'
 import { TModeResult } from '../../db/types'
 import { TranslatorMode } from '../../preferences/options'
+import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
@@ -22,7 +23,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ModeWordRecords'>
 
 export function ModeWordRecordsScreen({ navigation }: Props): JSX.Element {
   const { t } = useTranslation()
-  const { backgroundChat } = useThemeScheme()
+  const { backgroundChat: backgroundColor, backgroundItem } = useThemeScheme()
 
   const detailModalRef = useRef<ModeResultDetailModalHandle>(null)
   const onItemPress = (item: TModeResult) => {
@@ -38,11 +39,11 @@ export function ModeWordRecordsScreen({ navigation }: Props): JSX.Element {
     type: '1',
   })
 
-  const renderItemSeparator = () => <Divider />
+  const renderItemSeparator = () => <Divider wing={dimensions.edge} />
 
   return (
     <BottomSheetModalProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: backgroundChat }} edges={['bottom']}>
+      <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
         <TitleBar title={t('English Word Records')} />
         <InfiniteQueryListContainer
           style={{ flex: 1 }}
@@ -50,9 +51,10 @@ export function ModeWordRecordsScreen({ navigation }: Props): JSX.Element {
           renderContent={({ items, refreshControl, onEndReached }) => {
             return (
               <FlashList
+                contentContainerStyle={{ backgroundColor: backgroundItem }}
                 refreshControl={refreshControl}
                 data={items}
-                estimatedItemSize={96}
+                estimatedItemSize={dimensions.itemHeight}
                 keyExtractor={(item, index) => `${index}_${item.id}`}
                 renderItem={({ item }) => {
                   return <ModeResultItemView item={item} onPress={onItemPress} />

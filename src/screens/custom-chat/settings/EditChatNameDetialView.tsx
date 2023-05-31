@@ -19,13 +19,11 @@ export function EditChatNameDetialView(props: EditChatNameDetialViewProps) {
   const { t } = useTranslation()
 
   const [chatName, setChatName] = useState(value ?? '')
-  const actionDisabled = value === chatName
 
   return (
     <View style={[styles.container, style]}>
       <SettingsTitleBar
         title={t('Chat Name')}
-        actionDisabled={actionDisabled}
         onBackNotify={onBackNotify}
         onActionPress={() => onValueChange(chatName.trim())}
       />

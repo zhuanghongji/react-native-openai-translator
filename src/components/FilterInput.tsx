@@ -1,4 +1,3 @@
-import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { useThemeScheme } from '../themes/hooks'
 import { SvgIcon } from './SvgIcon'
@@ -30,8 +29,7 @@ export type FilterInputProps = {
 export function FilterInput(props: FilterInputProps) {
   const { style, value, onChangeText } = props
 
-  const { dark, tint, tint3 } = useThemeScheme()
-  const backgroundColor = dark ? colors.black : colors.white
+  const { tint, tint3, text: textColor, backgroundCell: backgroundColor } = useThemeScheme()
 
   const { width: frameWidth } = useSafeAreaFrame()
   const width = frameWidth - dimensions.edgeTwice
@@ -77,7 +75,7 @@ export function FilterInput(props: FilterInputProps) {
       <Animated.View style={[styles.wrapper, wrapperAnimStyle]}>
         <TextInput
           ref={inputRef}
-          style={styles.input}
+          style={[styles.input, { color: textColor }]}
           value={value}
           numberOfLines={1}
           onChangeText={onChangeText}
@@ -144,6 +142,7 @@ const styles = StyleSheet.create<Styles>({
     flex: 1,
     fontSize: 14,
     padding: 0,
+    includeFontPadding: false,
     marginLeft: dimensions.iconSmall + TEXT_LEFT,
   },
   text: {

@@ -1,6 +1,7 @@
 import { TitleBar } from '../../components/TitleBar'
 import { dimensions } from '../../res/dimensions'
 import { stylez } from '../../res/stylez'
+import { useThemeScheme } from '../../themes/hooks'
 import { toast } from '../../toast'
 import type { RootStackParamList } from '../screens'
 import { WebActionsModal, WebActionsModalHandle } from './WebActionsModal'
@@ -20,6 +21,7 @@ export function WebScreen({ navigation, route }: Props): JSX.Element {
   const { title: initialTitle, url: initialUrl } = route.params
 
   const { t } = useTranslation()
+  const { backgroundChat: backgroundColor } = useThemeScheme()
 
   const webViewRef = useRef<WebView>(null)
   const indicatorRef = useRef<WebIndicatorHandle>(null)
@@ -55,7 +57,7 @@ export function WebScreen({ navigation, route }: Props): JSX.Element {
 
   return (
     <BottomSheetModalProvider>
-      <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+      <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
         <TitleBar
           title={currentTitle}
           closeHidden={!currentCanGoBack}
@@ -77,7 +79,7 @@ export function WebScreen({ navigation, route }: Props): JSX.Element {
         <View style={stylez.wh100} collapsable={false}>
           <WebView
             ref={webViewRef}
-            style={stylez.wh100}
+            style={[stylez.wh100, { backgroundColor }]}
             containerStyle={stylez.wh100}
             source={{ uri: initialUrl }}
             showsHorizontalScrollIndicator={false}
