@@ -44,9 +44,9 @@ export function ShareChatScreen({ navigation: _, route: navRoute }: Props): JSX.
           return (
             <TabBar
               {...options}
-              style={{ backgroundColor: colors.transparent, elevation: 0 }}
-              labelStyle={{ fontWeight: 'bold' }}
-              indicatorStyle={{ backgroundColor: backgroundIndicator }}
+              style={stylez.tabViewBar}
+              labelStyle={stylez.tabViewLabel}
+              indicatorStyle={[stylez.tabViewIndicator, { backgroundColor: backgroundIndicator }]}
               activeColor={textActive}
               inactiveColor={textInactive}
               pressColor={colors.transparent}

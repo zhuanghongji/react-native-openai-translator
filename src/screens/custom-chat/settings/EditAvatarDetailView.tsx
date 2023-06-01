@@ -33,7 +33,7 @@ export function EditAvatarDetailView(props: EditAvatarDetailViewProps) {
       <View style={styles.avatarContainer}>
         <EmojiAvatar value={avatar} />
       </View>
-      <Divider />
+      <Divider style={{ marginTop: dimensions.edge }} />
       <EmojisTabView onEmojiPress={setAvatar} />
     </View>
   )

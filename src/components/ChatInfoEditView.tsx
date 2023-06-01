@@ -5,7 +5,7 @@ import { EmojiAvatar } from './EmojiAvatar'
 import { Input } from './Input'
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleProp, StyleSheet, TextInput, TextStyle, View, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 import { useSafeAreaFrame } from 'react-native-safe-area-context'
 
 export type ChatInfoEditViewProps = {
@@ -96,21 +96,11 @@ export function ChatInfoEditView(props: ChatInfoEditViewProps) {
 
 type Styles = {
   container: ViewStyle
-  input: TextStyle
 }
 
 const styles = StyleSheet.create<Styles>({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    fontSize: 15,
-    paddingHorizontal: dimensions.edge,
-    borderRadius: dimensions.borderRadius,
-    paddingVertical: 8,
-    includeFontPadding: false,
   },
 })

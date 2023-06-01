@@ -1,6 +1,8 @@
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
 import { emojis } from '../res/emojis'
+import { stylez } from '../res/stylez'
+import { useThemeScheme } from '../themes/hooks'
 import { EmojisModalScene } from './EmojisModalScene'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -17,12 +19,14 @@ export type EmojisTabViewProps = {
 }
 
 export function EmojisTabView(props: EmojisTabViewProps) {
-  const { style, tabBarPosition, onEmojiPress } = props
+  const { style, tabBarPosition = 'bottom', onEmojiPress } = props
 
   const { width: frameWidth } = useSafeAreaFrame()
   const itemWidth = (frameWidth - dimensions.edgeTwice) / NUM_COLUMNS
 
   const { t } = useTranslation()
+  const { textActive, textInactive, backgroundIndicator } = useThemeScheme()
+
   const [tabIndex, setTabIndex] = useState(0)
 
   const routes = useMemo(() => {
@@ -49,14 +53,14 @@ export function EmojisTabView(props: EmojisTabViewProps) {
         return (
           <TabBar
             {...options}
-            style={{ backgroundColor: colors.white }}
+            style={stylez.tabViewBar}
             tabStyle={{ width: frameWidth / 3.5 }}
-            labelStyle={{ fontWeight: 'bold' }}
-            indicatorStyle={{ backgroundColor: colors.black, height: 2, borderRadius: 1 }}
-            scrollEnabled={true}
-            activeColor={colors.black}
-            inactiveColor={colors.c99}
+            labelStyle={stylez.tabViewLabel}
+            indicatorStyle={[stylez.tabViewIndicator, { backgroundColor: backgroundIndicator }]}
+            activeColor={textActive}
+            inactiveColor={textInactive}
             pressColor={colors.transparent}
+            scrollEnabled={true}
           />
         )
       }}

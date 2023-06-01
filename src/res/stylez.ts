@@ -1,3 +1,4 @@
+import { colors } from './colors'
 import { dimensions } from './dimensions'
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native'
 
@@ -11,6 +12,9 @@ type Stylez = {
   chatAvatarContainer: ViewStyle
   chatAvatarContainerHidden: ViewStyle
   modal: ViewStyle
+  tabViewBar: ViewStyle
+  tabViewLabel: TextStyle
+  tabViewIndicator: ViewStyle
 }
 
 export const stylez = StyleSheet.create<Stylez>({
@@ -50,5 +54,17 @@ export const stylez = StyleSheet.create<Stylez>({
     borderTopLeftRadius: dimensions.modalRadius,
     borderTopRightRadius: dimensions.modalRadius,
     overflow: 'hidden',
+  },
+  tabViewBar: {
+    backgroundColor: colors.transparent,
+    shadowColor: colors.transparent,
+    elevation: 0,
+  },
+  tabViewLabel: {
+    fontWeight: 'bold',
+  },
+  tabViewIndicator: {
+    height: 2,
+    borderRadius: 1,
   },
 })

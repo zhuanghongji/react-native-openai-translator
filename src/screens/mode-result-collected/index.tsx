@@ -25,10 +25,10 @@ type ResultRoute = Route & {
 export function ModeResultCollectedScreen({ navigation: _ }: Props): JSX.Element {
   const { t } = useTranslation()
   const {
-    backgroundChat: backgroundColor,
-    backgroundIndicator,
     textActive,
     textInactive,
+    backgroundIndicator,
+    backgroundChat: backgroundColor,
   } = useThemeScheme()
 
   const [tabIndex, setTabIndex] = useState(0)
@@ -53,9 +53,9 @@ export function ModeResultCollectedScreen({ navigation: _ }: Props): JSX.Element
             return (
               <TabBar
                 {...options}
-                style={{ backgroundColor: colors.transparent, elevation: 0 }}
-                labelStyle={{ fontWeight: 'bold' }}
-                indicatorStyle={{ backgroundColor: backgroundIndicator }}
+                style={stylez.tabViewBar}
+                labelStyle={stylez.tabViewLabel}
+                indicatorStyle={[stylez.tabViewIndicator, { backgroundColor: backgroundIndicator }]}
                 activeColor={textActive}
                 inactiveColor={textInactive}
                 pressColor={colors.transparent}

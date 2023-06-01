@@ -17,7 +17,7 @@ export const EmojisModalScene = React.memo((props: EmojisModalSceneProps) => {
   return (
     <BottomSheetFlatList
       style={[styles.container, style]}
-      contentContainerStyle={{ paddingHorizontal: dimensions.edge }}
+      contentContainerStyle={{ paddingTop: dimensions.edge, paddingHorizontal: dimensions.edge }}
       data={emojiList}
       numColumns={numColumns}
       keyExtractor={(item, index) => `${index}_${item}`}

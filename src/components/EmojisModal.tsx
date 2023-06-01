@@ -1,6 +1,7 @@
 import { colors } from '../res/colors'
 import { dimensions } from '../res/dimensions'
-import { useThemeDark } from '../themes/hooks'
+import { stylez } from '../res/stylez'
+import { useThemeScheme } from '../themes/hooks'
 import { EmojisTabView } from './EmojisTabView'
 import {
   BottomSheetBackdrop,
@@ -8,7 +9,7 @@ import {
   BottomSheetModal,
 } from '@gorhom/bottom-sheet'
 import React, { useCallback, useImperativeHandle, useMemo, useRef } from 'react'
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { StyleProp, View, ViewStyle } from 'react-native'
 import { SharedValue } from 'react-native-reanimated'
 
 export type EmojisModalProps = {
@@ -26,8 +27,7 @@ export type EmojisModalHandle = {
 export const EmojisModal = React.forwardRef<EmojisModalHandle, EmojisModalProps>((props, ref) => {
   const { style, snapHeight, animatedIndex, animatedPosition, onEmojiPress } = props
 
-  const isDark = useThemeDark()
-  const backgroundColor = isDark ? colors.c29 : colors.white
+  const { backgroundIndicator, backgroundModal: backgroundColor } = useThemeScheme()
 
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const snapPoints = useMemo(() => [snapHeight], [snapHeight])
@@ -51,7 +51,9 @@ export const EmojisModal = React.forwardRef<EmojisModalHandle, EmojisModalProps>
   return (
     <BottomSheetModal
       ref={bottomSheetRef}
-      style={[styles.container, style]}
+      style={[stylez.modal, style]}
+      handleIndicatorStyle={{ backgroundColor: backgroundIndicator }}
+      backgroundStyle={{ backgroundColor }}
       index={0}
       enablePanDownToClose={true}
       enableContentPanningGesture={false}
@@ -64,26 +66,9 @@ export const EmojisModal = React.forwardRef<EmojisModalHandle, EmojisModalProps>
         borderTopRightRadius: dimensions.borderRadius,
       }}
       backdropComponent={renderBackdrop}>
-      <View style={styles.content}>
+      <View style={stylez.f1}>
         <EmojisTabView onEmojiPress={onEmojiPress} />
       </View>
     </BottomSheetModal>
   )
-})
-
-type Styles = {
-  container: ViewStyle
-  content: ViewStyle
-}
-
-const styles = StyleSheet.create<Styles>({
-  container: {
-    flex: 1,
-    borderTopLeftRadius: dimensions.modalRadius,
-    borderTopRightRadius: dimensions.modalRadius,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-  },
 })
