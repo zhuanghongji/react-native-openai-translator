@@ -118,6 +118,7 @@ export const ModeResultDetailModal = React.forwardRef<
               try {
                 hapticSoft()
                 await dbUpdateModeResultCollectedOfId(id, toCollected)
+                setCurrentItem({ ...currentItem, collected: toCollected ? '1' : '0' })
                 queryClient.invalidateQueries({ queryKey: [QueryKey.modeResult] })
               } catch (e) {
                 hapticWarning()

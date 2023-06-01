@@ -8,6 +8,7 @@ import {
   useQueryFindModeResultWhere,
 } from '../../../db/table/t-mode-result'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
+import { useRefetchFocusEffect } from '../../../hooks'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
 import { LanguageKey, TranslatorMode } from '../../../preferences/options'
@@ -82,6 +83,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     type: resultType,
   })
   const cacheResult = cacheQueryResult.data
+  useRefetchFocusEffect(cacheQueryResult.refetch)
 
   // output
   // assistantText: if null, should output text from cache-result
