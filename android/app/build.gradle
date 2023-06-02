@@ -85,7 +85,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def reactNativeArchitectures() {
     def value = project.getProperties().get("reactNativeArchitectures")
-    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+    return value ? value.split(",") : ["arm64-v8a", "armeabi-v7a"]
 }
 
 android {
@@ -151,14 +151,16 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
-            // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            // Example: versionCode 1 will generate 10001 for arm64-v8a, 10002 for armeabi-v7a, etc.
+            def versionCodes = ["arm64-v8a": 1, "armeabi-v7a": 2]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
-                        defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+                        defaultConfig.versionCode * 10000 + versionCodes.get(abi)
             }
-
+            if (variant.buildType.name == "release") {
+                output.outputFileName = "AITranslator-" + abi + "-v" + defaultConfig.versionName + ".apk"
+            }
         }
     }
 }
