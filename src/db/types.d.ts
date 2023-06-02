@@ -75,6 +75,7 @@ export type TCustomChatBasic = TResultExtra & {
   font_size: number | null
   pinned: string | null
   archived: string | null
+  md: string | null
   latest_message_id: number | null
   latest_message_content: string | null
   latest_message_time: string | null

@@ -62,6 +62,7 @@ export async function dbInitTables(): Promise<void> {
         { name: 'font_size', type: 'INTEGER', nullable: true },
         { name: 'pinned', type: 'CHAR(1)', nullable: true },
         { name: 'archived', type: 'CHAR(1)', nullable: true },
+        { name: 'md', type: 'CHAR(1)', nullable: true },
         { name: 'latest_message_id', type: 'INTEGER', nullable: true },
         { name: 'latest_message_content', type: 'TEXT', nullable: true },
         { name: 'latest_message_time', type: 'TIMESTAMP', nullable: true },

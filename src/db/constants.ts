@@ -20,6 +20,7 @@ export const DEFAULT_T_CUSTOM_CHAT_BASIC: TCustomChatBasic = {
   font_size: null,
   pinned: null,
   archived: null,
+  md: null,
   latest_message_id: null,
   latest_message_content: null,
   latest_message_time: null,
