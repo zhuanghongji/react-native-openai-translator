@@ -10,40 +10,51 @@ Not just a translator, and more than chat.
 
 <table>
   <tr>
-    <td>
-      <img 
-        src="./docs/screenshots/v0.0.1_1.jpeg" 
-        title="Translate Mode &#10;&#10;The special case of translate English Word into Chinese" 
-      />
-    </td>
-    <td>
-      <img 
-        src="./docs/screenshots/v0.0.1_2.jpeg"
-        title="Mode Chat &#10;&#10;You can chat continuously with every mode in Home screen"  
-      />
-    </td>
-    <td>
-      <img 
-        src="./docs/screenshots/v0.0.1_3.jpeg"
-        title="Settings - Light"
-      />
-    </td>
-    <td>
-      <img 
-        src="./docs/screenshots/v0.0.1_4.jpeg"
-        title="Settings - Dark"
-      />
-    </td>
-    <td>
-      <img 
-        src="./docs/screenshots/v0.0.1_5.jpeg"
-        title="Polish Mode"
-      />
-    </td>
+    <td>Modes - Case of translate English Word into Chinese.</td>
+    <td>Chats - Add and customize any chat by youself.</td>
+    <td>Discover - Discover something new about OpenAI and GPT.</td>
+    <td>Me - Locate and manage all of what you created.</td>
+    <td>Settings - Light</td>
+  <tr>
+    <td><img src="./docs/screenshots/v0.1.0_L1.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_L2.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_L3.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_L4.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_L5.jpeg"/></td>
+  </tr>
+
+  <tr>
+    <td>Modes - Case of polishing English Word into English.</td>
+    <td>Mode Chat - Continuously chat with polishing mode reuslt.</td>
+    <td>Share - By capturing messages view and save into album.</td>
+    <td>Share - By copy plain messages text into any other app.</td>
+    <td>Settings - Dark</td>
+  </tr>
+  <tr>
+    <td><img src="./docs/screenshots/v0.1.0_D1.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_D2.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_D3.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_D4.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_D5.jpeg"/></td>
+  </tr>
+
+  <tr>
+    <td>English Word Records</td>
+    <td>Create new Chat with your input</td>
+    <td>Create new Chat from Awesome Prompts</td>
+    <td>Customize the Chate you created</td>
+    <td>Read Prompt Engineering Guide by url</td>
+  </tr>
+  <tr>
+    <td><img src="./docs/screenshots/v0.1.0_E1.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_E2.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_E3.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_E4.jpeg"/></td>
+    <td><img src="./docs/screenshots/v0.1.0_E5.jpeg"/></td>
   </tr>
 </table>
 
-> The screenshots above are all from v0.0.1, which is not the final version you are looking for.
+> The screenshots above are all from v0.1.0, which is not the final version you are looking for.
 
 ## Rodemap
 
@@ -51,35 +62,35 @@ Not just a translator, and more than chat.
 
 - AITranslator
   - [x] Splash
-  - [ ] Main
-    - [x] Home
-    - [ ] Chats
-    - [ ] Discover
-    - [ ] Me
-  - [ ] Scanner
+  - [x] Main
+    - [x] Modes
+    - [x] Chats
+    - [x] Discover
+    - [x] Me
+  - [x] Scanner
   - [x] Settings
   - [x] ModeChat
-  - [ ] CustomChat
-  - [ ] DialogueShot
-  - [ ] PromptGuideEn
-  - [ ] PromptGuideZh
-  - [ ] ModeCollections
+  - [x] CustomChat
+  - [x] ShareDialogue
+  - [x] PromptEngineeringGuide
+  - [x] ModeWordCollections
+  - [x] ModeResultCollections
   - [ ] ...
 
 ### To-Do List
 
-- [x] feat: make translator-mode pageable in Home screen
-- [ ] feat: support custom chat
-- [ ] feat: support 'text-shot' and 'view-shot' of a single dialogue
-- [ ] feat: support chat-persist by sqlite
+- [x] feat: make translator-mode pageable in Modes screen
+- [x] feat: support custom chat
+- [x] feat: support 'view-capture' and 'text-shot' of a single dialogue
+- [x] feat: support chat-persist by sqlite
 - [ ] feat: support at least 5 user language
-- [ ] feat: provide an option to hide avatars in chat
+- [x] feat: provide an option to hide avatars in chat
 - [ ] feat: double back-press to exit app on Android
-- [ ] feat: show app version in settings screen
+- [x] feat: show app version in settings screen
 - [ ] docs: how to contribute
 - [ ] docs: how to build iOS app for personal use
 - [x] docs: support show version name in Settings screen
-- [x] ux: is it better to remove 'from-lang' from the Home screen or not ? yes
+- [x] ux: remove 'from-lang' in Modes screen for better user experience
 - [x] ux: invert 'chat-list'
 - [x] refactor: reimplement theme-setting by React Context
 
@@ -90,7 +101,7 @@ Not just a translator, and more than chat.
 - [ ] feat: support 'As keyboard everywhere'
 - [ ] feat: support MarkDown preview by inner WebView
 - [ ] feat: support 'Big Bang English-Word'
-- [ ] optimization: text-recognition-seems-not-stable on Android
+- [ ] fix: text-recognition-seems-not-stable on Android
 
 ## Development
 
@@ -149,9 +160,9 @@ cd android
 # - To install the release-apk into you device, run the following commands:
 cd ${your-project-parent-dir-path}/react-native-openai-translator/android/app/build/outputs/apk/release
 # suggest installing the 64-bit version unless your device does not support it:
-adb install app-arm64-v8a-release.apk
+adb install AITranslator-arm64-v8a-[version_name].apk
 # only install 32-bit below when your device unsupport 64-bit above
-adb install app-armeabi-v7a-release.apk
+adb install AITranslator-armeabi-v7a-[version_name].apk
 
 # Tip 3:
 # - If you have experienced slow server-sent-event requests on Android during debugging,
@@ -161,7 +172,7 @@ adb install app-armeabi-v7a-release.apk
 ### Build iOS
 
 ```shell
-# TBD
+# To Be Done
 ```
 
 ## License
