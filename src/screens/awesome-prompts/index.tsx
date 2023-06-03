@@ -19,6 +19,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { FlashList, FlashListProps } from '@shopify/flash-list'
 import { useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
 import { SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -32,6 +33,7 @@ type Item = {
 const AnimatedFlashLish = Animated.createAnimatedComponent<FlashListProps<Item>>(FlashList)
 
 export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
+  const { t } = useTranslation()
   const { backgroundChat: backgroundColor } = useThemeScheme()
 
   const { bottom } = useSafeAreaInsets()
@@ -117,7 +119,7 @@ export function AwesomePromptsScreen({ navigation }: Props): JSX.Element {
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['left', 'right']}>
-        <TitleBar title="Awesome Prompts" />
+        <TitleBar title={t('Awesome Prompts')} />
         <AnimatedFlashLish
           ref={flashListRef}
           contentContainerStyle={{ paddingBottom: bottom }}

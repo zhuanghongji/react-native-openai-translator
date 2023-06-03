@@ -15,7 +15,7 @@ import { SettingsDetailContainer } from './SettingsDetailContainer'
 import { SettingsItemView } from './SettingsItemView'
 import { SettingsSelectorProvider } from './SettingsSelectorProvider'
 import { SettingsTitleBar } from './SettingsTitleBar'
-import { ShareConfigDetailView } from './ShareConfigDetailView'
+import { ShareConfigDetailView } from './ShareConfigsDetailView'
 import {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
@@ -54,6 +54,7 @@ export const SettingsSelectorModal = React.forwardRef<
   const { avatar, chat_name, system_prompt, model, temperature, context_messages_num, font_size } =
     settings
 
+  const { t } = useTranslation()
   const { backgroundModal: backgroundColor } = useThemeScheme()
 
   const { width: frameWidth } = useSafeAreaFrame()
@@ -68,8 +69,6 @@ export const SettingsSelectorModal = React.forwardRef<
   const onSelectedNotify = useCallback(() => {
     setIsInSelector(false)
   }, [])
-
-  const { t } = useTranslation()
 
   const items: Item[] = [
     { title: t('Avatar'), subtitle: avatar },
@@ -88,7 +87,7 @@ export const SettingsSelectorModal = React.forwardRef<
       iconName: 'history',
     },
     { title: t('Clear Messages'), iconName: 'delete' },
-    { title: t('Share Config'), iconName: 'share' },
+    { title: t('Share Configs'), iconName: 'share' },
   ]
   useImperativeHandle(ref, () => ({
     show: () => {
@@ -123,7 +122,7 @@ export const SettingsSelectorModal = React.forwardRef<
       onChange={index => (index === -1 ? onDismiss() : onShow())}>
       <SettingsSelectorProvider>
         <View style={[stylez.f1, { width: frameWidth }]}>
-          <SettingsTitleBar backHidden actionHidden title="Chat Settings" />
+          <SettingsTitleBar backHidden actionHidden title={t('Chat Configs')} />
           <BottomSheetFlatList
             style={{ width: frameWidth }}
             data={items}

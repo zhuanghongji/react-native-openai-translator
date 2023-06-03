@@ -61,7 +61,7 @@ export function ShareConfigDetailView(props: ShareConfigDetailViewProps) {
     <View style={[styles.container, style]}>
       <SettingsTitleBar
         actionText={t('COPY')}
-        title={t('Share Config')}
+        title={t('Share Configs')}
         onBackNotify={onBackNotify}
         onActionPress={() => {
           hapticSoft()

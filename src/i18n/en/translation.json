@@ -80,7 +80,7 @@
   "Context Messages Number": "Context Messages Number",
   "Clear Messages": "Clear Messages",
   "Clear messages success": "Clear messages success",
-  "Share Config": "Share Config",
+  "Share Configs": "Share Configs",
   "Share": "Share",
   "default": "default",
   "smileys": "smileys",
@@ -119,5 +119,6 @@
   "Save to album error": "Save to album error",
   "Copy to Clipboard": "Copy to Clipboard",
   "No valid messages": "No valid messages",
-  "CreateFirstChatTip": "There is no chat yet,\nclick to create one."
+  "CreateFirstChatTip": "There is no chat yet,\nclick to create one.",
+  "Chat Configs": "Chat Configs"
 }

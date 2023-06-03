@@ -1,6 +1,7 @@
 import { hapticSoft } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
 import { stylez } from '../../res/stylez'
+import { useThemeScheme } from '../../themes/hooks'
 import { WebActionButton } from './WebActionButton'
 import {
   BottomSheetBackdrop,
@@ -28,6 +29,7 @@ export const WebActionsModal = React.forwardRef<WebActionsModalHandle, WebAction
     const { style, onCopyUrlPress, onRefreshPress, onOpenInBrowserPress } = props
 
     const { t } = useTranslation()
+    const { backgroundIndicator, backgroundModal: backgroundColor } = useThemeScheme()
 
     const modalRef = useRef<BottomSheetModal>(null)
     const snapPoints = useMemo(() => [240], [])
@@ -52,6 +54,9 @@ export const WebActionsModal = React.forwardRef<WebActionsModalHandle, WebAction
     return (
       <BottomSheetModal
         ref={modalRef}
+        style={[stylez.modal, style]}
+        handleIndicatorStyle={{ backgroundColor: backgroundIndicator }}
+        backgroundStyle={{ backgroundColor }}
         index={0}
         snapPoints={snapPoints}
         stackBehavior="push"

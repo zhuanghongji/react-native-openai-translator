@@ -44,7 +44,7 @@ export function WebActionButton(props: WebActionButtonProps) {
         onPress?.()
       }}>
       <View style={[styles.iconContainer, { backgroundColor: iconBackgroundColor }]}>
-        <SvgIcon size={30} color={iconColor} name={iconName} />
+        <SvgIcon size={32} color={iconColor} name={iconName} />
       </View>
       <Text style={[styles.text, { color: textColor }]}>{text}</Text>
     </Pressable>
@@ -59,13 +59,13 @@ type Styles = {
 
 const styles = StyleSheet.create<Styles>({
   container: {
-    width: 60,
+    width: 64,
     justifyContent: 'center',
     alignItems: 'center',
   },
   iconContainer: {
-    width: dimensions.barHeight,
-    height: dimensions.barHeight,
+    width: 48,
+    height: 48,
     borderRadius: dimensions.borderRadius,
     justifyContent: 'center',
     alignItems: 'center',

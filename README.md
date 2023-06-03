@@ -87,6 +87,10 @@ Not just a translator, and more than chat.
 - [x] feat: provide an option to hide avatars in chat
 - [ ] feat: double back-press to exit app on Android
 - [x] feat: show app version in settings screen
+- [ ] feat: auto detect app language
+- [ ] feat: add common Chinese prompts
+- [ ] feat: translate Awesome Prompts to more langs (Chinese First)
+- [ ] feat: add prompts playground
 - [ ] docs: how to contribute
 - [ ] docs: how to build iOS app for personal use
 - [x] docs: support show version name in Settings screen

@@ -80,7 +80,7 @@
   "Context Messages Number": "上下文消息个数",
   "Clear Messages": "清空消息",
   "Clear messages success": "清空消息成功",
-  "Share Config": "分享配置",
+  "Share Configs": "分享配置",
   "Share": "分享",
   "default": "默认",
   "smileys": "笑脸",
@@ -119,5 +119,6 @@
   "Save to album error": "保存到相册错误",
   "Copy to Clipboard": "复制到粘贴板",
   "No valid messages": "无有效消息",
-  "CreateFirstChatTip": "还没有对话，\n点击创建一个"
+  "CreateFirstChatTip": "还没有对话，\n点击创建一个",
+  "Chat Configs": "对话配置"
 }
