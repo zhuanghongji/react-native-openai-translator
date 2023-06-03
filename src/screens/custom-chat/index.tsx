@@ -268,6 +268,9 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
               keyboardDismissMode="on-drag"
               keyboardShouldPersistTaps="handled"
               inverted={true}
+              // For fix message text unselectable
+              // https://github.com/facebook/react-native/issues/26264#issuecomment-559986861
+              removeClippedSubviews={false}
               data={finalMessages}
               keyExtractor={(item, index) => `${index}_${item.role}_${item.content}`}
               renderItem={({ item, index }) => {
