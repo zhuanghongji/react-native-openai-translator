@@ -22,6 +22,7 @@ import {
   useDefaultTranslatorModePref,
   useEnableClipboardDetectPref,
   useLanguageModePref,
+  useMessageSinkHapticFeedbackPref,
   useServiceProviderPref,
   useShowChatAvatarPref,
   useThemeModePref,
@@ -64,6 +65,8 @@ export function SettingsScreen(props: Props): JSX.Element {
   const [enableClipboardDetect, setEnableClipboardDetect] = useEnableClipboardDetectPref()
   const [showChatAvatar, setShowChatAvatar] = useShowChatAvatarPref()
   const [colouredContextMessage, setColouredContextMessage] = useColouredContextMessagePref()
+  const [messageSinkHapticFeedback, setMessageSinkHapticFeedback] =
+    useMessageSinkHapticFeedbackPref()
 
   const [resetConfirmModalVisible, setResetConfirmModalVisible] = useState(false)
 
@@ -229,6 +232,13 @@ export function SettingsScreen(props: Props): JSX.Element {
           title={t('Coloured Context Message')}
           value={colouredContextMessage}
           onValueChange={setColouredContextMessage}
+        />
+
+        {divider}
+        <CheckView
+          title={t('Message Sink Haptic Feedback')}
+          value={messageSinkHapticFeedback}
+          onValueChange={setMessageSinkHapticFeedback}
         />
 
         <InfosView />

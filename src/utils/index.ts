@@ -4,6 +4,7 @@ export function trimContent(content: string | null | undefined) {
   if (!content) {
     return ''
   }
+  // Match one or more whitespace characters (including space, tab, and newline characters) at the beginning or end of a string
   return content.replace(/^[\s\n\t]+|[\s\n\t]+$/g, '')
 }
 

@@ -1,3 +1,4 @@
+import { hapticSoft } from '../../haptic'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme, useThemeSelector } from '../../themes/hooks'
@@ -16,6 +17,8 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+const H_EDGE = 8
+
 export interface InputBarProps {
   value: string
   sendDisabled: boolean
@@ -24,16 +27,14 @@ export interface InputBarProps {
   onSendPress: () => void
 }
 
-const H_EDGE = 8
-
 export function InputBar(props: InputBarProps): JSX.Element {
   const { value, sendDisabled, renderToolsBar, onChangeText, onSendPress } = props
 
+  const { t } = useTranslation()
   const tintColor = useThemeSelector(colors.white, colors.black)
   const textColor = useThemeSelector(colors.white, colors.black)
   const backgroundColor = useThemeSelector(colors.c1C, colors.cF7)
   const backgroundColor2 = useThemeSelector(colors.c28, colors.white)
-
   const { placeholder: placeholderColor } = useThemeScheme()
 
   const { bottom } = useSafeAreaInsets()
@@ -45,9 +46,6 @@ export function InputBar(props: InputBarProps): JSX.Element {
     }),
     []
   )
-
-  const { t } = useTranslation()
-
   const sendAnim = useSharedValue(0)
   const sendAnimStyle = useAnimatedStyle(() => {
     return {
@@ -91,7 +89,10 @@ export function InputBar(props: InputBarProps): JSX.Element {
               right: dimensions.edge,
               bottom: H_EDGE,
             }}
-            onPress={onSendPress}>
+            onPress={() => {
+              hapticSoft()
+              onSendPress()
+            }}>
             <SvgIcon size={dimensions.iconLarge} color={tintColor} name="send" />
           </Pressable>
         </Animated.View>

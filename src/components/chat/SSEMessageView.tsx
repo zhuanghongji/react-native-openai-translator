@@ -1,6 +1,7 @@
 import { dimensions } from '../../res/dimensions'
 import { images } from '../../res/images'
 import { stylez } from '../../res/stylez'
+import { texts } from '../../res/texts'
 import { TText } from '../../themes/TText'
 import { useThemeScheme } from '../../themes/hooks'
 import { trimContent } from '../../utils'
@@ -39,7 +40,7 @@ export function SSEMessageView(props: SSEMessageProps) {
         <TText
           style={[styles.text, stylez.contentText, { fontSize, lineHeight: fontSize * 1.2 }]}
           typo="text">
-          {content ? trimContent(content) : '...'}
+          {`${trimContent(content)}${texts.assistantCursor}`}
         </TText>
       </View>
     </View>

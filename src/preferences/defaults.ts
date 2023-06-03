@@ -21,6 +21,7 @@ export const DEFAULTS: {
   enableClipboardDetect: boolean
   showChatAvatar: boolean
   colouredContextMessage: boolean
+  messageSinkHapticFeedback: boolean
   avatar: string
   contextMessagesNum: number
   fontSize: number
@@ -38,6 +39,7 @@ export const DEFAULTS: {
   enableClipboardDetect: true,
   showChatAvatar: true,
   colouredContextMessage: true,
+  messageSinkHapticFeedback: true,
   avatar: '😀',
   contextMessagesNum: 4,
   fontSize: 16,

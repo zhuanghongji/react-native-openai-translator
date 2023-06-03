@@ -1,3 +1,4 @@
+import { hapticSoft } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { SvgIcon } from '../SvgIcon'
@@ -30,7 +31,10 @@ export function InputToolsBar(props: InputToolsBarProps): JSX.Element {
         containerSize={36}
         name="chat-new"
         disabled={newDialogueDisabled}
-        onPress={onNewDialoguePress}
+        onPress={() => {
+          hapticSoft()
+          onNewDialoguePress()
+        }}
       />
       <SvgIcon
         style={{ marginLeft: 4, marginBottom: 1 }}

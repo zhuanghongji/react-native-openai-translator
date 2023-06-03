@@ -4,4 +4,6 @@ export const texts = {
   requestError: 'Request error',
   requestTimeout: 'Request timeout',
   checkNetworkOrSettings: 'Please check if your network or settings are valid',
+  userCursor: '○',
+  assistantCursor: '●',
 }

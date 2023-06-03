@@ -12,6 +12,7 @@ import {
   useQueryModeChatMessageOfResultId,
 } from '../../db/table/t-mode-chat-message'
 import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
+import { useHapticFeedbackMessaging } from '../../haptic/hooks'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../http/apis/v1/chat/completions'
 import { DEFAULTS } from '../../preferences/defaults'
@@ -77,15 +78,13 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
   const assistantIconName = getAssistantIconName(translatorMode)
 
   const { t } = useTranslation()
-  const [clearMessagesModalVisible, setClearMessagesModalVisible] = useState(false)
-  const fontSize = DEFAULTS.fontSize
-
-  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
-  const customizedOptions = useOpenAIApiCustomizedOptions()
-
   const { backgroundChat: backgroundColor } = useThemeScheme()
+
   const [showChatAvatar] = useShowChatAvatarPref()
   const [colouredContextMessage] = useColouredContextMessagePref()
+
+  const [clearMessagesModalVisible, setClearMessagesModalVisible] = useState(false)
+  const fontSize = DEFAULTS.fontSize
 
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const transformStyle = useAnimatedStyle(() => {
@@ -154,6 +153,10 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
 
   const [inputText, setInputText] = useState('')
 
+  const { onNextHaptic } = useHapticFeedbackMessaging()
+  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
+  const customizedOptions = useOpenAIApiCustomizedOptions()
+
   const status = useSSEMessageStore(state => state.status)
   const sendDisabled = inputText.trim() && status !== 'sending' ? false : true
   const setStatus = useSSEMessageStore(state => state.setStatus)
@@ -192,6 +195,7 @@ export function ModeChatScreen({ navigation, route }: Props): JSX.Element {
     esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
       onNext: content => {
         setContent(content)
+        onNextHaptic()
         scrollToTop(0)
       },
       onError: (code, message) => {

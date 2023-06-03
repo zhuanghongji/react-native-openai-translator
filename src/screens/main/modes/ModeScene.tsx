@@ -8,6 +8,7 @@ import {
   useQueryFindModeResultWhere,
 } from '../../../db/table/t-mode-result'
 import { hapticError, hapticSoft, hapticSuccess } from '../../../haptic'
+import { useHapticFeedbackMessaging } from '../../../haptic/hooks'
 import { useRefetchFocusEffect } from '../../../hooks'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../../http/apis/hooks'
 import { sseRequestChatCompletions } from '../../../http/apis/v1/chat/completions'
@@ -49,15 +50,9 @@ export type ModeSceneHandle = {
 
 export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((props, ref) => {
   const { style, focused, targetLang, translatorMode } = props
-
-  const ttsModalRef = useRef<TTSModalHandle>(null)
-
   const { t } = useTranslation()
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-
-  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
-  const customizedOptions = useOpenAIApiCustomizedOptions()
-  const [status, setStatus] = useState<TranslatorStatus>('none')
+  const ttsModalRef = useRef<TTSModalHandle>(null)
 
   // input
   const inputViewRef = useRef<InputViewHandle>(null)
@@ -137,6 +132,11 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     })
   }
 
+  const { onNextHaptic } = useHapticFeedbackMessaging()
+  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
+  const customizedOptions = useOpenAIApiCustomizedOptions()
+  const [status, setStatus] = useState<TranslatorStatus>('none')
+
   const eventSourceRef = useRef<EventSource | null>(null)
   const perfromChatCompletions = (messages: ApiMessage[]) => {
     if (!checkIsOptionsValid()) {
@@ -150,6 +150,7 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
     setStatus('pending')
     eventSourceRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
       onNext: content => {
+        onNextHaptic()
         outputViewRef.current?.updateText(content)
       },
       onError: (code, message) => {
@@ -263,7 +264,12 @@ export const ModeScene = React.forwardRef<ModeSceneHandle, ModeSceneProps>((prop
       <ScrollView
         style={{ flex: 1, marginTop: dimensions.edge }}
         contentContainerStyle={{ paddingBottom: dimensions.spaceBottom }}>
-        <OutputView ref={outputViewRef} assistantText={assistantText} text={outputText} />
+        <OutputView
+          ref={outputViewRef}
+          status={status}
+          assistantText={assistantText}
+          outputText={outputText}
+        />
         <View style={styles.toolsRow}>
           <ModeSceneResultButton
             mode={translatorMode}

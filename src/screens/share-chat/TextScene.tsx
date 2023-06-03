@@ -1,6 +1,7 @@
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { stylez } from '../../res/stylez'
+import { texts } from '../../res/texts'
 import { TText } from '../../themes/TText'
 import { useThemeSelector } from '../../themes/hooks'
 import { toast } from '../../toast'
@@ -30,7 +31,8 @@ export function TextScene(props: TextSceneProps): JSX.Element {
         contents.push('\n-----\n\n')
       }
       isPreAssistant = item.role === 'assistant'
-      contents.push(`${item.role === 'assistant' ? '\n●' : '○'} ${item.content}\n`)
+      const cursor = item.role === 'assistant' ? `\n${texts.assistantCursor}` : texts.userCursor
+      contents.push(`${cursor} ${item.content}\n`)
     }
     return contents.join('')
   }, [messages])

@@ -96,3 +96,7 @@ export function useShowChatAvatarPref() {
 export function useColouredContextMessagePref() {
   return useStorageBoolean(StorageKey.colouredContextMessage, DEFAULTS.colouredContextMessage)
 }
+
+export function useMessageSinkHapticFeedbackPref() {
+  return useStorageBoolean(StorageKey.messageSinkHapticFeedback, DEFAULTS.messageSinkHapticFeedback)
+}

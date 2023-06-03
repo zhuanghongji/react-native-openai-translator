@@ -120,5 +120,6 @@
   "Copy to Clipboard": "Copy to Clipboard",
   "No valid messages": "No valid messages",
   "CreateFirstChatTip": "There is no chat yet,\nclick to create one.",
-  "Chat Configs": "Chat Configs"
+  "Chat Configs": "Chat Configs",
+  "Message Sink Haptic Feedback": "Message Sink Haptic Feedback"
 }

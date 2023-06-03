@@ -13,6 +13,7 @@ import {
   useInfiniteQueryCustomChatMessagePageable,
 } from '../../db/table/t-custom-chat-message'
 import { hapticError, hapticSuccess, hapticWarning } from '../../haptic'
+import { useHapticFeedbackMessaging } from '../../haptic/hooks'
 import { useOpenAIApiCustomizedOptions, useOpenAIApiUrlOptions } from '../../http/apis/hooks'
 import {
   ChatCompletionsCustomizedOptions,
@@ -53,12 +54,16 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
   const { chat } = route.params
   const { id } = chat
 
+  const { t } = useTranslation()
+  const { backgroundChat: backgroundColor } = useThemeScheme()
+
+  const [showChatAvatar] = useShowChatAvatarPref()
+  const [colouredContextMessage] = useColouredContextMessagePref()
+
   const settingsModalRef = useRef<SettingsSelectorModalHandle>(null)
   const settings = fillTCustomChatWithDefaults(id, useCustomChatSettings(id))
   const { chat_name, system_prompt, model, temperature, avatar, font_size, context_messages_num } =
     settings
-
-  const { t } = useTranslation()
 
   const [freshMessages, setFreshMessages] = useState<BaseMessage[]>([])
   const legacyPageSize = context_messages_num > 20 ? 100 : 20
@@ -110,18 +115,6 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
     }
     return count
   }, [finalMessages])
-
-  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
-  const customizedOptions: ChatCompletionsCustomizedOptions = {
-    ...useOpenAIApiCustomizedOptions(),
-    model,
-    temperature,
-  }
-
-  const { backgroundChat: backgroundColor } = useThemeScheme()
-  const [showChatAvatar] = useShowChatAvatarPref()
-  const [colouredContextMessage] = useColouredContextMessagePref()
-
   const { height: keyboardHeight } = useReanimatedKeyboardAnimation()
   const enablekeyboardAvoid = useSharedValue(true)
   const transformStyle = useAnimatedStyle(() => {
@@ -139,6 +132,14 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
   }, [freshMessages.length])
 
   const [inputText, setInputText] = useState('')
+
+  const { onNextHaptic } = useHapticFeedbackMessaging()
+  const { urlOptions, checkIsOptionsValid } = useOpenAIApiUrlOptions()
+  const customizedOptions: ChatCompletionsCustomizedOptions = {
+    ...useOpenAIApiCustomizedOptions(),
+    model,
+    temperature,
+  }
 
   const status = useSSEMessageStore(state => state.status)
   const sendDisabled = inputText.trim() && status !== 'sending' ? false : true
@@ -178,6 +179,7 @@ export function CustomChatScreen({ navigation, route }: Props): JSX.Element {
     esRef.current = sseRequestChatCompletions(urlOptions, customizedOptions, messages, {
       onNext: content => {
         setContent(content)
+        onNextHaptic()
         scrollToTop(0)
       },
       onError: (code, message) => {
