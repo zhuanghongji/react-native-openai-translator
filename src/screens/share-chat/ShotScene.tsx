@@ -1,7 +1,7 @@
 import { SvgIconName } from '../../components/SvgIcon'
 import { AssistantMessageView } from '../../components/chat/AssistantMessageView'
 import { UserMessageView } from '../../components/chat/UserMessageView'
-import { hapticSuccess } from '../../haptic'
+import { hapticSoft, hapticSuccess, hapticWarning } from '../../haptic'
 import { saveImageToAlbum } from '../../manager/album-manager'
 import { useShowChatAvatarPref } from '../../preferences/storages'
 import { print } from '../../printer'
@@ -40,13 +40,15 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
       if (!viewShotRef.current || !viewShotRef.current.capture) {
         return
       }
+      hapticSoft()
       const tag = await viewShotRef.current.capture()
       print('Save to Album', { tag })
       const path = await saveImageToAlbum(tag)
-      hapticSuccess()
       toast('success', t('Save to album success'), path ?? '')
+      hapticSuccess()
     } catch (e) {
       toast('danger', t('Save to album error'), '')
+      hapticWarning()
     }
   }
 
@@ -68,6 +70,7 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
                       fontSize={fontSize}
                       message={item}
                       showChatAvatar={showChatAvatar}
+                      colouredContextMessage={false}
                     />
                     {renderItemSeparator()}
                   </Fragment>
@@ -82,6 +85,7 @@ export function ShotScene(props: ShotSceneProps): JSX.Element {
                       fontSize={fontSize}
                       message={item}
                       showChatAvatar={showChatAvatar}
+                      colouredContextMessage={false}
                     />
                     {renderItemSeparator()}
                   </Fragment>

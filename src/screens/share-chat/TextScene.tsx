@@ -1,3 +1,4 @@
+import { hapticSoft } from '../../haptic'
 import { colors } from '../../res/colors'
 import { dimensions } from '../../res/dimensions'
 import { stylez } from '../../res/stylez'
@@ -58,6 +59,7 @@ export function TextScene(props: TextSceneProps): JSX.Element {
       <ShareButton
         text={t('Copy to Clipboard')}
         onPress={() => {
+          hapticSoft()
           Clipboard.setString(text)
           toast('success', t('Copied to clipboard'), text)
         }}

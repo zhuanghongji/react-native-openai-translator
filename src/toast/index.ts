@@ -15,6 +15,7 @@ export function toast(type: Type, title: string, content: string, onPress?: () =
       ? content
       : `${content.substring(0, MAX_LENGTH_OF_CONTENT)}...`
   Toast.show({
+    autoClose: 1800,
     type: TYPE_MAP[type],
     title,
     textBody,

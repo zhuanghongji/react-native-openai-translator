@@ -1,3 +1,4 @@
+import { hapticSoft } from '../../haptic'
 import { dimensions } from '../../res/dimensions'
 import { useThemeScheme } from '../../themes/hooks'
 import { ChatMessage } from '../../types'
@@ -53,7 +54,10 @@ export function AppDividerView(props: AppDividerView) {
         tintTypo="tint2"
         name="share"
         disabled={shareDisabled}
-        onPress={() => onSharePress(message, index)}
+        onPress={() => {
+          hapticSoft()
+          onSharePress(message, index)
+        }}
       />
     </View>
   )
