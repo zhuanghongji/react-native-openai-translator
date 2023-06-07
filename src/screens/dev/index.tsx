@@ -7,6 +7,7 @@ import { DBTableName } from '../../db/table-names'
 import { dbInsertModeResult, dbSelectModeResult } from '../../db/table/t-mode-result'
 import { print } from '../../printer'
 import { dimensions } from '../../res/dimensions'
+import { useThemeScheme } from '../../themes/hooks'
 import type { RootStackParamList } from '../screens'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { useEffect } from 'react'
@@ -15,7 +16,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dev'>
 
-export function DevScreen({ navigation: _ }: Props): JSX.Element {
+export function DevScreen({ navigation }: Props): JSX.Element {
+  const { backgroundChat: backgroundColor } = useThemeScheme()
+
   const testDB = async () => {
     try {
       const result = await dbExecuteSql({ statement: 'select * from t_test' })
@@ -30,7 +33,7 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
   }, [])
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor }} edges={['bottom']}>
       <TitleBar title="Dev" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: dimensions.edge }}>
         <Button
@@ -101,6 +104,13 @@ export function DevScreen({ navigation: _ }: Props): JSX.Element {
               .catch(e => {
                 print('dbSelectModeResult error = ', e)
               })
+          }}
+        />
+        <Button
+          style={styles.button}
+          text="API KEYS"
+          onPress={() => {
+            navigation.push('APIKeys')
           }}
         />
       </ScrollView>

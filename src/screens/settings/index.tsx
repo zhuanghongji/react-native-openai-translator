@@ -54,7 +54,7 @@ export function SettingsScreen(props: Props): JSX.Element {
   const { text2: contentColor, background: backgroundColor } = useThemeScheme()
 
   const [serviceProvider, setServiceProvider] = useServiceProviderPref()
-  const [apiKey, setApiKey] = useApiKeyPref()
+  const [apiKey] = useApiKeyPref()
   const [apiModel, setApiModel] = useApiModelPref()
   const [apiUrl, setApiUrl] = useApiUrlPref()
   const [apiUrlPath, setApiUrlPath] = useApiUrlPathPref()
@@ -112,7 +112,7 @@ export function SettingsScreen(props: Props): JSX.Element {
           securable={true}
           value={apiKey}
           modalTitle={t('API Key')}
-          onChangeText={setApiKey}
+          onPress={() => navigation.push('ApiKeys', { fromSettings: true })}
         />
         <Text style={[styles.caption, { color: contentColor }]}>
           <Text>{t('Go to the ')}</Text>

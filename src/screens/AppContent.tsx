@@ -1,6 +1,7 @@
 import { colors } from '../res/colors'
 import { useThemeDark } from '../themes/hooks'
 import { TemplateScreen } from './_template'
+import { ApiKeysScreen } from './api-keys'
 import { AwesomePromptsScreen } from './awesome-prompts'
 import { CustomChatScreen } from './custom-chat'
 import { CustomChatInitScreen } from './custom-chat-init'
@@ -72,6 +73,13 @@ export function AppContent(): JSX.Element {
         <RootStack.Screen name="ShareChat" component={ShareChatScreen} />
         <RootStack.Screen name="Web" component={WebScreen} />
         <RootStack.Screen name="PDF" component={PDFScreen} />
+        <RootStack.Screen
+          name="ApiKeys"
+          component={ApiKeysScreen}
+          options={{
+            animation: 'slide_from_bottom',
+          }}
+        />
       </RootStack.Navigator>
     </AlertNotificationRoot>
   )

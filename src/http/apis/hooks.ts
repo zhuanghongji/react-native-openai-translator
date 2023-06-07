@@ -21,17 +21,25 @@ export function useOpenAIApiUrlOptions() {
   const [apiUrlPath] = useApiUrlPathPref()
   const [apiKey] = useApiKeyPref()
   const checkIsOptionsValid = (): boolean => {
-    let enterTip = ''
     if (!apiUrl) {
-      enterTip = t('Enter API URL first')
-    } else if (!apiUrlPath) {
-      enterTip = t('Enter API URL Path first')
-    } else if (!apiKey) {
-      enterTip = t('Enter API Key first')
-    }
-    if (enterTip) {
       hapticError()
-      toast('warning', t('Warning'), enterTip, () => navigation.push('Settings'))
+      toast('warning', t('Warning'), t('Please enter the API URL first'), () =>
+        navigation.push('Settings')
+      )
+      return false
+    }
+    if (!apiUrlPath) {
+      hapticError()
+      toast('warning', t('Warning'), t('Please enter the API URL Path first'), () =>
+        navigation.push('Settings')
+      )
+      return false
+    }
+    if (!apiKey) {
+      hapticError()
+      toast('warning', t('Warning'), t('Please enter the API Key first'), () => {
+        navigation.push('ApiKeys')
+      })
       return false
     }
     return true

@@ -11,11 +11,12 @@ export interface InputViewProps {
   securable?: boolean
   value: string
   modalTitle: string
-  onChangeText: (value: string) => void
+  onPress?: () => void
+  onChangeText?: (value: string) => void
 }
 
 export function InputView(props: InputViewProps) {
-  const { style, securable, value, modalTitle, onChangeText } = props
+  const { style, securable, value, modalTitle, onPress, onChangeText } = props
 
   const { t } = useTranslation()
 
@@ -32,7 +33,13 @@ export function InputView(props: InputViewProps) {
     <>
       <Pressable
         style={[styles.container, { backgroundColor }, style]}
-        onPress={() => setModalVisible(true)}>
+        onPress={() => {
+          if (onPress) {
+            onPress()
+            return
+          }
+          setModalVisible(true)
+        }}>
         <Text
           style={[styles.text, { letterSpacing, fontWeight }, textStyle]}
           numberOfLines={1}

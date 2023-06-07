@@ -38,6 +38,7 @@ type RootStackParamList = {
     title: string
     url: string
   }
+  ApiKeys: undefined | { fromSettings: true }
 }
 
 type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
